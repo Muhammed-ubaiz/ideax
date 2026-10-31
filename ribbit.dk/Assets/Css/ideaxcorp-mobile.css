@@ -54,3 +54,10 @@
   footer .links a { margin-left: 0; }
   footer { padding-bottom: 210px; }
 }
+
+/* ---------- home on a phone: first screen is just the logo, the titles come in on scroll ---------- */
+@media all and (max-width: 767.5px) {
+  .m.showreelspace { height: 100svh; }
+  .m.push-titles { padding-top: 8px; }
+  .m.showreel { will-change: translate; } /* ideaxcorp-mobile.js lowers it to the middle of the screen */
+}
