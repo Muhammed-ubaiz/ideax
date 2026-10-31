@@ -1,0 +1,56 @@
+/* Phone and tablet fixes for the shared header/footer and the home page. Loaded last on every page.
+   Behaviour (corner logo hiding, footer figures on scroll) lives in ideaxcorp-mobile.js. */
+
+/* ---------- navbar: all six links fit a phone ---------- */
+@media all and (max-width: 1000.5px) {
+  header .menu nav .inner .btns { margin-left: 46px; margin-right: 46px; }
+}
+@media all and (max-width: 480px) {
+  header .menu nav .inner .btns { margin-left: 42px; margin-right: 42px; }
+  header .menu nav .primary { padding: 16px 4px 10px; font-size: 1rem; letter-spacing: .01em; }
+  header .menu nav .home { max-width: none !important; }
+}
+@media all and (max-width: 360px) {
+  header .menu nav .inner .btns { margin-left: 40px; margin-right: 40px; }
+  header .menu nav .primary { padding: 16px 3px 10px; font-size: .9rem; letter-spacing: 0; }
+}
+
+/* ---------- home: corner logo leaves once you scroll past the hero ---------- */
+@media all and (max-width: 767.5px) {
+  .m.showreel { transition: opacity .3s ease, visibility 0s linear 0s; }
+  body.ix-past-hero .m.showreel { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .3s ease, visibility 0s linear .3s; }
+}
+
+/* ---------- home: hero titles without the big empty band under them ---------- */
+@media all and (max-width: 767.5px) {
+  .m.push-titles { padding-bottom: 56px; }
+}
+
+/* ---------- home: sections breathe less on a phone ---------- */
+@media all and (max-width: 767.5px) {
+  .ix-clients { padding-top: 72px; padding-bottom: 72px; }
+  .ix-work { padding-bottom: 72px; }
+  .ix-pf-head { padding-top: 96px; }
+}
+
+/* ---------- footer: contact block stacked and centred ---------- */
+@media all and (max-width: 1000.5px) {
+  footer .contact { padding-bottom: 0; margin-bottom: 72px; }
+  footer .contact .block:first-child { display: flex; flex-direction: column; align-items: center; }
+  footer .contact .block:first-child > p { order: 1; }
+  footer .contact .block:first-child > .meeting { order: 2; }
+  footer .contact .block:first-child > .mobile { order: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  footer .contact .block:first-child > .mobile .icon-btn { margin: 0; }
+  footer .contact .block:first-child > .local-time { order: 4; position: static; margin-top: 20px; }
+  footer .contact .block:nth-of-type(2) {
+    position: static; width: 100%; margin-top: 28px; text-align: center;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 24px;
+  }
+  footer .arrow-btn { margin: 0; }
+
+  /* bottom line: copyright and privacy policy on their own rows */
+  footer .rights, footer .links { display: block; width: 100%; padding: 0 var(--gutter); text-align: center; white-space: normal; }
+  footer .links { margin-top: 10px; }
+  footer .links a { margin-left: 0; }
+  footer { padding-bottom: 210px; }
+}

@@ -1,0 +1,214 @@
+/* Ideaxcorp contact section (home) and Contact page. Markup: .ix-contact; behaviour: ideaxcorp-contact.js */
+.ix-contact {
+  --accent: #9700FF; --accent-dark: #7A00D1; --lav: #F3EAFF; --ink: #1A1A1A; --muted: #5E5868; --line: #E7E2EE;
+  --card: #F7F6FA; --ease: cubic-bezier(.16, 1, .3, 1);
+  background: #FFF; color: var(--ink); padding: 140px var(--gutter) 160px; font-size: 1.5rem; line-height: 1.5;
+}
+.ix-contact-page { padding-top: 170px; }
+.ix-contact a { color: inherit; }
+
+.ix-contact-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start; max-width: 1320px; margin: 0 auto; }
+
+/* left column */
+.ix-contact-intro { max-width: 42ch; color: var(--muted); font-size: var(--type-body); line-height: 1.55; }
+.ix-contact-pill {
+  display: inline-flex; align-items: center; gap: 8px; margin: 22px 0 18px; padding: 8px 16px 7px; border-radius: 999px;
+  background: var(--ink); color: #FFF;   font-size: var(--type-button); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.ix-contact-pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(151, 0, 255, .35); }
+.ix-contact-home .ix-contact-pill { margin-top: 0; }
+.ix-contact-title { font-family: var(--font-display); font-size: var(--type-section); line-height: .98; letter-spacing: -.03em; text-wrap: balance; margin-bottom: 24px; }
+.ix-contact-title span { color: var(--accent); font-family: var(--font-accent); font-style: italic; font-weight: 400; letter-spacing: -.035em; }
+.ix-contact-home .ix-contact-title { font-size: var(--type-section); }
+
+.ix-contact-list > li { display: flex; }
+.ix-contact-list { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ix-contact-info {
+  display: flex; flex: 1; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 16px;
+  border: 1px solid var(--line); background: #FFF; text-decoration: none;
+  transition: transform .25s var(--ease), box-shadow .25s ease, border-color .25s ease;
+}
+.ix-contact-icon {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--lav); color: var(--accent);
+  transition: background-color .25s ease, color .25s ease;
+}
+.ix-contact-icon svg { width: 20px; height: 20px; }
+.ix-whatsapp .ix-contact-icon { background: #E6F9EE; color: #128C3E; }
+.ix-contact-info-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ix-contact-info-label { font-size: 1.15rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ix-contact-info-value { font-weight: 700; font-size: 1.4rem; overflow-wrap: anywhere; }
+.ix-contact-info-note { font-size: 1.3rem; color: var(--muted); }
+@media (hover: hover) {
+  a.ix-contact-info:hover { transform: translateY(-3px); border-color: #D9C6F2; box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 14px 30px rgba(23, 10, 40, .08); }
+  a.ix-contact-info:hover .ix-contact-icon { background: var(--accent); color: #FFF; }
+  a.ix-whatsapp:hover .ix-contact-icon { background: #25D366; color: #FFF; }
+}
+.ix-contact a:focus-visible, .ix-contact button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* form card */
+.ix-contact-form {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; padding: 36px; border-radius: 24px;
+  background: var(--card); border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 20px 50px rgba(23, 10, 40, .06);
+}
+.ix-contact-form-title { grid-column: 1 / -1; font-family: var(--font-display); font-size: var(--type-subsection); line-height: 1.05; margin-bottom: 4px; }
+.ix-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.ix-wide { grid-column: 1 / -1; }
+.ix-field label { font-size: 1.3rem; font-weight: 700; }
+.ix-field input, .ix-field select, .ix-field textarea {
+  width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid #DCD6E4; background: #FFF;
+  font: 400 1.5rem/1.4 var(--font-body); color: var(--ink); outline: none; appearance: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.ix-field select {
+  padding-right: 40px; cursor: pointer;
+  background: #FFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%235E5868' stroke-width='1.8' fill='none'/%3E%3C/svg%3E") right 15px center / 12px no-repeat;
+}
+.ix-field textarea { resize: vertical; min-height: 130px; }
+.ix-field ::placeholder { color: #9A93A6; }
+.ix-field input:hover, .ix-field select:hover, .ix-field textarea:hover { border-color: #C7BCD6; }
+.ix-field input:focus, .ix-field select:focus, .ix-field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(151, 0, 255, .12); }
+.ix-field.invalid input, .ix-field.invalid textarea { border-color: #C62828; box-shadow: 0 0 0 4px rgba(198, 40, 40, .1); }
+.ix-field-error { font-size: 1.2rem; color: #B3261E; }
+
+.ix-contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-top: 4px; }
+.ix-contact-send {
+  display: inline-flex; align-items: center; gap: 14px; height: 54px; padding: 0 8px 0 26px; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--accent); color: #FFF; font: 700 var(--type-button)/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 10px 24px rgba(151, 0, 255, .28);
+  transition: transform .25s var(--ease), box-shadow .25s ease, background-color .2s ease;
+}
+.ix-contact-send-arrow { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #FFF; color: var(--accent); transition: transform .3s var(--ease); }
+.ix-contact-send-arrow svg { width: 15px; height: 12px; }
+@media (hover: hover) {
+  .ix-contact-send:hover { transform: translateY(-2px); background: var(--accent-dark); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 14px 30px rgba(151, 0, 255, .34); }
+  .ix-contact-send:hover .ix-contact-send-arrow { transform: translateX(3px); }
+}
+.ix-contact-send:active { transform: translateY(0) scale(.98); }
+.ix-contact-status { flex: 1 1 220px; font-size: 1.35rem; color: var(--muted); }
+.ix-contact-status.ok { color: #1B7F3B; }
+.ix-contact-status.err { color: #B3261E; }
+
+/* office cards */
+.ix-offices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 1320px; margin: 72px auto 0; }
+.ix-contact-page .ix-offices { grid-template-columns: 1fr; }
+.ix-office {
+  display: grid; grid-template-columns: 1fr; border-radius: 24px; overflow: hidden; background: #FFF; border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 18px 44px rgba(23, 10, 40, .06);
+  transition: transform .25s var(--ease), box-shadow .25s ease;
+}
+.ix-contact-page .ix-office { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+@media (hover: hover) {
+  .ix-office:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 24px 54px rgba(23, 10, 40, .09); }
+}
+.ix-office-body { display: flex; flex-direction: column; gap: 20px; padding: 32px; }
+.ix-office-head { display: flex; align-items: center; gap: 12px; }
+.ix-office-head img { width: 36px; height: 24px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); }
+.ix-office-title { font-family: var(--font-accent); font-size: clamp(2.2rem, 2.4vw, 2.8rem); font-style: italic; font-weight: 400; line-height: 1.1; }
+.ix-office-list { display: grid; gap: 14px; margin: 0; }
+.ix-office-list > div { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: start; }
+.ix-office-list dt { display: flex; align-items: center; gap: 8px; font-size: 1.25rem; font-weight: 700; letter-spacing: .04em; color: var(--muted); }
+.ix-office-list dt svg { width: 17px; height: 17px; flex: none; color: var(--accent); }
+.ix-office-list dd { margin: 0; overflow-wrap: anywhere; }
+.ix-office-list dd a { text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .2s ease, color .2s ease; }
+.ix-office-list dd a:hover { color: var(--accent); border-color: currentColor; }
+.ix-office-map-link {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px 10px; border-radius: 999px;
+  border: 1px solid var(--ink); font-size: var(--type-button); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, transform .25s var(--ease);
+}
+.ix-office-map-link svg { width: 16px; height: 16px; }
+@media (hover: hover) {
+  .ix-office-map-link:hover { background: var(--ink); color: #FFF; transform: translateY(-2px); }
+}
+.ix-office-map { position: relative; min-height: 320px; background: var(--card); }
+.ix-office-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* reveal once */
+.ix-contact.armed .ix-contact-left > *, .ix-contact.armed .ix-contact-list > li, .ix-contact.armed .ix-contact-form, .ix-contact.armed .ix-office { opacity: 0; transform: translateY(32px); }
+.ix-contact.armed.in .ix-contact-left > *, .ix-contact.armed.in .ix-contact-list > li, .ix-contact.armed.in .ix-contact-form, .ix-contact.armed.in .ix-office {
+  opacity: 1; transform: none; transition: opacity .6s ease-out var(--d, 0s), transform .9s var(--ease) var(--d, 0s);
+}
+.ix-contact.armed.done .ix-office { transition: transform .25s var(--ease), box-shadow .25s ease; }
+
+/* tablet */
+@media all and (max-width: 1000.5px) {
+  .ix-contact { padding: 96px var(--gutter) 110px; }
+  .ix-contact-page { padding-top: 130px; }
+  .ix-contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .ix-offices { grid-template-columns: 1fr; margin-top: 48px; }
+  .ix-contact-page .ix-office { grid-template-columns: 1fr; }
+  .ix-office-map { min-height: 260px; }
+}
+/* phone */
+@media all and (max-width: 600px) {
+  .ix-contact { font-size: var(--type-body); }
+  .ix-contact-list { grid-template-columns: 1fr; }
+  .ix-contact-form { grid-template-columns: 1fr; padding: 22px 18px; border-radius: 20px; }
+  .ix-contact-form-title { font-size: var(--type-subsection); }
+  .ix-contact-send { width: 100%; justify-content: space-between; }
+  .ix-office-body { padding: 24px 20px; }
+  .ix-office-list > div { grid-template-columns: 1fr; gap: 4px; }
+  .ix-office-map-link { align-self: stretch; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-contact *, .ix-contact { transition: none !important; }
+}
+
+/* ---------- office cards: refined ---------- */
+.ix-offices { align-items: stretch; }
+.ix-office { position: relative; border-radius: 28px; }
+.ix-office::before { /* soft brand glow in the top corner */
+  content: ''; position: absolute; right: -80px; top: -80px; width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(151, 0, 255, .10), transparent 70%); pointer-events: none;
+}
+.ix-office-body { position: relative; height: 100%; gap: 0; padding: 34px 34px 30px; }
+.ix-office-head { display: flex; align-items: center; gap: 14px; padding-bottom: 22px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.ix-office-flag {
+  flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+  background: #FFF; box-shadow: 0 0 0 1px var(--line), 0 6px 16px rgba(23, 10, 40, .08);
+}
+.ix-office-flag img { width: 64px !important; height: 52px !important; object-fit: cover; border-radius: 0 !important; box-shadow: none !important; }
+.ix-office-titles { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ix-office-sub { font-size: 1.3rem; color: var(--muted); }
+.ix-office-status {
+  margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px 6px; border-radius: 999px;
+  font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; white-space: nowrap; background: #F2EEF7; color: var(--muted);
+}
+.ix-office-status:empty { display: none; }
+.ix-office-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.ix-office-status.open { background: #E7F6EC; color: #1B7F3B; }
+.ix-office-status.open::before { animation: ix-pulse 1.8s ease-out infinite; }
+@keyframes ix-pulse { 0% { box-shadow: 0 0 0 0 rgba(27, 127, 59, .45); } 100% { box-shadow: 0 0 0 7px rgba(27, 127, 59, 0); } }
+
+.ix-office-list { gap: 0; margin-bottom: 24px; }
+.ix-office-list > div { grid-template-columns: 150px 1fr; padding: 14px 0; border-bottom: 1px dashed #EEE9F4; }
+.ix-office-list > div:last-child { border-bottom: 0; }
+.ix-office-list dt { gap: 10px; }
+.ix-office-list dt svg { box-sizing: content-box; padding: 7px; border-radius: 10px; background: var(--lav); }
+.ix-office-list dd { font-size: var(--type-body); line-height: 1.55; padding-top: 4px; }
+.ix-office-list dd a { color: var(--ink); border-bottom: 1px solid #DDD3EA; }
+.ix-office-list dd a:hover { color: var(--accent); border-color: var(--accent); }
+
+.ix-office-map-link {
+  margin-top: auto; align-self: flex-start; padding: 13px 22px 12px; border: 0; background: var(--accent); color: #FFF;
+  box-shadow: 0 10px 24px rgba(151, 0, 255, .25);
+}
+.ix-office-map-link svg { color: #FFF; }
+@media (hover: hover) {
+  .ix-office-map-link:hover { background: #7A00D1; color: #FFF; }
+  .ix-office:hover { transform: translateY(-4px); }
+}
+@media all and (max-width: 600px) {
+  .ix-office-body { padding: 26px 20px 22px; }
+  .ix-office-head { flex-wrap: wrap; }
+  .ix-office-status { margin-left: 66px; }
+  .ix-office-list > div { grid-template-columns: 1fr; gap: 6px; }
+  .ix-office-list dd { padding-top: 0; padding-left: 41px; }
+  .ix-office-map-link { align-self: stretch; }
+}
+@media (prefers-reduced-motion: reduce) { .ix-office-status.open::before { animation: none; } }
+/* the site's base CSS doesn't use border-box; without it the padding pushed the Maps button out of the card */
+.ix-contact *, .ix-contact *::before, .ix-contact *::after { box-sizing: border-box; }
+.ix-office-body { min-height: 100%; height: auto; }
+.ix-contact a.ix-office-map-link, .ix-contact a.ix-office-map-link:hover { color: #FFF; }

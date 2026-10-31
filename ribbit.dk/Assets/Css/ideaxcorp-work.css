@@ -1,0 +1,146 @@
+/* Our Portfolio: four project cards, each with its own character standing on it, and a character
+   carrying "All Projects" in at the end. Script: ideaxcorp-work.js. */
+.ix-work {
+  --accent: #9700FF; --lav: #C9A2FF; --ink: #170A28; --ease: cubic-bezier(.16, 1, .3, 1);
+  position: relative; overflow-x: clip; color: #1A1A1A; padding-bottom: 160px;
+  background: #FFF;
+}
+.ix-work .ix-pf-head { background: none; color: #1A1A1A; }
+
+/* grid: 4 across, every second card dropped for an editorial stagger */
+.ix-work-grid {
+  list-style: none; margin: 0; padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0 calc(var(--gutter) * 1.5); align-items: start;
+}
+.ix-work-item { padding-top: 96px; } /* room for the character */
+.ix-work-item:nth-child(even) { margin-top: 120px; }
+
+.ix-work-card { position: relative; display: flex; flex-direction: column; color: inherit; text-decoration: none; outline: none; }
+.ix-work-media {
+  position: relative; display: block; aspect-ratio: 8 / 11; overflow: hidden; border-radius: 14px; background: #F3EEF9;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .06), 0 12px 24px rgba(23, 10, 40, .08), 0 32px 64px rgba(23, 10, 40, .1);
+  transition: transform .25s var(--ease), box-shadow .25s ease;
+}
+.ix-work-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .6s var(--ease); }
+
+/* the character stands on the top edge of the image */
+.ix-work-char {
+  position: absolute; left: 50%; top: 0; z-index: 2; display: block; height: 128px;
+  transform: translate(-50%, -100%) translateY(6px); pointer-events: none; transition: transform .35s var(--ease);
+}
+.ix-work-char img { display: block; height: 100%; width: auto; filter: drop-shadow(0 12px 16px rgba(23, 10, 40, .18)); }
+
+.ix-work-body { display: flex; flex-direction: column; gap: 10px; padding: 22px 4px 0; }
+.ix-work-eyebrow { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.ix-work-num { color: rgba(26, 26, 26, .45); }
+.ix-work-title { font-family: var(--font-display); font-size: var(--type-card); font-weight: 500; line-height: 1.05; letter-spacing: -.02em; }
+.ix-work-text {
+  font-size: var(--type-body); line-height: 1.55; color: #666;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: calc(var(--type-body) * 1.55 * 3);
+}
+.ix-work-action {
+  position: relative; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; padding-bottom: 4px;
+  font-size: var(--type-button); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.ix-work-action::after { content: '\2197'; transition: transform .25s var(--ease); }
+.ix-work-action::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px; background: var(--accent);
+  transform: scaleX(.25); transform-origin: 0 0; transition: transform .35s var(--ease);
+}
+
+@media (hover: hover) {
+  .ix-work-card:hover .ix-work-media { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(23, 10, 40, .08), 0 20px 40px rgba(23, 10, 40, .12), 0 48px 90px rgba(23, 10, 40, .14); }
+  .ix-work-card:hover .ix-work-media img { transform: scale(1.04); }
+  .ix-work-card:hover .ix-work-char { transform: translate(-50%, -100%) translateY(-6px); }
+  .ix-work-card:hover .ix-work-action::before { transform: scaleX(1); }
+  .ix-work-card:hover .ix-work-action::after { transform: translate(3px, -3px); }
+}
+.ix-work-card:focus-visible .ix-work-media { outline: 3px solid var(--accent); outline-offset: 6px; }
+.ix-work-card:focus-visible .ix-work-action::before { transform: scaleX(1); }
+
+/* reveal: cards rise in turn, then their characters drop onto them */
+.ix-work.armed .ix-work-media, .ix-work.armed .ix-work-body { opacity: 0; transform: translateY(40px); }
+.ix-work.armed .ix-work-char { opacity: 0; transform: translate(-50%, -100%) translateY(-40px); }
+.ix-work.armed .ix-work-item.in .ix-work-media, .ix-work.armed .ix-work-item.in .ix-work-body {
+  opacity: 1; transform: none; transition: opacity .6s ease-out var(--d), transform .9s var(--ease) var(--d);
+}
+.ix-work.armed .ix-work-item.in .ix-work-char {
+  opacity: 1; transform: translate(-50%, -100%) translateY(6px);
+  transition: opacity .3s ease-out calc(var(--d) + .35s), transform .7s cubic-bezier(.34, 1.56, .64, 1) calc(var(--d) + .35s);
+}
+.ix-work.armed .ix-work-item.in .ix-work-body { transition-delay: calc(var(--d) + .08s); }
+/* once revealed, hover timings take over again */
+.ix-work.armed .ix-work-item.done .ix-work-media { transition: transform .25s var(--ease), box-shadow .25s ease; }
+.ix-work.armed .ix-work-item.done .ix-work-char { transition: transform .35s var(--ease); }
+
+/* ending: "All Projects" carried in from the left */
+.ix-work-end { display: flex; justify-content: center; margin-top: 120px; }
+/* "All Projects": solid brand pill, its left edge where her hands are (30.5% down the 200px frame) */
+.ix-work-btn {
+  --bh: 64px; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 18px; height: var(--bh);
+  padding: 0 10px 0 34px; border-radius: 999px;
+  background: #9700FF; color: #FFF; white-space: nowrap; cursor: default;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 2px 4px rgba(23, 10, 40, .12), 0 18px 36px rgba(151, 0, 255, .22);
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s ease;
+}
+.ix-work-btn-label { font: 700 var(--type-button)/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; }
+.ix-work-btn-arrow {
+  position: relative; width: 44px; height: 44px; flex: none; border-radius: 50%; background: #FFF;
+  transition: transform .5s cubic-bezier(.16, 1, .3, 1);
+}
+.ix-work-btn-arrow::before {
+  content: ''; position: absolute; inset: 0; margin: auto; width: 16px; height: 12px; background: #9700FF;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M0 6h14M9 1l5 5-5 5' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M0 6h14M9 1l5 5-5 5' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* when she arrives: a small push settle, the arrow nudges forward */
+
+@media all and (max-width: 1250.5px) {
+  .ix-work-char { height: 108px; }
+}
+@media all and (max-width: 1000.5px) {
+  .ix-work { padding-bottom: 96px; }
+  .ix-work-grid { grid-template-columns: repeat(2, 1fr); gap: 0 var(--gutter); }
+  .ix-work-item:nth-child(even) { margin-top: 72px; }
+  .ix-work-item:nth-child(n + 3) { margin-top: 24px; }
+  .ix-work-item:nth-child(4) { margin-top: 96px; }
+  .ix-work-item { padding-top: 84px; }
+  .ix-work-char { height: 96px; }
+  .ix-work-title { font-size: var(--type-card); }
+  .ix-work-end { margin-top: 80px; }
+  .ix-work-btn-arrow { width: 38px; height: 38px; }
+}
+@media all and (max-width: 600px) {
+  .ix-work-grid { grid-template-columns: 1fr; }
+  .ix-work-item, .ix-work-item:nth-child(even), .ix-work-item:nth-child(n + 3), .ix-work-item:nth-child(4) { margin-top: 0; padding-top: 104px; }
+  .ix-work-item + .ix-work-item { margin-top: 24px; }
+  .ix-work-char { height: 112px; }
+  .ix-work-text { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-work-media, .ix-work-media img, .ix-work-char, .ix-work-action::before, .ix-work-action::after, .ix-work-btn, .ix-work-btn-arrow { transition: none !important; }
+}
+@media all and (max-width: 600px) {
+  .ix-work-btn-arrow { width: 34px; height: 34px; }
+}
+@media all and (max-width: 340px) {
+}
+
+/* "All Projects" (standalone): rises in at the end, lifts on hover */
+.ix-work.armed .ix-work-end .ix-work-btn { opacity: 0; transform: translateY(32px) scale(.96); }
+.ix-work.armed .ix-work-end.in .ix-work-btn { opacity: 1; transform: none; transition: opacity .5s ease-out, transform .8s cubic-bezier(.16, 1, .3, 1); }
+@media (hover: hover) {
+  .ix-work .ix-work-end .ix-work-btn:hover { transition: transform .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s ease; transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 2px 4px rgba(23, 10, 40, .12), 0 22px 44px rgba(151, 0, 255, .28), 0 0 0 6px rgba(151, 0, 255, .15); }
+  .ix-work-end .ix-work-btn:hover .ix-work-btn-arrow { transform: translateX(4px); }
+}
+@media all and (max-width: 600px) {
+  .ix-work-btn { --bh: 56px; }
+}
+
+/* white section: the shared portfolio heading (ideaxcorp-reel.css) switched to dark text */
+.ix-work .ix-pf-eyebrow { color: #555; }
+.ix-work .ix-pf-eyebrow::before { box-shadow: 0 0 0 4px rgba(151, 0, 255, .15); }
+.ix-work .ix-pf-title span + span { color: var(--accent); }
+.ix-work .ix-pf-meta { border-top-color: #ECE6F4; }
+.ix-work .ix-pf-intro { color: #666; }
+.ix-work .ix-pf-count { color: var(--accent); }

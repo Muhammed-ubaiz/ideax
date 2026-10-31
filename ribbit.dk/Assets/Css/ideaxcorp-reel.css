@@ -1,0 +1,219 @@
+/* Ideaxcorp logo that stands in for the hero showreel loop.
+   Same 16:9 box as the old video, so the scroll shrink in Showreel() keeps working. */
+.ix-reel {
+  position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center;
+  background: none; /* no box: just the floating icon */
+}
+.ix-logo {
+  width: 74%; height: auto; /* flat: no shadow, tilt or zoom */
+  animation: ix-logo 5s ease-in-out infinite;
+}
+@keyframes ix-logo {
+  0%, 100% { transform: translateY(-2%); }
+  50% { transform: translateY(2%); }
+}
+/* the original play button opened Ribbit's showreel; there is no video now */
+.loop .play-btn.ix-hidden { display: none; }
+.loop:has(.ix-reel) { cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  .ix-logo { animation: none; }
+}
+/* The hero figure's PNG frames end at the old card's left edge. The logo now sits in front of
+   the figure with its purple square on that edge, so the figure disappears behind the logo. */
+.ix-reel { justify-items: start; overflow: visible; }
+.m.showreel:has(.ix-reel) .loop { overflow: visible; }
+.m.showreel:has(.ix-reel) .figure .animations { z-index: 1; }
+/* Home hero: no navbar at the top; it comes back as the eyes pill once you scroll */
+body:has(.m.showreel) header .menu:not(.collapsed) nav { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* "Curious / Full-service / Marketing Agency" */
+.m.push-titles { --push-title-size: clamp(8rem, 7vw, 10rem); }
+.m.push-titles { padding-top: 120px; padding-bottom: 200px; }
+/* no "Ribbit is a" / "Based in Copenhagen" curved captions (hidden, not removed: the .line rules count them in nth-of-type) */
+.m.push-titles .circular-text { display: none; }
+.m.push-titles .icons-btn { margin-top: 85px; }
+/* logo colours mixed into the words: black like "idea", purple like the "x" */
+.m.push-titles .line .text { color: #1A1A1A; }
+.m.push-titles .line:nth-of-type(3) .text,
+.m.push-titles .line .text.extra { color: #9700FF; }
+@media all and (max-width: 767.5px) {
+  .m.push-titles { padding-top: 60px; }
+}
+.m.push-titles .line { height: calc(var(--push-title-size) * 1.45); }
+.m.push-titles .line .text {
+  z-index: 4; font-size: var(--push-title-size); font-weight: 700; line-height: .96; letter-spacing: -.04em;
+}
+.m.push-titles .line:nth-of-type(4) .text { font-size: var(--push-title-size); }
+/* "Curious" bigger, so the C is as tall as the creator figure's outstretched arms */
+.m.push-titles .line:nth-of-type(2) { --curious-size: calc(var(--push-title-size) * 1.4); height: calc(var(--curious-size) * 1.2); }
+.m.push-titles .line:nth-of-type(2) .text { font-size: var(--curious-size); }
+/* "Marketing Agency" bigger too, in proportion with the outlaw figure, capped so the line still fits */
+.m.push-titles .line:nth-of-type(4) { --agency-size: min(calc(var(--push-title-size) * 1.3), 8.6vw); height: calc(var(--agency-size) * 1.3); }
+.m.push-titles .line:nth-of-type(4) .text { font-size: var(--agency-size); }
+.m.push-titles .line .animations { z-index: 1; width: 10.8vw; }
+.m.push-titles .line .animations.larger { width: 18.6vw; }
+.m.push-titles .line .animations.smaller { width: 9.4vw; }
+/* the small figure stands in the gap between "Marketing" and "Agency" (placed by ideaxcorp-motion.js), in front of the words */
+.m.push-titles .line .animations.smaller { z-index: 5; }
+.m.push-titles .circular-text + .line { margin-top: -.7vw; }
+.m.push-titles .line + .circular-text { margin-top: 70px; }
+@media all and (max-width: 1000.5px) {
+  .m.push-titles { --push-title-size: clamp(7rem, 8.5vw, 8.5rem); }
+  .m.push-titles .line { height: calc(var(--push-title-size) * 1.5); }
+  .m.push-titles .line .animations { width: 16vw; }
+  .m.push-titles .line .animations.larger.right { width: 26vw; margin-left: -22px; }
+  .m.push-titles .line .animations.smaller { width: 12vw; margin-left: -6px; }
+  .m.push-titles .circular-text + .line { margin-top: -2vw; }
+}
+@media all and (max-width: 767.5px) {
+  .m.push-titles { --push-title-size: clamp(4.4rem, 14vw, 6rem); }
+  .m.push-titles .line { height: calc(var(--push-title-size) * 1.7); }
+  .m.push-titles .line:nth-of-type(4) .text { font-size: clamp(3.2rem, 9.5vw, 4rem); }
+  .m.push-titles .line .animations { width: 15vw; }
+  .m.push-titles .line .animations.larger.right { width: 24vw; }
+  .m.push-titles .line .animations.smaller { width: 11vw; margin-left: -5px; }
+  .m.push-titles .circular-text + .line { margin-top: -2.5vw; }
+}
+
+/* White-text logo while a dark section is behind it (ideaxcorp-nav.js sets .on-dark) */
+.ix-reel .ix-logo { grid-area: 1 / 1; transition: opacity .4s ease; }
+.ix-reel .ix-on-dark { opacity: 0; }
+.ix-reel.on-dark .ix-on-light { opacity: 0; }
+.ix-reel.on-dark .ix-on-dark { opacity: 1; }
+/* the dark "Featured project" section in the logo's deep purple */
+.m.cases-teaser { background: radial-gradient(120% 80% at 50% 0%, #2A0C4E 0%, #170A28 55%, #120A1C 100%); }
+
+/* Portfolio cards (portrait 8:11) in the "Our Portfolio" scroller */
+.m.cases-teaser .content:has(.ix-portfolio) { --pw: min(34vw, 520px); width: calc(var(--pw) + var(--gutter) * 2); }
+.m.cases-teaser .project-thumb.ix-portfolio { margin-bottom: calc(var(--pw) * -1.375 * .44 + var(--gutter) * 2); }
+.m.cases-teaser .project-thumb.ix-portfolio:last-of-type { margin-bottom: 0; }
+.project-thumb.ix-portfolio .media { box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+.project-thumb.ix-portfolio .media img { display: block; width: 100%; height: auto; transition: transform 1.2s var(--expo); }
+.project-thumb.ix-portfolio:hover .media img { transform: scale(1.03); }
+.m.cases-teaser .sticky .right h5 span { white-space: nowrap; }
+@media all and (max-width: 1000.5px) {
+  /* phones/tablets: cards on the right, project name on the left beside them */
+  .m.cases-teaser .content:has(.ix-portfolio) { --pw: 50vw; margin: 0 0 0 auto; }
+  .m.cases-teaser:has(.ix-portfolio) .sticky .right h5 { font-size: 2.2rem; }
+}
+
+/* Intro screen: Ideaxcorp logo in place of the "ribbit" animation (same timing as the intro words) */
+.m.intro .logo-anim .ix-intro-logo {
+  display: block; width: 360px; max-width: 70vw; height: auto; margin: 6px auto 0; opacity: 0;
+  animation: ix-intro-logo 1.5s cubic-bezier(.16, 1, .3, 1) .5s forwards;
+}
+@keyframes ix-intro-logo { from { opacity: 0; transform: translateY(24px) scale(.94); } to { opacity: 1; transform: none; } }
+@media all and (max-width: 1000.5px) { .m.intro .logo-anim .ix-intro-logo { width: 200px; } }
+/* logo-black intro background so the purple parts of the logo stay visible */
+.m.intro { background: radial-gradient(120% 90% at 50% 100%, #2A0C4E 0%, #1A1A1A 60%); }
+/* "All Projects" is shown without a link */
+.icons-btn.ix-nolink { cursor: default; }
+/* keep the portfolio cards (and anything else) from widening the page: no sideways scrollbar */
+.m.cases-teaser, main { overflow-x: clip; }
+
+/* Walking character carrying "All Projects" (ideaxcorp-walker.js) */
+.m.cases-teaser:has(.ix-walk) { padding-bottom: 300px; }
+.ix-walk { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; text-align: left; }
+.ix-walker { --ch: clamp(130px, 15vw, 230px); position: sticky; top: calc(100vh - var(--ch) - 10px); display: flex; width: max-content; align-items: center; will-change: transform; transform: translate3d(-100%, 0, 0); }
+.ix-walker-char { display: block; height: var(--ch); width: auto; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .35)); }
+/* the button sits at her outstretched hands (about 30% down the frame) */
+.ix-walker-btn { position: relative; align-self: flex-start; margin: calc(var(--ch) * .22) 0 0 calc(var(--ch) * -.1); white-space: nowrap; pointer-events: auto; transition: transform .6s var(--back, cubic-bezier(.175,.885,.32,1.275)); }
+.ix-walker.arrived .ix-walker-btn { transform: rotate(-4deg) scale(1.06); }
+@media all and (max-width: 1000.5px) {
+  .m.cases-teaser:has(.ix-walk) { padding-bottom: 220px; }
+  .ix-walker { --ch: 120px; top: calc(100vh - var(--ch) - 96px); }
+}
+
+/* Portfolio characters: each one stands left of its card and pushes it in (ideaxcorp-walker.js) */
+.m.cases-teaser .project-thumb.ix-portfolio { position: relative; }
+.ix-pusher {
+  position: absolute; right: calc(100% - 6px); bottom: 0; z-index: 2;
+  height: var(--size, 48%); width: auto; aspect-ratio: var(--ratio, 1); object-fit: contain; pointer-events: none;
+  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, .35));
+}
+.ix-pusher.flip { transform: scaleX(-1); }
+
+/* Premium pass on the portfolio cards */
+.project-thumb.ix-portfolio .media {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 14px 28px rgba(0, 0, 0, .28), 0 44px 90px rgba(0, 0, 0, .38);
+  transition: translate .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s ease;
+}
+.project-thumb.ix-portfolio .media img { transition: transform .6s cubic-bezier(.16, 1, .3, 1); }
+.project-thumb.ix-portfolio:hover .media img { transform: none; } /* replaced by the hover-capable rule below */
+.project-thumb.ix-portfolio .media::after {
+  content: 'Visit website \2197'; position: absolute; left: 50%; bottom: 20px; z-index: 2;
+  padding: 12px 18px 10px; border-radius: 999px; background: #9700FF; color: #FFF;
+  font: 700 1.2rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  opacity: 0; transform: translate(-50%, 8px); transition: opacity .2s ease, transform .25s cubic-bezier(.16, 1, .3, 1);
+}
+@media (hover: hover) {
+  .project-thumb.ix-portfolio:hover .media { translate: 0 -4px; box-shadow: 0 2px 4px rgba(0, 0, 0, .25), 0 20px 40px rgba(0, 0, 0, .32), 0 60px 110px rgba(0, 0, 0, .45); }
+  .project-thumb.ix-portfolio:hover .media img { transform: scale(1.04); }
+  .project-thumb.ix-portfolio:hover .media::after { opacity: 1; transform: translate(-50%, 0); }
+}
+.project-thumb.ix-portfolio:focus-visible { outline: none; }
+.project-thumb.ix-portfolio:focus-visible .media { outline: 3px solid #C9A2FF; outline-offset: 6px; }
+.project-thumb.ix-portfolio:focus-visible .media::after { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) {
+  .project-thumb.ix-portfolio .media, .project-thumb.ix-portfolio .media img, .project-thumb.ix-portfolio .media::after { transition: none; }
+}
+@media all and (max-width: 1000.5px) {
+  .ix-pusher { height: calc(var(--size, 48%) * .88); }
+  .project-thumb.ix-portfolio .media::after { bottom: 12px; padding: 9px 12px 7px; font-size: 1rem; }
+}
+/* the walker's button doesn't link anywhere: no hover eyes (they also peeked in at the screen edge) */
+.ix-walker-btn .icon, .ix-walker-btn .iconr { display: none; }
+
+/* Our Portfolio intro header + sticky counter/category */
+.ix-pf-head {
+  position: relative; z-index: 1; color: #FFF; padding: 160px var(--gutter) 24px; text-align: left;
+  background: radial-gradient(120% 140% at 50% 0%, #2A0C4E 0%, #170A28 70%);
+}
+.m.cases-teaser:has(.ix-portfolio) { background: linear-gradient(180deg, #170A28 0%, #120A1C 100%); }
+.m.cases-teaser:has(.ix-portfolio) .sticky { padding-top: 64px; }
+.m.cases-teaser .content:has(.ix-portfolio) { padding-top: 64px; }
+.ix-pf-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; font-size: 1.3rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
+.ix-pf-eyebrow::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #9700FF; box-shadow: 0 0 0 4px rgba(151, 0, 255, .25); }
+.ix-pf-title { font-family: var(--font-display); font-size: var(--type-hero); font-weight: 600; line-height: .96; letter-spacing: -.035em; text-wrap: balance; }
+.ix-pf-title span { display: inline-block; }
+.ix-pf-title span + span { color: #C9A2FF; font-family: var(--font-accent); font-style: italic; font-weight: 400; letter-spacing: -.035em; }
+@media all and (max-width: 767.5px) {
+  .ix-pf-title { font-size: var(--type-hero); }
+}
+.ix-pf-meta { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); align-items: end; margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255, 255, 255, .12); }
+.ix-pf-intro { grid-column: 1 / span 5; font-size: var(--type-body); line-height: 1.55; color: rgba(255, 255, 255, .72); max-width: 44ch; }
+.ix-pf-count { grid-column: 10 / span 3; justify-self: end; font-size: 1.2rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: #C9A2FF; }
+.ix-pf-head.armed > * { opacity: 0; transform: translateY(40px); }
+.ix-pf-head.armed.in > * { opacity: 1; transform: none; transition: opacity .6s ease-out, transform .9s cubic-bezier(.16, 1, .3, 1); }
+.ix-pf-head.armed.in > :nth-child(2) { transition-delay: .08s; }
+.ix-pf-head.armed.in > :nth-child(3) { transition-delay: .16s; }
+
+.ix-pf-counter { margin-top: 18px; font-family: var(--font-display); font-size: var(--type-subsection); line-height: .95; color: #FFF; }
+.ix-pf-total { color: rgba(255, 255, 255, .4); font-size: .6em; }
+.ix-pf-cur { display: inline-block; }
+.ix-pf-category { margin-top: 12px; font-size: 1.2rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #C9A2FF; }
+.ix-pf-cur.swap, .ix-pf-category.swap { animation: ix-swap .5s cubic-bezier(.16, 1, .3, 1); }
+@keyframes ix-swap { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+@media all and (max-width: 1000.5px) {
+  .ix-pf-head { padding: 96px var(--gutter) 16px; }
+  .ix-pf-meta { grid-template-columns: 1fr; margin-top: 32px; gap: 16px; }
+  .ix-pf-intro, .ix-pf-count { grid-column: 1; justify-self: start; }
+  .ix-pf-intro { font-size: var(--type-body); }
+  .ix-pf-counter { font-size: var(--type-subsection); margin-top: 10px; }
+  .ix-pf-category { font-size: 1rem; margin-top: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-pf-cur.swap, .ix-pf-category.swap { animation: none; }
+}
+.ix-pf-mcount { display: none; }
+@media all and (max-width: 1000.5px) {
+  .ix-pf-counter { display: none; }
+  .ix-pf-mcount { display: inline; color: #FFF; }
+}
+@media all and (max-width: 1000.5px) {
+  .ix-pf-category { max-width: 42vw; white-space: normal; line-height: 1.5; }
+}
+
+/* hero titles ("Curious / Full-service / Marketing Agency") sit a little lower under the header */
+.m.push-titles > .circular-text:first-child { margin-top: clamp(40px, 7vw, 120px); }
