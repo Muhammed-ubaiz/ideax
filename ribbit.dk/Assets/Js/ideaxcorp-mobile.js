@@ -9,23 +9,23 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true })
 
-  // home on a phone: after the mascot hero (ideaxcorp-hero.js), each title line rises and fades in
-  // as it comes up the screen, and eases out at the top
+  // home on a phone: after the mascot hero (ideaxcorp-hero.js), the eyebrow, each title line and the buttons
+  // rise and fade in as they come up the screen, and ease out at the top
   var phone = window.matchMedia('(max-width: 767.5px)')
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   var on = false, lastY = -1, lastW = 0
   function ease(t) { t = Math.max(0, Math.min(1, t)); return 1 - Math.pow(1 - t, 3) }
   ;(function frame() {
     var home = phone.matches && !reduced && !!document.querySelector('.m.showreel')
-    if (on && !home) Array.prototype.forEach.call(document.querySelectorAll('.m.push-titles .line'), function (l) { l.style.translate = l.style.scale = l.style.opacity = '' })
+    if (on && !home) Array.prototype.forEach.call(document.querySelectorAll('.m.push-titles .line, .ix-pt-eyebrow, .ix-pt-cta'), function (l) { l.style.translate = l.style.scale = l.style.opacity = '' })
     if (home && !on) lastY = -1
     on = home
     var y = window.scrollY, vh = window.innerHeight
     if (on && (y !== lastY || window.innerWidth !== lastW)) {
       lastY = y; lastW = window.innerWidth
-      Array.prototype.forEach.call(document.querySelectorAll('.m.push-titles .line'), function (l) {
+      Array.prototype.forEach.call(document.querySelectorAll('.m.push-titles .line, .ix-pt-eyebrow, .ix-pt-cta'), function (l) {
         var r = l.getBoundingClientRect(), mid = r.top + r.height / 2
-        var inn = ease((vh - r.top) / (vh * 0.4))     // 0 as its top meets the bottom edge, 1 once 40% up the screen
+        var inn = ease((vh - r.top) / (vh * 0.3))     // 0 as its top meets the bottom edge, 1 once 30% up the screen
         var out = ease((vh * 0.18 - mid) / (vh * 0.25)) // fades once its middle passes 18% from the top
         var shown = inn * (1 - out)
         l.style.opacity = shown.toFixed(3)

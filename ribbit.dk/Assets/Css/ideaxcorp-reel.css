@@ -234,3 +234,46 @@ body:has(.m.showreel) header .menu:not(.collapsed) nav { opacity: 0; visibility:
   .m.push-titles:has(.ix-pt-pin) { height: 160svh; }
   .ix-pt-pin { padding-top: 48px; }
 }
+
+/* Phones: the title screen as a full, balanced hero. "We are a" eyebrow, "Curious" as the big focal word,
+   "Full-service" in brand purple, "Marketing Agency", then two buttons. Words and characters are sized
+   together so every line, character included, stays inside the screen at 320-767px. The eyebrow and
+   buttons exist only here (hidden on wider screens, where the desktop design stays as it was). */
+.ix-pt-eyebrow, .ix-pt-cta { display: none; }
+@media all and (max-width: 767.5px) {
+  .m.push-titles:has(.ix-pt-pin) { height: 135svh; }      /* a short hold, then the portfolio */
+  .ix-pt-pin { padding: 64px 0 24px; }                      /* centred between the navbar and the bottom edge */
+
+  .m.push-titles { --push-title-size: 13.2vw; }
+  .m.push-titles .line { height: calc(var(--push-title-size) * 1.42); }
+  .m.push-titles .line:nth-of-type(2) { --curious-size: 19.4vw; height: calc(var(--curious-size) * 1.12); }
+  .m.push-titles .line:nth-of-type(4) { --agency-size: 9.2vw; height: calc(var(--agency-size) * 1.45); }
+  .m.push-titles .line:nth-of-type(4) .text { font-size: var(--agency-size); }
+  .m.push-titles .line .text { letter-spacing: -.035em; }
+  .m.push-titles .line .animations { width: 10.5vw; }
+  .m.push-titles .line .animations.larger.right { width: 15vw; }
+  .m.push-titles .line .animations.smaller { width: 8.6vw; }
+  .m.push-titles .line:nth-of-type(4) .animations:not(.smaller) { width: 9vw; } /* clear of the left edge */
+
+  .ix-pt-eyebrow {
+    display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 6px;
+    font-size: 1.2rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(26, 26, 26, .55);
+  }
+  .ix-pt-eyebrow::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #9700FF; box-shadow: 0 0 0 4px rgba(151, 0, 255, .16); }
+
+  .ix-pt-cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 28px 16px 0; }
+  .ix-pt-btn {
+    display: inline-flex; align-items: center; justify-content: center; height: 50px; padding: 0 24px; border-radius: 999px;
+    background: #9700FF; color: #FFF; font-size: 1.5rem; font-weight: 700; letter-spacing: .01em; white-space: nowrap; text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 2px 4px rgba(23, 10, 40, .1), 0 14px 28px rgba(151, 0, 255, .24);
+    transition: transform .2s cubic-bezier(.16, 1, .3, 1), background-color .2s ease;
+  }
+  .ix-pt-btn:active { transform: scale(.97); }
+  /* the site underlines links in section paragraphs (.m p a) and fades them on hover: not these */
+  .m .ix-pt-cta .ix-pt-btn { text-decoration: none; opacity: 1; }
+  .ix-pt-btn-ghost { background: #FFF; color: #1A1A1A; border: 1px solid #E7E2EE; box-shadow: 0 1px 2px rgba(23, 10, 40, .05); }
+  .ix-pt-btn:focus-visible { outline: 2px solid #9700FF; outline-offset: 3px; }
+}
+@media all and (max-width: 359.5px) {
+  .ix-pt-btn { height: 46px; padding: 0 18px; font-size: 1.4rem; }
+}

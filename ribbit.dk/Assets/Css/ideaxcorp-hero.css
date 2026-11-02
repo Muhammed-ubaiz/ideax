@@ -53,3 +53,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ix-hs.ready .ix-hs-idle { animation: none; }
 }
+@media all and (max-width: 767.5px) {
+  .m.showreelspace { height: 130svh; } /* less empty scroll between the mascot and the titles on phones */
+}

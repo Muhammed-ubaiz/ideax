@@ -130,7 +130,15 @@ header .menu { display: none !important; }
 }
 @media all and (max-width: 380px) {
   .ix-bar-label { display: none; }
-  .ix-bar-cta { padding: 0 14px; font-size: 1.3rem; }
+  /* compact, so the logo keeps a clear gap on both sides and stays centred down to 320px */
+  .ix-bar { padding: 0 6px 0 16px; }
+  .ix-bar-logo { width: 70px; }
+  .ix-bar-cta { height: 42px; padding: 0 14px; font-size: 1.25rem; }
+}
+@media all and (max-width: 340px) {
+  .ix-bar { padding-left: 14px; }
+  .ix-bar-logo { width: 62px; }
+  .ix-bar-cta { height: 40px; padding: 0 12px; font-size: 1.2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ix-bar-burger i, .ix-bar-panel, .ix-bar-links li, .ix-bar-foot, .ix-bar-scrim { transition: none; }
