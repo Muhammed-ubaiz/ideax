@@ -55,24 +55,7 @@
   footer { padding-bottom: 210px; }
 }
 
-/* ---------- home on a phone: first screen is just a big logo, the titles come in on scroll ---------- */
+/* ---------- home on a phone: the mascot hero (ideaxcorp-hero.css) first, the titles come in on scroll ---------- */
 @media all and (max-width: 767.5px) {
-  /* the desktop showreel logo is too small here: ideaxcorp-mobile.js puts .ix-mhero in its place */
-  .m.showreel { visibility: hidden; pointer-events: none; }
-  .m.showreelspace { height: 112svh; }
-  .m.push-titles { padding-top: 8px; padding-bottom: 30svh; } /* titles get a screen to themselves before the portfolio */
   .m.push-titles .line { transform-origin: 50% 60%; will-change: translate, scale, opacity; }
-
-  .ix-mhero {
-    position: fixed; inset: 0; z-index: 2; display: grid; place-items: center; pointer-events: none;
-    will-change: translate, scale, opacity;
-  }
-  .ix-mhero img {
-    width: min(84vw, 420px); height: auto;
-    animation: ix-mhero-in 1.4s cubic-bezier(.16, 1, .3, 1) both, ix-logo 5s ease-in-out 1.4s infinite;
-  }
-  @keyframes ix-mhero-in { from { opacity: 0; transform: translateY(30px) scale(.92); } to { opacity: 1; transform: translateY(-2%); } }
-}
-@media all and (max-width: 767.5px) and (prefers-reduced-motion: reduce) {
-  .ix-mhero img { animation: none; }
 }

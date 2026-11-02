@@ -1,5 +1,4 @@
-/* Our Portfolio: four project cards, each with its own character standing on it, and a character
-   carrying "All Projects" in at the end. Script: ideaxcorp-work.js. */
+/* Our Portfolio: four project cards and "All Projects" at the end. Script: ideaxcorp-work.js. */
 .ix-work {
   --accent: #9700FF; --lav: #C9A2FF; --ink: #170A28; --ease: cubic-bezier(.16, 1, .3, 1);
   position: relative; overflow-x: clip; color: #1A1A1A; padding-bottom: 160px;
@@ -9,10 +8,9 @@
 
 /* grid: 4 across, every second card dropped for an editorial stagger */
 .ix-work-grid {
-  list-style: none; margin: 0; padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(4, 1fr);
+  list-style: none; margin: 56px 0 0; padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 0 calc(var(--gutter) * 1.5); align-items: start;
 }
-.ix-work-item { padding-top: 96px; } /* room for the character */
 .ix-work-item:nth-child(even) { margin-top: 120px; }
 
 .ix-work-card { position: relative; display: flex; flex-direction: column; color: inherit; text-decoration: none; outline: none; }
@@ -22,13 +20,6 @@
   transition: transform .25s var(--ease), box-shadow .25s ease;
 }
 .ix-work-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .6s var(--ease); }
-
-/* the character stands on the top edge of the image */
-.ix-work-char {
-  position: absolute; left: 50%; top: 0; z-index: 2; display: block; height: 128px;
-  transform: translate(-50%, -100%) translateY(6px); pointer-events: none; transition: transform .35s var(--ease);
-}
-.ix-work-char img { display: block; height: 100%; width: auto; filter: drop-shadow(0 12px 16px rgba(23, 10, 40, .18)); }
 
 .ix-work-body { display: flex; flex-direction: column; gap: 10px; padding: 22px 4px 0; }
 .ix-work-eyebrow { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
@@ -51,27 +42,20 @@
 @media (hover: hover) {
   .ix-work-card:hover .ix-work-media { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(23, 10, 40, .08), 0 20px 40px rgba(23, 10, 40, .12), 0 48px 90px rgba(23, 10, 40, .14); }
   .ix-work-card:hover .ix-work-media img { transform: scale(1.04); }
-  .ix-work-card:hover .ix-work-char { transform: translate(-50%, -100%) translateY(-6px); }
   .ix-work-card:hover .ix-work-action::before { transform: scaleX(1); }
   .ix-work-card:hover .ix-work-action::after { transform: translate(3px, -3px); }
 }
 .ix-work-card:focus-visible .ix-work-media { outline: 3px solid var(--accent); outline-offset: 6px; }
 .ix-work-card:focus-visible .ix-work-action::before { transform: scaleX(1); }
 
-/* reveal: cards rise in turn, then their characters drop onto them */
+/* reveal: cards rise in turn */
 .ix-work.armed .ix-work-media, .ix-work.armed .ix-work-body { opacity: 0; transform: translateY(40px); }
-.ix-work.armed .ix-work-char { opacity: 0; transform: translate(-50%, -100%) translateY(-40px); }
 .ix-work.armed .ix-work-item.in .ix-work-media, .ix-work.armed .ix-work-item.in .ix-work-body {
   opacity: 1; transform: none; transition: opacity .6s ease-out var(--d), transform .9s var(--ease) var(--d);
-}
-.ix-work.armed .ix-work-item.in .ix-work-char {
-  opacity: 1; transform: translate(-50%, -100%) translateY(6px);
-  transition: opacity .3s ease-out calc(var(--d) + .35s), transform .7s cubic-bezier(.34, 1.56, .64, 1) calc(var(--d) + .35s);
 }
 .ix-work.armed .ix-work-item.in .ix-work-body { transition-delay: calc(var(--d) + .08s); }
 /* once revealed, hover timings take over again */
 .ix-work.armed .ix-work-item.done .ix-work-media { transition: transform .25s var(--ease), box-shadow .25s ease; }
-.ix-work.armed .ix-work-item.done .ix-work-char { transition: transform .35s var(--ease); }
 
 /* ending: "All Projects" carried in from the left */
 .ix-work-end { display: flex; justify-content: center; margin-top: 120px; }
@@ -95,30 +79,24 @@
 }
 /* when she arrives: a small push settle, the arrow nudges forward */
 
-@media all and (max-width: 1250.5px) {
-  .ix-work-char { height: 108px; }
-}
 @media all and (max-width: 1000.5px) {
   .ix-work { padding-bottom: 96px; }
   .ix-work-grid { grid-template-columns: repeat(2, 1fr); gap: 0 var(--gutter); }
   .ix-work-item:nth-child(even) { margin-top: 72px; }
   .ix-work-item:nth-child(n + 3) { margin-top: 24px; }
   .ix-work-item:nth-child(4) { margin-top: 96px; }
-  .ix-work-item { padding-top: 84px; }
-  .ix-work-char { height: 96px; }
   .ix-work-title { font-size: var(--type-card); }
   .ix-work-end { margin-top: 80px; }
   .ix-work-btn-arrow { width: 38px; height: 38px; }
 }
 @media all and (max-width: 600px) {
   .ix-work-grid { grid-template-columns: 1fr; }
-  .ix-work-item, .ix-work-item:nth-child(even), .ix-work-item:nth-child(n + 3), .ix-work-item:nth-child(4) { margin-top: 0; padding-top: 104px; }
+  .ix-work-item, .ix-work-item:nth-child(even), .ix-work-item:nth-child(n + 3), .ix-work-item:nth-child(4) { margin-top: 0; }
   .ix-work-item + .ix-work-item { margin-top: 24px; }
-  .ix-work-char { height: 112px; }
   .ix-work-text { min-height: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ix-work-media, .ix-work-media img, .ix-work-char, .ix-work-action::before, .ix-work-action::after, .ix-work-btn, .ix-work-btn-arrow { transition: none !important; }
+  .ix-work-media, .ix-work-media img, .ix-work-action::before, .ix-work-action::after, .ix-work-btn, .ix-work-btn-arrow { transition: none !important; }
 }
 @media all and (max-width: 600px) {
   .ix-work-btn-arrow { width: 34px; height: 34px; }

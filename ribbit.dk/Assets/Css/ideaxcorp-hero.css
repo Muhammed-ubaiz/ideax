@@ -1,0 +1,55 @@
+/* Home hero: the sage mascot holds the Ideaxcorp logo up from underneath and carries it up the screen
+   as you scroll. Built and driven by ideaxcorp-hero.js; replaces the showreel logo. */
+
+/* the old showreel stays in the page (the site's scripts expect it) but shows nothing: its pushing
+   figure and logo are display:none, since the site's animation switches its parts back to visible */
+.m.showreel { visibility: hidden; opacity: 0; pointer-events: none; }
+.m.showreel .figure, .m.showreel .loop { display: none !important; }
+.m.showreelspace { height: 150vh; height: 150svh; background: none; }
+
+.ix-hs {
+  --mh: clamp(200px, 40vh, 460px);              /* mascot height */
+  --mw: calc(var(--mh) * 311 / 468);            /* mascot width (image ratio) */
+  --lw: calc(var(--mw) * 2.1);                  /* logo width */
+  --ground: max(10vh, 90px);                    /* floor line, above the eyes pill */
+  position: fixed; inset: 0; z-index: 3; overflow: hidden; pointer-events: none;
+  will-change: opacity;
+}
+@media all and (max-width: 767.5px) {
+  .ix-hs { --mh: min(clamp(190px, 36svh, 320px), 66vw); --ground: max(13svh, 110px); } /* 66vw: the logo (1.4 × height) fits across */
+}
+
+/* ground shadow: stays on the floor when the mascot leaves it */
+.ix-hs-shadow {
+  position: absolute; left: 50%; bottom: calc(var(--ground) - var(--mh) * .035);
+  width: calc(var(--mw) * 1.3); height: calc(var(--mh) * .07); margin-left: calc(var(--mw) * -.65);
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(26, 10, 40, .28), rgba(26, 10, 40, 0));
+  will-change: scale, opacity;
+}
+
+/* camera: everything that travels up with the scroll */
+.ix-hs-cam { position: absolute; inset: 0; will-change: translate, scale; transform-origin: 50% 100%; }
+/* the mascot's box; the middle of its two hands (49.4% across) is on the centre line */
+.ix-hs-rig {
+  position: absolute; bottom: var(--ground); left: calc(50% - var(--mw) * .494);
+  width: var(--mw); height: var(--mh); transform-origin: 50% 100%;
+}
+.ix-hs-enter, .ix-hs-idle, .ix-hs-body { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.ix-hs-body { will-change: translate, rotate; }
+.ix-hs-mascot { position: absolute; inset: 0; z-index: 1; display: block; width: 100%; height: 100%; filter: drop-shadow(0 18px 22px rgba(26, 10, 40, .16)); }
+/* logo: in front of the head and hands, its bottom edge just above the palms (5% down the mascot),
+   so the fingers go behind it and the palms show underneath. The logo file has 14/374 of empty space under the artwork. */
+.ix-hs-logo {
+  position: absolute; z-index: 2; width: var(--lw); left: calc(49.4% - var(--lw) / 2);
+  top: calc(var(--mh) * .05 - var(--lw) * 360 / 798);
+  transform-origin: 50% 96%; will-change: transform, rotate, scale;
+}
+.ix-hs-logo > img { display: block; width: 100%; height: auto; filter: drop-shadow(0 12px 18px rgba(42, 12, 78, .16)); }
+
+/* holding still: a slow breath */
+.ix-hs.ready .ix-hs-idle { animation: ix-hs-breathe 4.4s ease-in-out infinite; }
+@keyframes ix-hs-breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.014); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-hs.ready .ix-hs-idle { animation: none; }
+}

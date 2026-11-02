@@ -148,41 +148,10 @@
   .ix-client.is-wide img, .ix-client.ix-client-lakeshore img { left: 10%; right: 10%; width: 80%; }
 }
 
-/* Three characters walking across the full width under the logos (ideaxcorp-work.js) */
-.ix-clients-walk {
-  position: relative; height: 180px; margin: 48px calc(-1 * var(--gutter)) 0; overflow: hidden;
-  pointer-events: none;
-}
-.ix-clients-walk::after { /* soft ground line */
-  content: ''; position: absolute; left: 0; right: 0; bottom: 14px; height: 1px;
-  background: linear-gradient(90deg, transparent, #E7E2EE 15%, #E7E2EE 85%, transparent);
-}
-.ix-walker2 { position: absolute; left: 0; bottom: 12px; height: 150px; will-change: transform; transform: translateX(-200px); }
-.ix-walker2 img { display: block; height: 100%; width: auto; filter: drop-shadow(0 10px 12px rgba(23, 10, 40, .16)); }
-.ix-walker2[data-char="explorer_push"] { height: 128px; }
-.ix-walker2[data-char="outlaw_push"] { height: 120px; }
-@media all and (max-width: 1000.5px) {
-  .ix-clients-walk { height: 120px; margin-top: 32px; }
-  .ix-walker2 { height: 104px; }
-  .ix-walker2[data-char="explorer_push"] { height: 90px; }
-  .ix-walker2[data-char="outlaw_push"] { height: 84px; }
-}
-
 /* logos without a card background or border; hover still lifts the logo */
 .ix-client { background: none !important; border-color: transparent !important; box-shadow: none !important; }
 @media (hover: hover) {
   .ix-client-wrap:hover .ix-client { background: none !important; border-color: transparent !important; box-shadow: none !important; }
 }
-.ix-walker2[data-char="sage_push"] { height: 140px; }
-@media all and (max-width: 1000.5px) { .ix-walker2[data-char="sage_push"] { height: 96px; } }
 
-/* The sage walks along the tops of the first row of logos and hops the gaps between them
-   (ideaxcorp-work.js places it every frame; the frame is 490x414, feet at 68% across). */
 .ix-clients { position: relative; }
-.ix-logo-walker {
-  position: absolute; left: 0; top: 0; z-index: 3; height: 110px; aspect-ratio: 490 / 414;
-  pointer-events: none; transform-origin: 68% 99%; visibility: hidden; will-change: transform;
-}
-.ix-logo-walker.on { visibility: visible; }
-.ix-logo-walker img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 8px 10px rgba(23, 10, 40, .18)); }
-@media all and (max-width: 1000.5px) { .ix-logo-walker { height: 76px; } }

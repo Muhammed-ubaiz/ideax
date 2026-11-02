@@ -217,3 +217,20 @@ body:has(.m.showreel) header .menu:not(.collapsed) nav { opacity: 0; visibility:
 
 /* hero titles ("Curious / Full-service / Marketing Agency") sit a little lower under the header */
 .m.push-titles > .circular-text:first-child { margin-top: clamp(40px, 7vw, 120px); }
+
+/* All three title lines on one screen: the block pins in the middle of the screen for a stretch of
+   scroll, then the portfolio comes up. The site measures each line's resting position on load, so the
+   last line still finishes its sideways push during the first part of the pin.
+   overflow: clip instead of hidden, which would stop the pin from sticking. */
+.m.push-titles:has(.ix-pt-pin) {
+  overflow: clip; padding: 0;
+  height: 170vh; height: 170svh;
+}
+.ix-pt-pin {
+  position: sticky; top: 0; box-sizing: border-box; height: 100vh; height: 100svh;
+  display: flex; flex-direction: column; justify-content: center; padding-top: 56px; /* clear of the navbar */
+}
+@media all and (max-width: 767.5px) {
+  .m.push-titles:has(.ix-pt-pin) { height: 160svh; }
+  .ix-pt-pin { padding-top: 48px; }
+}

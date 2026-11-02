@@ -1,0 +1,137 @@
+/* Top navigation bar: white pill with MENU (opens the page links), the logo in the middle and
+   "Get In Touch". Markup sits inside <header> on every page; toggling in ideaxcorp-bar.js.
+   The site's own corner menu (logo, eyes pill, link strip) is hidden but left in place for its scripts. */
+
+header .menu { display: none !important; }
+
+.ix-bar {
+  --bar-h: 60px;
+  position: fixed; left: 50%; top: 16px; z-index: 12; translate: -50% 0;
+  box-sizing: border-box; width: min(550px, calc(100% - 32px)); height: var(--bar-h); /* the site does not use border-box */
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 0 8px 0 22px; border-radius: 999px; background: #FFF; color: #1A1A1A;
+  box-shadow: 0 1px 2px rgba(26, 10, 40, .06), 0 10px 30px rgba(26, 10, 40, .08);
+  font-family: var(--font-body);
+}
+
+.ix-bar { transition: opacity .35s ease, translate .5s cubic-bezier(.22, 1, .36, 1), visibility 0s; }
+/* home: hidden over the mascot hero (ideaxcorp-bar.js) */
+.ix-bar.ix-bar-off {
+  opacity: 0; visibility: hidden; pointer-events: none; translate: -50% -24px;
+  transition: opacity .25s ease, translate .4s ease, visibility 0s linear .4s;
+}
+
+.ix-bar-menu {
+  justify-self: start; display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 10px 0 0;
+  border: 0; background: none; color: inherit; font: inherit; cursor: pointer;
+}
+.ix-bar-label { font-size: 1.4rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1; }
+.ix-bar-burger { position: relative; width: 22px; height: 16px; }
+.ix-bar-burger i {
+  position: absolute; left: 0; width: 100%; height: 2px; border-radius: 2px; background: currentColor;
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .2s ease, top .35s cubic-bezier(.22, 1, .36, 1);
+}
+.ix-bar-burger i:nth-child(1) { top: 0; }
+.ix-bar-burger i:nth-child(2) { top: 7px; }
+.ix-bar-burger i:nth-child(3) { top: 14px; }
+.ix-bar.open .ix-bar-burger i:nth-child(1) { top: 7px; transform: rotate(45deg); }
+.ix-bar.open .ix-bar-burger i:nth-child(2) { opacity: 0; }
+.ix-bar.open .ix-bar-burger i:nth-child(3) { top: 7px; transform: rotate(-45deg); }
+
+/* the logo file has empty space above the artwork (98 of 374px) and a little below (14px): lift it to look centred */
+.ix-bar-logo { justify-self: center; display: block; width: 92px; line-height: 0; }
+.ix-bar-logo img { display: block; width: 100%; height: auto; translate: 0 -11.25%; }
+
+.ix-bar-cta {
+  justify-self: end; display: inline-flex; align-items: center; height: 46px; padding: 0 24px; border-radius: 999px;
+  background: #1A1A1A; color: #FFF; font-size: 1.5rem; font-weight: 700; letter-spacing: .01em; white-space: nowrap;
+  transition: background-color .2s ease, transform .25s cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) {
+  .ix-bar-cta:hover { background: #9700FF; }
+  .ix-bar-menu:hover .ix-bar-label { color: #9700FF; }
+}
+.ix-bar-menu:focus-visible, .ix-bar-logo:focus-visible, .ix-bar-cta:focus-visible {
+  outline: 2px solid #9700FF; outline-offset: 3px; border-radius: 999px;
+}
+
+/* the menu: a card the width of the bar dropping down under it, the page links in one row
+   (two rows of three on phones), then contact details and socials; the page behind dims (.ix-bar-scrim) */
+.ix-bar-panel {
+  position: absolute; left: 0; right: 0; top: calc(100% + 10px); box-sizing: border-box;
+  padding: 8px; border-radius: 28px; background: #FFF; border: 1px solid rgba(26, 10, 40, .06);
+  text-align: left; /* the site centres text on tablets and phones */
+  box-shadow: 0 1px 2px rgba(26, 10, 40, .05), 0 12px 28px rgba(26, 10, 40, .08), 0 40px 80px rgba(26, 10, 40, .12);
+  opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.98); transform-origin: 50% 0;
+  transition: opacity .2s ease, transform .35s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .35s;
+}
+.ix-bar.open .ix-bar-panel { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .5s cubic-bezier(.16, 1, .3, 1), visibility 0s; }
+
+.ix-bar-links { list-style: none; margin: 0; padding: 0; display: flex; justify-content: space-between; gap: 2px; }
+.ix-bar-links li { opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .45s cubic-bezier(.16, 1, .3, 1); }
+.ix-bar.open .ix-bar-links li { opacity: 1; transform: none; }
+.ix-bar.open .ix-bar-links li:nth-child(2) { transition-delay: .03s; }
+.ix-bar.open .ix-bar-links li:nth-child(3) { transition-delay: .06s; }
+.ix-bar.open .ix-bar-links li:nth-child(4) { transition-delay: .09s; }
+.ix-bar.open .ix-bar-links li:nth-child(5) { transition-delay: .12s; }
+.ix-bar.open .ix-bar-links li:nth-child(6) { transition-delay: .15s; }
+.ix-bar-links a {
+  display: flex; align-items: center; justify-content: center; height: 44px; padding: 0 14px; border-radius: 999px;
+  color: #1A1A1A; white-space: nowrap; transition: background-color .2s ease, color .2s ease;
+}
+.ix-bar-n { display: none; }
+.ix-bar-t { font-size: 1.5rem; font-weight: 600; line-height: 1; letter-spacing: .01em; }
+.ix-bar-links a[aria-current="page"] { background: #F4ECFF; color: #9700FF; }
+@media (hover: hover) {
+  .ix-bar-links a:hover { background: #F7F2FE; color: #9700FF; }
+}
+
+.ix-bar-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px;
+  margin: 8px 6px 0; padding: 14px 8px 6px; border-top: 1px solid #EEE9F4;
+  opacity: 0; transition: opacity .3s ease;
+}
+.ix-bar.open .ix-bar-foot { opacity: 1; transition-delay: .24s; }
+.ix-bar-contact { display: flex; flex-direction: column; gap: 4px; }
+.ix-bar-contact a { font-size: 1.4rem; font-weight: 500; color: #1A1A1A; }
+.ix-bar-contact a + a { color: rgba(26, 26, 26, .6); }
+.ix-bar-social { display: flex; flex-wrap: wrap; gap: 6px; }
+.ix-bar-social a {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid #E7E2EE; font-size: 1.2rem; font-weight: 600; color: #1A1A1A;
+  transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+@media (hover: hover) {
+  .ix-bar-contact a:hover { color: #9700FF; }
+  .ix-bar-social a:hover { border-color: #9700FF; color: #9700FF; background: #F7F2FE; }
+}
+.ix-bar-panel a:focus-visible { outline: 2px solid #9700FF; outline-offset: 2px; }
+.ix-bar-social a:focus-visible { border-radius: 999px; }
+.ix-bar-contact a:focus-visible { border-radius: 4px; }
+
+/* the page behind dims while the menu is open; a click on it closes the menu (ideaxcorp-bar.js) */
+.ix-bar-scrim {
+  position: fixed; inset: 0; z-index: 11; background: rgba(23, 10, 40, .18);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s;
+}
+.ix-bar.open + .ix-bar-scrim { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
+
+@media all and (max-width: 767.5px) {
+  .ix-bar { --bar-h: 56px; top: 12px; width: min(550px, calc(100% - 24px)); padding: 0 6px 0 18px; }
+  .ix-bar-menu { gap: 10px; }
+  .ix-bar-label { font-size: 1.3rem; }
+  .ix-bar-logo { width: 78px; }
+  .ix-bar-cta { height: 44px; padding: 0 18px; font-size: 1.4rem; }
+  .ix-bar-panel { border-radius: 24px; }
+  .ix-bar-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .ix-bar-links a { padding: 0 8px; }
+  .ix-bar-foot { flex-direction: column; align-items: flex-start; }
+}
+@media all and (max-width: 380px) {
+  .ix-bar-label { display: none; }
+  .ix-bar-cta { padding: 0 14px; font-size: 1.3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-bar-burger i, .ix-bar-panel, .ix-bar-links li, .ix-bar-foot, .ix-bar-scrim { transition: none; }
+}
