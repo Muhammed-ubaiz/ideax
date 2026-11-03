@@ -23,18 +23,26 @@
       setOpen(b, open)
     } else if (e.target.closest('.ix-bar-panel a') || !b.contains(e.target)) setOpen(b, false)
   })
-  // home page: no bar over the mascot hero; it comes in once the hero has been scrolled past
-  function heroCheck() {
-    var b = bar()
-    if (!b) return
-    var hide = !!document.querySelector('.m.showreel') && window.scrollY < window.innerHeight * .9
-    if (hide && b.classList.contains('open')) setOpen(b, false)
-    b.classList.toggle('ix-bar-off', hide)
+  // home page: no bar over the mascot hero. An IntersectionObserver watches the hero's scroll space
+  // (.m.showreelspace); once less of it than the top half of the screen is left, the bar is past the hero
+  // and slides in (.ix-bar-past). CSS keeps it hidden on the home page until then, so it never flashes on load.
+  var watched = null, io = null
+  function watchHero() {
+    var hero = document.querySelector('.m.showreelspace')
+    if (hero === watched) return
+    if (io) io.disconnect()
+    watched = hero
+    if (!hero) return
+    io = new IntersectionObserver(function (entries) {
+      var b = bar(), past = !entries[entries.length - 1].isIntersecting
+      if (!b) return
+      if (!past && b.classList.contains('open')) setOpen(b, false)
+      b.classList.toggle('ix-bar-past', past)
+    }, { rootMargin: '-50% 0px 0px 0px' })
+    io.observe(hero)
   }
-  window.addEventListener('scroll', heroCheck, { passive: true })
-  window.addEventListener('resize', heroCheck)
-  heroCheck()
-  setInterval(heroCheck, 500) // pages are swapped in without a reload
+  watchHero()
+  setInterval(watchHero, 1000) // pages are swapped in without a reload: re-attach to the new hero (no layout reads)
 
   document.addEventListener('keydown', function (e) {
     var b = bar()

@@ -14,11 +14,20 @@ header .menu { display: none !important; }
   font-family: var(--font-body);
 }
 
-.ix-bar { transition: opacity .35s ease, translate .5s cubic-bezier(.22, 1, .36, 1), visibility 0s; }
-/* home: hidden over the mascot hero (ideaxcorp-bar.js) */
-.ix-bar.ix-bar-off {
-  opacity: 0; visibility: hidden; pointer-events: none; translate: -50% -24px;
-  transition: opacity .25s ease, translate .4s ease, visibility 0s linear .4s;
+/* entering: a long, soft glide down from above the screen with a gentle fade and settle */
+.ix-bar {
+  transform-origin: 50% 0; will-change: translate, scale, opacity;
+  transition: translate .9s cubic-bezier(.16, 1, .3, 1), scale .9s cubic-bezier(.16, 1, .3, 1), opacity .6s ease .05s, visibility 0s;
+}
+/* home: hidden above the screen over the mascot hero; it glides in once ideaxcorp-bar.js marks it
+   .ix-bar-past, and leaves a little quicker (eased in) when you scroll back up */
+body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past) {
+  opacity: 0; visibility: hidden; pointer-events: none; translate: -50% calc(-100% - 24px); scale: .96;
+  transition: translate .5s cubic-bezier(.5, 0, .75, 0), scale .5s ease, opacity .35s ease .1s, visibility 0s linear .5s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-bar, body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past) { translate: -50% 0; scale: 1; transition: opacity .3s ease, visibility 0s linear .3s; }
+  .ix-bar.ix-bar-past { transition: opacity .3s ease, visibility 0s; }
 }
 
 .ix-bar-menu {

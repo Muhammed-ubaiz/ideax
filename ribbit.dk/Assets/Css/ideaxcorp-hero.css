@@ -1,10 +1,12 @@
 /* Home hero: the sage mascot holds the Ideaxcorp logo up from underneath and carries it up the screen
    as you scroll. Built and driven by ideaxcorp-hero.js; replaces the showreel logo. */
 
-/* the old showreel stays in the page (the site's scripts expect it) but shows nothing: its pushing
-   figure and logo are display:none, since the site's animation switches its parts back to visible */
+/* the old showreel stays in the page (the site's scripts expect it) but shows nothing. Its parts keep
+   their size (display:none would make the site's showreel script divide by zero and stop the whole
+   page set-up, which also leaves every CSS transition switched off), and are hidden with !important
+   because the site's animation sets them back to visible inline. */
 .m.showreel { visibility: hidden; opacity: 0; pointer-events: none; }
-.m.showreel .figure, .m.showreel .loop { display: none !important; }
+.m.showreel .figure, .m.showreel .loop, .m.showreel .figure *, .m.showreel .loop * { visibility: hidden !important; opacity: 0 !important; }
 .m.showreelspace { height: 150vh; height: 150svh; background: none; }
 
 .ix-hs {

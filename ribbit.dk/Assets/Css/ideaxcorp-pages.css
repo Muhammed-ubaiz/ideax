@@ -422,3 +422,7 @@ header nav .btns a.primary.selected::after {
   .ixp-dialog-body dl { grid-template-columns: 1fr; }
   .ixp-btn { padding: 15px 22px; }
 }
+
+/* Home: short About section under the client logos (founder photo, story, quote, facts, link to /about/) */
+.ix-about-home .ix-about-facts { margin: 0; }
+.m.ix-about-home .ixp-btns { margin-top: 36px; }
