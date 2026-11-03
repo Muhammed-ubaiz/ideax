@@ -12,9 +12,9 @@
   transition: clip-path 1.2s cubic-bezier(.77, 0, .175, 1) .08s, transform 1.4s cubic-bezier(.16, 1, .3, 1) .08s, opacity .4s ease-out .08s;
 }
 
-/* images settle in from a slight zoom as they reveal */
-.ix-work.armed .ix-work-media img { scale: 1.16; }
-.ix-work.armed .ix-work-item.in .ix-work-media img { scale: 1.08; transition: scale 1.6s cubic-bezier(.16, 1, .3, 1) calc(var(--d) + .1s), transform .6s cubic-bezier(.16, 1, .3, 1); }
+/* posters settle in from a slight zoom to their true size as they reveal (nothing cropped once settled) */
+.ix-work.armed .ix-work-media img { scale: 1.08; }
+.ix-work.armed .ix-work-item.in .ix-work-media img { scale: 1; transition: scale 1.6s cubic-bezier(.16, 1, .3, 1) calc(var(--d) + .1s), transform .6s cubic-bezier(.16, 1, .3, 1); }
 .ix-clients.armed .ix-client img { opacity: 0; }
 .ix-clients.armed.in .ix-client img { opacity: 1; transition: opacity .8s ease-out calc(.35s + var(--i, 0) * .08s), transform .5s cubic-bezier(.16, 1, .3, 1); }
 

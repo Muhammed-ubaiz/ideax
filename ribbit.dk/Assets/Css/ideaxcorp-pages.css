@@ -423,6 +423,162 @@ header nav .btns a.primary.selected::after {
   .ixp-btn { padding: 15px 22px; }
 }
 
-/* Home: short About section under the client logos (founder photo, story, quote, facts, link to /about/) */
-.ix-about-home .ix-about-facts { margin: 0; }
-.m.ix-about-home .ixp-btns { margin-top: 36px; }
+/* Home: short About section under the client logos. Label and heading on top; the founder's portrait
+   (name in a frosted caption) beside the story, his quote in a soft lavender card, two fact tiles and a link. */
+.ix-ab-head { max-width: 980px; margin-bottom: clamp(40px, 4.5vw, 72px); }
+.ix-ab-head .ixp-h2 { margin: 0; text-wrap: balance; }
+.ix-ab-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); align-items: center; }
+
+.ix-ab-photo {
+  /* 5:6 (a little taller than square), capped at 400px wide so the photo (1000x1400, upscaled from the 500x700 original) stays sharp */
+  grid-column: 1 / span 4; justify-self: start; position: relative; width: min(100%, 400px); margin: 0; aspect-ratio: 5 / 6;
+  overflow: hidden; border-radius: 28px; background: var(--ink);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .06), 0 18px 40px rgba(23, 10, 40, .12), 0 48px 96px rgba(23, 10, 40, .12);
+}
+.ix-ab-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; transition: transform .8s var(--ease); }
+/* a deep ink fade at the bottom for the caption to sit on */
+.ix-ab-photo::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(to top, rgba(23, 10, 40, .78) 0%, rgba(23, 10, 40, 0) 46%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+}
+/* compact dark frosted badge in the corner instead of a full-width light bar */
+.ix-ab-photo figcaption {
+  position: absolute; z-index: 2; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 5px;
+  padding: 12px 16px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 16px;
+  background: rgba(23, 10, 40, .5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.ix-ab-photo figcaption b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 600; line-height: 1; letter-spacing: -.01em; color: #FFF; }
+.ix-ab-photo figcaption span { font-size: 1.1rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--lav); }
+@media (hover: hover) { .ix-ab-photo:hover img { transform: scale(1.03); } }
+
+.ix-ab-body { grid-column: 6 / span 7; }
+.ix-ab-text p { margin: 0 0 14px; font-size: var(--type-body); line-height: 1.6; color: var(--muted); }
+.ix-ab-text p:first-child { font-size: clamp(1.8rem, 1.35vw, 2.1rem); line-height: 1.5; color: var(--text); }
+
+.ix-ab-quote {
+  position: relative; margin: 30px 0; padding: 28px 30px 24px; overflow: hidden;
+  border: 1px solid #EDE2FD; border-radius: 24px; background: #F7F2FE;
+}
+.ix-ab-quote::before {
+  content: '\201C'; position: absolute; right: 20px; top: -18px; font-family: var(--font-accent); font-size: 14rem; line-height: 1; color: rgba(151, 0, 255, .14);
+}
+.ix-ab-quote p { position: relative; margin: 0; font-family: var(--font-accent); font-style: italic; font-size: clamp(2.4rem, 2.1vw, 3.2rem); line-height: 1.18; letter-spacing: -.01em; color: var(--text); text-wrap: balance; }
+.ix-ab-quote cite { display: block; margin-top: 16px; font-style: normal; font-size: 1.25rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+
+.ix-ab-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0; }
+.ix-ab-facts div {
+  padding: 18px 20px; border: 1px solid #EEE9F4; border-radius: 20px; background: #FFF;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 10px 24px rgba(23, 10, 40, .05);
+}
+.ix-ab-facts dt { font-family: var(--font-display); font-size: clamp(2.4rem, 2vw, 3rem); font-weight: 600; line-height: 1.05; letter-spacing: -.02em; color: var(--text); }
+.ix-ab-facts dd { margin: 6px 0 0; font-size: 1.35rem; line-height: 1.45; color: var(--muted); }
+.m.ix-about-home .ixp-btns { margin-top: 28px; }
+
+@media all and (max-width: 1000.5px) {
+  /* one column: the 12-column gaps alone are wider than a phone */
+  .ix-ab-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .ix-ab-photo, .ix-ab-body { grid-column: 1; min-width: 0; }
+}
+@media all and (max-width: 600px) {
+  .ix-ab-photo { border-radius: 24px; }
+  .ix-ab-photo figcaption { left: 12px; bottom: 12px; padding: 10px 14px; }
+  .ix-ab-quote { padding: 22px 22px 20px; }
+  .ix-ab-facts div { padding: 14px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .ix-ab-photo img { transition: none; } }
+
+/* Home: one section label style for every section (Portfolio, Clients, About, Blog, Contact):
+   a soft lavender badge with a sparkle, instead of the dot and widely spaced capitals */
+body .m .ix-pf-eyebrow, body .m .ix-clients-eyebrow, body .m .ixp-eyebrow, body .m.ix-contact-home .ix-contact-pill {
+  display: inline-flex; align-items: center; gap: 8px; width: max-content; max-width: 100%; box-sizing: border-box;
+  margin: 0 0 24px; padding: 8px 15px 8px 12px; border: 1px solid #E6D6FF; border-radius: 999px; background: #F4ECFF; color: #7A00D1;
+  font-family: var(--font-body); font-size: 1.25rem; font-weight: 700; line-height: 1; letter-spacing: .06em; text-transform: uppercase;
+  box-shadow: 0 1px 2px rgba(151, 0, 255, .06);
+}
+body .m .ix-pf-eyebrow::before, body .m .ix-clients-eyebrow::before, body .m .ixp-eyebrow::before, body .m.ix-contact-home .ix-contact-pill::before {
+  content: '\2726'; width: auto; height: auto; border-radius: 0; background: none; box-shadow: none;
+  font-size: 1.2rem; line-height: 1; color: #9700FF;
+}
+
+/* Home: "Latest articles", on white and kept short. Three equal framed cards in a row (image, tag, date,
+   two-line title, "Read more"; the summaries stay on the blog page), and compact rows on tablets and phones.
+   Reuses the blog page's card markup (.ixp-card). */
+.m.ixp.ix-blog-home { --pad-y: clamp(64px, 6.5vw, 112px); background: #FFF; }
+.ix-blog-home .ixp-wrap { max-width: 1240px; } /* smaller cards on wide screens */
+.ix-blog-head {
+  display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px var(--gutter); align-items: end; margin-bottom: clamp(32px, 3.5vw, 56px);
+}
+.ix-blog-heading { grid-column: 1 / span 7; }
+.ix-blog-heading .ixp-eyebrow { margin-bottom: 18px; }
+.ix-blog-heading .ixp-h2 { margin: 0; }
+.ix-blog-heading .ixp-lead { margin: 14px 0 0; max-width: 44ch; }
+/* the "View all articles" button sits on the heading's baseline, at the right */
+.ix-blog-intro { grid-column: 8 / span 5; display: flex; justify-content: flex-end; }
+
+.ix-blog-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); }
+
+/* the card frame */
+.ix-blog-home .ixp-card-link {
+  padding: 10px; border: 1px solid #EEE9F4; border-radius: 24px; background: #FFF;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 10px 24px rgba(23, 10, 40, .05), 0 30px 60px rgba(23, 10, 40, .06);
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s ease;
+}
+.ix-blog-home .ixp-card-media { aspect-ratio: 16 / 10; border-radius: 16px; box-shadow: none; background: #F5EEFF; }
+.ix-blog-home .ixp-card-media::after { display: none; } /* no "View project" disc on articles */
+/* the whole image, never cropped: it is fitted inside the frame, and a soft blurred copy of the same
+   image fills the space around it (the three images are 4:5, 3:2 and 1.9:1) */
+.ix-blog-home .ixp-card-media img:not(.ix-blog-blur) { z-index: 1; object-fit: contain; object-position: center; padding: 10px; transition: transform .6s var(--ease); }
+.ix-blog-home .ixp-card-media .ix-blog-blur { object-fit: cover; filter: blur(22px) saturate(1.1); transform: scale(1.25); opacity: .55; }
+/* a faint inner edge so light images stay framed on the white card */
+.ix-blog-home .ixp-card-media::before { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(23, 10, 40, .07); pointer-events: none; }
+.ix-blog-home .ixp-card-body { gap: 8px; padding: 16px 8px 6px; flex: 1; }
+.ix-blog-home .ixp-card-meta { align-items: center; gap: 6px 10px; color: var(--muted); }
+/* category as a small lavender pill beside the date (moved off the image) */
+.ix-blog-tag {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px;
+  background: #F4ECFF; color: #7A00D1; font-size: 1.05rem; font-weight: 700; letter-spacing: .08em;
+}
+.ix-blog-home .ixp-card-title {
+  font-size: clamp(1.9rem, 1.45vw, 2.3rem); line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ix-blog-home .ixp-card-text { display: none; }
+.ix-blog-home .ixp-card-more { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding: 6px 0 0; border: 0; color: var(--accent); }
+.ix-blog-home .ixp-card-more::after {
+  content: '\2197'; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: #F4ECFF; color: var(--accent); font-size: 1.3rem; letter-spacing: 0;
+  transition: background-color .25s ease, color .25s ease, transform .35s var(--ease);
+}
+@media (hover: hover) {
+  .ix-blog-home .ixp-card-link:hover {
+    transform: translateY(-4px); border-color: #E2D3FB;
+    box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 16px 32px rgba(23, 10, 40, .08), 0 40px 80px rgba(151, 0, 255, .1);
+  }
+  .ix-blog-home .ixp-card-link:hover .ixp-card-media img:not(.ix-blog-blur) { transform: scale(1.03); }
+  .ix-blog-home .ixp-card-link:hover .ixp-card-media .ix-blog-blur { transform: scale(1.25); } /* the base card hover would shrink it */
+  .ix-blog-home .ixp-card-link:hover .ixp-card-more::after { background: var(--accent); color: #FFF; transform: translate(2px, -2px); }
+}
+.ix-blog-home .ixp-card-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* tablets and phones: compact rows, small image beside the title */
+@media all and (max-width: 1000.5px) {
+  .ix-blog-heading, .ix-blog-intro { grid-column: 1 / -1; }
+  .ix-blog-intro { justify-content: flex-start; }
+  .ix-blog-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ix-blog-home .ixp-card-link { flex-direction: row; align-items: center; gap: 4px; padding: 8px; border-radius: 20px; }
+  .ix-blog-home .ixp-card-media { flex: 0 0 min(40%, 260px); aspect-ratio: 4 / 3; border-radius: 14px; }
+  .ix-blog-home .ixp-card-body { align-self: stretch; justify-content: center; padding: 6px 6px 6px 14px; }
+  .ix-blog-home .ixp-card-more { margin-top: 2px; }
+}
+@media all and (max-width: 600px) {
+  .ix-blog-home .ixp-card-title { font-size: 1.7rem; -webkit-line-clamp: 3; }
+  .ix-blog-home .ixp-card-meta { font-size: 1.05rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ix-blog-home .ixp-card-link, .ix-blog-home .ixp-card-media img, .ix-blog-home .ixp-card-more::after { transition: none; }
+}
+
+/* the same badge on every page's section labels; a lavender-on-ink version in the dark sections */
+body .m.ixp-dark .ixp-eyebrow { background: rgba(201, 162, 255, .12); border-color: rgba(201, 162, 255, .32); color: var(--lav); box-shadow: none; }
+body .m.ixp-dark .ixp-eyebrow::before { color: var(--lav); }
+body .m.ixa-hero .ixp-eyebrow { display: flex; margin-left: auto; margin-right: auto; } /* centred: a block-level badge */

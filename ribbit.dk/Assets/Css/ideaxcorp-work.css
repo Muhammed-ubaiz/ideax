@@ -92,8 +92,11 @@
 @media all and (max-width: 600px) {
   .ix-work-grid { grid-template-columns: 1fr; }
   .ix-work-item, .ix-work-item:nth-child(even), .ix-work-item:nth-child(n + 3), .ix-work-item:nth-child(4) { margin-top: 0; }
-  .ix-work-item + .ix-work-item { margin-top: 24px; }
+  .ix-work-item + .ix-work-item { margin-top: 40px; }
   .ix-work-text { min-height: 0; }
+  /* one card per row: about 80% wide and centred, so each card is shorter while the whole poster
+     (same 8:11 shape as the image, nothing cropped) stays visible */
+  .ix-work-item { width: min(82%, 380px); margin-left: auto; margin-right: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ix-work-media, .ix-work-media img, .ix-work-action::before, .ix-work-action::after, .ix-work-btn, .ix-work-btn-arrow { transition: none !important; }

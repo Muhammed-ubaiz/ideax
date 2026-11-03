@@ -1,5 +1,5 @@
 // Subtle scroll motion layered on top of the site's own smooth scroller:
-// parallax on portfolio images (inside their clipped frames), the footer wordmark and the hero logo.
+// parallax on the footer wordmark and the client heading (portfolio posters stay at their true size).
 // Reads positions once per frame from the scroll the site already drives, so it never fights it.
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -11,7 +11,6 @@
 
   // [selector, strength in px across one screen height, extra scale]
   var LAYERS = [
-    ['.ix-work-media img', 14, 1.08],        // portfolio images drift inside their frames (8% zoom leaves ~17px each side)
     ['footer .ix-footer-mark', -60, 1],      // footer wordmark moves slower than the page
     ['.ix-clients-head', -18, 1],            // client heading floats slightly against the cards
   ]
@@ -63,6 +62,7 @@
 
   collect()
   setInterval(collect, 1500) // pages are swapped in without a reload
+  window.addEventListener('ix:pageadded', collect)
   requestAnimationFrame(frame)
 })()
 

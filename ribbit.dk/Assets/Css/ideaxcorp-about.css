@@ -1,0 +1,162 @@
+/* About page, editorial redesign (loaded on /about/ only). Same content and brand tokens as the rest of the
+   site (ideaxcorp-pages.css): oversized centred hero with an oval photo, an indented editorial story,
+   an asymmetric photo gallery on ink, open statements and staggered principles. Motion: the site's own
+   scroll reveals plus a light parallax in ideaxcorp-about.js. */
+
+/* ---------- hero: centred oversized title, oval photo, facts ---------- */
+.m.ixp.ixa-hero { background: #FFF; padding-top: 0; padding-bottom: clamp(64px, 7vw, 120px); }
+/* the first screen is only the label and headline, centred; the team photo, intro and facts are below the
+   fold and rise in with the scroll reveals as you move on */
+.ixa-hero > .ixp-wrap:first-child {
+  box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 40px 0 56px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ixa-hero > .ixp-wrap:first-child .ixp-h1 { margin: 0; }
+.ixa-hero .ixp-eyebrow { margin-left: auto; margin-right: auto; }
+.ixa-hero .ixp-h1 {
+  max-width: 11ch; margin: 0 auto; text-align: center; text-wrap: balance;
+  font-size: var(--type-hero); line-height: .92; /* same size as the home page's section headlines */
+}
+/* the team photo, whole: a rounded frame in the photo's own proportions (nothing cropped), on a tilted
+   brand-purple card, with the creator peeking over the top edge */
+.ixa-oval { position: relative; width: min(1180px, calc(100% - var(--gutter) * 2)); margin: 0 auto; }
+.ixa-oval::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; border-radius: 36px; background: var(--accent);
+  transform: rotate(-3deg) translate(-1.5%, 3%); box-shadow: 0 30px 80px rgba(151, 0, 255, .25);
+}
+.ixa-oval-mask {
+  position: relative; z-index: 1; display: block; aspect-ratio: 16 / 9; /* shorter than the photo: a little of the top and bottom is trimmed */ overflow: hidden; border-radius: 36px; background: var(--ink);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .08), 0 24px 60px rgba(23, 10, 40, .18); outline: 6px solid #FFF; outline-offset: -1px;
+}
+.ixa-oval-mask img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; transition: scale 1.2s var(--ease); }
+@media (hover: hover) { .ixa-oval:hover .ixa-oval-mask img { scale: 1.02; } }
+.ixa-oval-char {
+  position: absolute; z-index: 2; right: 5%; top: 0; translate: 0 -72%; width: clamp(110px, 12vw, 210px); height: auto; pointer-events: none;
+  filter: drop-shadow(0 16px 24px rgba(23, 10, 40, .18)); animation: ixa-bob 5s ease-in-out infinite;
+}
+@keyframes ixa-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+.ixa-hero .ixp-hero-meta { border-top: 0; padding-top: 0; margin-top: clamp(44px, 5vw, 84px); }
+.ixa-hero .ixp-hero-meta .ixp-lead { color: var(--text); }
+.ixa-hero .ixp-facts div { border-left-width: 2px; }
+
+/* ---------- who we are: editorial, first line indented, text in offset columns ---------- */
+.ixa-story { position: relative; }
+.ixa-story .ixp-h1 { max-width: none; font-size: var(--type-hero); line-height: .95; text-indent: 18%; }
+.ixa-story .ixp-h1 .w, .ixa-story .ixp-h1 em { text-indent: 0; } /* only the line is indented, not each animated word */
+.ixa-story-text { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); margin-top: clamp(44px, 5vw, 88px); }
+.ixa-story-text p { margin: 0; line-height: 1.6; }
+.ixa-story-text p:first-child { grid-column: 3 / span 4; font-size: clamp(1.8rem, 1.35vw, 2.1rem); line-height: 1.5; color: var(--text); }
+.ixa-story-text p:last-child { grid-column: 8 / span 4; margin-top: clamp(48px, 7vw, 140px); color: var(--muted); }
+.ixa-story-char {
+  position: absolute; left: var(--gutter); bottom: -8px; width: clamp(120px, 12vw, 200px); height: auto; pointer-events: none;
+  filter: drop-shadow(0 16px 24px rgba(23, 10, 40, .16)); animation: ixa-bob 6s ease-in-out infinite;
+}
+
+/* ---------- gallery: a compact bento grid on white ---------- */
+.m.ixp.ixa-gallery { padding-top: clamp(56px, 6vw, 100px); padding-bottom: clamp(56px, 6vw, 100px); }
+.ixa-gallery .ixp-wrap { max-width: 1240px; }
+.ixa-bento {
+  position: relative; display: grid; gap: 16px;
+  grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: repeat(2, clamp(170px, 17vw, 260px));
+}
+.ixa-g-1 { grid-column: 1; grid-row: 1 / span 2; }
+.ixa-g-2 { grid-column: 2; grid-row: 1 / span 2; }
+.ixa-g-3 { grid-column: 3; grid-row: 1; }
+.ixa-g-4 { grid-column: 3; grid-row: 2; }
+.ixa-g {
+  position: relative; margin: 0; overflow: hidden; border-radius: 24px; background: #F5EEFF; isolation: isolate;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .05), 0 14px 32px rgba(23, 10, 40, .08), 0 36px 72px rgba(23, 10, 40, .07);
+  transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+}
+.ixa-g::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(23, 10, 40, .06); pointer-events: none; }
+.ixa-g img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale .9s var(--ease); }
+@media (hover: hover) {
+  .ixa-g:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 20px 44px rgba(23, 10, 40, .12), 0 48px 96px rgba(151, 0, 255, .1); }
+  .ixa-g:hover img { scale: 1.04; }
+}
+/* the badge sits where the first two images meet, overlapping both */
+.ixa-g-badge {
+  position: absolute; z-index: 2; left: calc((100% - 32px) * 1.5 / 3.5 + 8px); top: 50%; translate: -50% -50%; /* on the gap after the first column */
+  display: grid; place-items: center; width: clamp(112px, 10.5vw, 160px); aspect-ratio: 1; border-radius: 50%; text-align: center;
+  background: var(--accent); color: #FFF; font-size: 1.3rem; font-weight: 600; line-height: 1.3; letter-spacing: .02em;
+  outline: 6px solid #FFF; box-shadow: 0 20px 50px rgba(151, 0, 255, .35);
+}
+.ixa-g-badge b { display: block; font-family: var(--font-display); font-size: clamp(3.4rem, 3.4vw, 5.2rem); font-weight: 600; line-height: .95; letter-spacing: -.03em; }
+
+/* ---------- vision & mission: open statements, the second set lower ---------- */
+.ixa-vm .ixp-grid.cols-2 { align-items: start; }
+.ixa-vm .ixp-statement {
+  padding: 4px 0 4px clamp(24px, 3vw, 48px); border: 0; border-left: 1px solid #E7E2EE; border-radius: 0; background: none;
+}
+.ixa-vm .ixp-statement p:not(.ixp-eyebrow) { font-size: clamp(2.4rem, 2.1vw, 3.2rem); line-height: 1.2; } /* = the home quote size */
+.ixa-vm .ixp-statement + .ixp-statement { margin-top: clamp(48px, 7vw, 120px); }
+
+/* ---------- why choose: open, staggered, big outlined numbers ---------- */
+.ixa-why .ixp-grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 96px); }
+.ixa-why .ixp-tile {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px clamp(20px, 2.4vw, 36px); align-items: start;
+  padding: 34px 0 52px; border: 0; border-top: 1px solid rgba(23, 10, 40, .14); border-radius: 0; background: none; box-shadow: none;
+}
+.ixa-why .ixp-tile:nth-child(even) { margin-top: clamp(40px, 6vw, 110px); }
+.ixa-why .ixp-tile .ixp-num {
+  grid-row: span 2; margin: 0; font-family: var(--font-display); font-size: clamp(6rem, 6.5vw, 10rem); font-weight: 600; line-height: .8;
+  letter-spacing: -.04em; color: transparent; -webkit-text-stroke: 1.5px var(--accent); transition: color .4s var(--ease);
+}
+.ixa-why .ixp-tile .ixp-h3 { margin: 6px 0 0; }
+.ixa-why .ixp-tile p { margin: 0; max-width: 34ch; }
+@media (hover: hover) {
+  .ixa-why .ixp-tile:hover { transform: none; box-shadow: none; }
+  .ixa-why .ixp-tile:hover .ixp-num { color: var(--accent); }
+}
+
+/* ---------- testimonials: the middle story sits lower ---------- */
+.ixa-reviews .ixp-grid.cols-3 { align-items: start; }
+.ixa-reviews .ixp-grid.cols-3 > :nth-child(2) { margin-top: clamp(32px, 4vw, 72px); }
+
+/* the photo rises from further down and settles more slowly than the other reveals */
+.ixp-js .ixa-oval[data-reveal] { transform: translateY(90px) scale(.96); }
+.ixp-js .ixa-oval[data-reveal].is-in { transform: none; transition: opacity 1s ease-out, transform 1.4s cubic-bezier(.16, 1, .3, 1); }
+
+/* ---------- tablets and phones ---------- */
+@media all and (max-width: 767.5px) {
+  /* two columns: the office photo across the top, then poster beside the two smaller images */
+  .ixa-bento { grid-template-columns: 1fr 1fr; grid-template-rows: clamp(180px, 46vw, 300px) repeat(2, clamp(130px, 34vw, 220px)); gap: 12px; }
+  .ixa-g-1 { grid-column: 1 / -1; grid-row: 1; }
+  .ixa-g-2 { grid-column: 1; grid-row: 2 / span 2; }
+  .ixa-g-3 { grid-column: 2; grid-row: 2; }
+  .ixa-g-4 { grid-column: 2; grid-row: 3; }
+  .ixa-g { border-radius: 18px; }
+  .ixa-g-badge { left: 50%; top: calc(clamp(180px, 46vw, 300px) + 6px); width: 100px; font-size: 1.1rem; outline-width: 5px; }
+  .ixa-g-badge b { font-size: 3rem; }
+}
+@media all and (max-width: 1000.5px) {
+  .ixa-story-text { grid-template-columns: minmax(0, 1fr); }
+  .ixa-story-text p:first-child, .ixa-story-text p:last-child { grid-column: 1; }
+  .ixa-story-text p:last-child { margin-top: 0; }
+  .ixa-story-char { position: relative; left: auto; bottom: auto; display: block; margin: 24px 0 0 auto; }
+  .ixa-vm .ixp-statement + .ixp-statement { margin-top: 0; }
+  .ixa-why .ixp-grid.cols-4 { grid-template-columns: minmax(0, 1fr); }
+  .ixa-why .ixp-tile:nth-child(even) { margin-top: 0; }
+  .ixa-reviews .ixp-grid.cols-3 > :nth-child(2) { margin-top: 0; }
+}
+@media all and (max-width: 600px) {
+  .ixa-oval { width: calc(100% - 24px); } /* as wide as a phone allows, so the photo is taller */
+  .ixa-oval::before, .ixa-oval-mask { border-radius: 22px; }
+  .ixa-oval-mask { outline-width: 4px; }
+  .ixa-oval-char { right: 3%; width: 90px; }
+  .ixa-story .ixp-h1 { text-indent: 10%; }
+  .ixa-why .ixp-tile { padding: 26px 0 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixa-oval-char, .ixa-story-char { animation: none; }
+  .ixa-oval-mask img { transition: none; }
+  .ixa-g, .ixa-g img { transition: none; }
+}
+
+/* ---------- the whole About page on white, text sized like the home page ---------- */
+body:has(.ixa-hero) .page > .m.ixp { background: #FFF; }
+/* white sections follow each other: a hairline marks where one ends */
+body:has(.ixa-hero) .page > .m.ixp + .m.ixp:not(.ixa-gallery) { border-top: 1px solid #F1ECF6; }
+#philosophy .ixp-quote-body blockquote { font-size: clamp(2.4rem, 2.1vw, 3.2rem); line-height: 1.2; } /* = the home quote size */
+.ixp-cta .ixp-h1 { font-size: var(--type-hero); }
+.ixa-hero .ixp-facts dt, .ixa-why .ixp-tile .ixp-h3, #approach .ixp-h3 { letter-spacing: -.02em; }

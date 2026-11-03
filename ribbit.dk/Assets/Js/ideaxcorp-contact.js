@@ -69,14 +69,14 @@
     })
   }
 
-  // live "Open now / Closed" badge per office, from its own local time (Mon–Fri, 9:00–18:00)
+  // live "Open now / Closed" badge per office, from its own local time (Mon–Sat, 9:00–18:00)
   function officeStatus() {
     Array.prototype.forEach.call(document.querySelectorAll('.ix-office-status[data-tz]'), function (el) {
       try {
         var parts = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date())
         var get = function (t) { return (parts.find(function (p) { return p.type === t }) || {}).value }
         var day = get('weekday'), mins = +get('hour') * 60 + +get('minute')
-        var open = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(day) >= 0 && mins >= 540 && mins < 1080
+        var open = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day) >= 0 && mins >= 540 && mins < 1080
         el.textContent = open ? 'Open now' : 'Closed now'
         el.classList.toggle('open', open)
       } catch (e) { el.textContent = '' }
@@ -88,4 +88,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
   else init()
   setInterval(init, 1000) // pages are swapped in without a full reload
+  window.addEventListener('ix:pageadded', init) // set up a swapped-in page before it is first drawn
 })()

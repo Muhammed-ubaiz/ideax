@@ -1,0 +1,19 @@
+/* Page transitions (driven by ideaxcorp-transition.js and the site's router). */
+
+/* purple ring just outside the growing ellipse that reveals the next page: a unit circle at the screen's
+   top-left corner, moved and stretched by the clip path's own matrix every frame */
+.ix-pt-ring {
+  display: none; position: fixed; left: -1px; top: -1px; z-index: 1; width: 2px; height: 2px; border-radius: 50%;
+  background: #9700FF; transform-origin: 1px 1px; pointer-events: none; will-change: transform;
+}
+
+/* the page being covered sinks back slightly while the next one is revealed */
+body.ix-transitioning main .page.removing { animation: ix-page-exit .8s cubic-bezier(.65, 0, .35, 1) both; }
+@keyframes ix-page-exit { to { transform: scale(.94); opacity: .55; } }
+
+/* the home hero's fixed mascot layer waits until the new page is fully revealed */
+body.ix-transitioning .ix-hs { opacity: 0 !important; transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.ix-transitioning main .page.removing { animation: none; }
+}

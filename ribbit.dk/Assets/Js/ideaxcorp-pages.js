@@ -136,4 +136,5 @@ document.documentElement.classList.add('ixp-js')
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan)
   else scan()
   setInterval(scan, 800) // pages are swapped in without a reload
+  window.addEventListener('ix:pageadded', scan) // arm a swapped-in page's reveals before it is first drawn
 })()

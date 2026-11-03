@@ -21,12 +21,12 @@ header .menu { display: none !important; }
 }
 /* home: hidden above the screen over the mascot hero; it glides in once ideaxcorp-bar.js marks it
    .ix-bar-past, and leaves a little quicker (eased in) when you scroll back up */
-body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past) {
+body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past), body:has(.ixa-hero) .ix-bar:not(.ix-bar-past) {
   opacity: 0; visibility: hidden; pointer-events: none; translate: -50% calc(-100% - 24px); scale: .96;
   transition: translate .5s cubic-bezier(.5, 0, .75, 0), scale .5s ease, opacity .35s ease .1s, visibility 0s linear .5s;
 }
 @media (prefers-reduced-motion: reduce) {
-  .ix-bar, body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past) { translate: -50% 0; scale: 1; transition: opacity .3s ease, visibility 0s linear .3s; }
+  .ix-bar, body:has(.m.showreelspace) .ix-bar:not(.ix-bar-past), body:has(.ixa-hero) .ix-bar:not(.ix-bar-past) { translate: -50% 0; scale: 1; transition: opacity .3s ease, visibility 0s linear .3s; }
   .ix-bar.ix-bar-past { transition: opacity .3s ease, visibility 0s; }
 }
 

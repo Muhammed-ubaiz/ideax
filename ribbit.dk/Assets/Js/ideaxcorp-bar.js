@@ -23,12 +23,12 @@
       setOpen(b, open)
     } else if (e.target.closest('.ix-bar-panel a') || !b.contains(e.target)) setOpen(b, false)
   })
-  // home page: no bar over the mascot hero. An IntersectionObserver watches the hero's scroll space
+  // home and About pages: no bar over the hero. An IntersectionObserver watches the hero's scroll space
   // (.m.showreelspace); once less of it than the top half of the screen is left, the bar is past the hero
   // and slides in (.ix-bar-past). CSS keeps it hidden on the home page until then, so it never flashes on load.
   var watched = null, io = null
   function watchHero() {
-    var hero = document.querySelector('.m.showreelspace')
+    var hero = document.querySelector('.m.showreelspace, .ixa-hero') // home's mascot hero, or the About hero
     if (hero === watched) return
     if (io) io.disconnect()
     watched = hero
@@ -43,6 +43,7 @@
   }
   watchHero()
   setInterval(watchHero, 1000) // pages are swapped in without a reload: re-attach to the new hero (no layout reads)
+  window.addEventListener('ix:pageadded', watchHero)
 
   document.addEventListener('keydown', function (e) {
     var b = bar()

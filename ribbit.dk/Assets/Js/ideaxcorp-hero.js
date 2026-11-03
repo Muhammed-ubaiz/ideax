@@ -76,7 +76,7 @@
 
     if (stage) {
       var vh = window.innerHeight
-      if (!started && !window._introOn) play()
+      if (!started && !window._introOn && !window._pageTransitioning) play() // after the intro or a page transition
       if (anims.length && window.scrollY > vh * .1) skip()
       var target = Math.min(1, window.scrollY / (vh * .95))
       cur += (target - cur) * (reduced ? 1 : .1) // spring-like follow of the scroll

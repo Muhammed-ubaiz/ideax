@@ -53,4 +53,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
   else init()
   setInterval(init, 1000) // the site swaps page content without a full reload
+  window.addEventListener('ix:pageadded', init)
 })()
