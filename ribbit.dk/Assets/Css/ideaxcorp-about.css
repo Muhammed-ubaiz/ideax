@@ -1,97 +1,170 @@
-/* About page, editorial redesign (loaded on /about/ only). Same content and brand tokens as the rest of the
-   site (ideaxcorp-pages.css): oversized centred hero with an oval photo, an indented editorial story,
-   an asymmetric photo gallery on ink, open statements and staggered principles. Motion: the site's own
-   scroll reveals plus a light parallax in ideaxcorp-about.js. */
+/* About page (loaded on every page; everything is scoped to the About page's own classes). An editorial,
+   white and brand-purple experience: an oversized "We are Ideaxcorp" hero with the mascot carrying the
+   logo, a pinned horizontal story, a kinetic philosophy with interactive pillars, typographic expertise
+   rows, oversized counters, a kinetic CTA and a guide character walking the page. Motion: ideaxcorp-about.js
+   plus the site's own scroll reveals (data-reveal / data-split). Brand tokens come from ideaxcorp-pages.css. */
 
-/* ---------- hero: centred oversized title, oval photo, facts ---------- */
-.m.ixp.ixa-hero { background: #FFF; padding-top: 0; padding-bottom: clamp(64px, 7vw, 120px); }
-/* the first screen is only the label and headline, centred; the team photo, intro and facts are below the
-   fold and rise in with the scroll reveals as you move on */
-.ixa-hero > .ixp-wrap:first-child {
-  box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 40px 0 56px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.ixa-hero > .ixp-wrap:first-child .ixp-h1 { margin: 0; }
-.ixa-hero .ixp-eyebrow { margin-left: auto; margin-right: auto; }
-.ixa-hero .ixp-h1 {
-  max-width: 11ch; margin: 0 auto; text-align: center; text-wrap: balance;
-  font-size: var(--type-hero); line-height: .92; /* same size as the home page's section headlines */
-}
-/* the team photo, whole: a rounded frame in the photo's own proportions (nothing cropped), on a tilted
-   brand-purple card, with the creator peeking over the top edge */
-.ixa-oval { position: relative; width: min(1180px, calc(100% - var(--gutter) * 2)); margin: 0 auto; }
-.ixa-oval::before {
-  content: ''; position: absolute; inset: 0; z-index: 0; border-radius: 36px; background: var(--accent);
-  transform: rotate(-3deg) translate(-1.5%, 3%); box-shadow: 0 30px 80px rgba(151, 0, 255, .25);
-}
-.ixa-oval-mask {
-  position: relative; z-index: 1; display: block; aspect-ratio: 16 / 9; /* shorter than the photo: a little of the top and bottom is trimmed */ overflow: hidden; border-radius: 36px; background: var(--ink);
-  box-shadow: 0 1px 2px rgba(23, 10, 40, .08), 0 24px 60px rgba(23, 10, 40, .18); outline: 6px solid #FFF; outline-offset: -1px;
-}
-.ixa-oval-mask img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; transition: scale 1.2s var(--ease); }
-@media (hover: hover) { .ixa-oval:hover .ixa-oval-mask img { scale: 1.02; } }
-.ixa-oval-char {
-  position: absolute; z-index: 2; right: 5%; top: 0; translate: 0 -72%; width: clamp(110px, 12vw, 210px); height: auto; pointer-events: none;
-  filter: drop-shadow(0 16px 24px rgba(23, 10, 40, .18)); animation: ixa-bob 5s ease-in-out infinite;
-}
-@keyframes ixa-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
-.ixa-hero .ixp-hero-meta { border-top: 0; padding-top: 0; margin-top: clamp(44px, 5vw, 84px); }
-.ixa-hero .ixp-hero-meta .ixp-lead { color: var(--text); }
-.ixa-hero .ixp-facts div { border-left-width: 2px; }
+/* ---------- the whole page on white ---------- */
+body:has(.ixb-hero) .page > .m.ixp { background: #FFF; }
+body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
+.ixb-hero em, .ixb-story em, .ixb-philo em, .ixb-services em, .ixb-cta em { font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent); }
 
-/* ---------- who we are: editorial, first line indented, text in offset columns ---------- */
-.ixa-story { position: relative; }
-.ixa-story .ixp-h1 { max-width: none; font-size: var(--type-hero); line-height: .95; text-indent: 18%; }
-.ixa-story .ixp-h1 .w, .ixa-story .ixp-h1 em { text-indent: 0; } /* only the line is indented, not each animated word */
-.ixa-story-text { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); margin-top: clamp(44px, 5vw, 88px); }
-.ixa-story-text p { margin: 0; line-height: 1.6; }
-.ixa-story-text p:first-child { grid-column: 3 / span 4; font-size: clamp(1.8rem, 1.35vw, 2.1rem); line-height: 1.5; color: var(--text); }
-.ixa-story-text p:last-child { grid-column: 8 / span 4; margin-top: clamp(48px, 7vw, 140px); color: var(--muted); }
-.ixa-story-char {
-  position: absolute; left: var(--gutter); bottom: -8px; width: clamp(120px, 12vw, 200px); height: auto; pointer-events: none;
-  filter: drop-shadow(0 16px 24px rgba(23, 10, 40, .16)); animation: ixa-bob 6s ease-in-out infinite;
+/* ---------- 1. hero ---------- */
+.m.ixp.ixb-hero { position: relative; overflow: hidden; padding-top: 0; padding-bottom: 0; }
+.ixb-hero-glow {
+  position: absolute; right: -10vw; top: 10vh; width: 70vw; height: 80vh; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(151, 0, 255, .14), rgba(201, 162, 255, .08) 45%, rgba(255, 255, 255, 0) 75%);
 }
+.ixb-hero-grid {
+  position: relative; box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 96px 0 72px;
+  display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; justify-items: center; gap: var(--gutter);
+}
+/* the hero is type only, centred */
+.ixb-hero-copy { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ixb-hero-copy .ixp-eyebrow { margin-left: auto; margin-right: auto; }
+.ixb-hero-sub { margin-left: auto; margin-right: auto; }
+.ixb-hero-glow { right: 15vw; }
+.ixb-title {
+  margin: 0; font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
+  font-size: clamp(5.6rem, 9.4vw, 16rem); line-height: .86; letter-spacing: -.045em; color: var(--ink);
+}
+.ixb-line { display: block; white-space: nowrap; }
+.ixb-line-2 em { text-transform: none; font-size: .98em; letter-spacing: -.02em; }
+/* letters rise one after another (split by ideaxcorp-about.js) */
+.ixb-ch { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .04em; margin-bottom: -.04em; }
+.ixb-ch > span { display: inline-block; transform: translateY(110%) rotate(6deg); transform-origin: 0 100%; }
+.ixb-title.is-in .ixb-ch > span { transform: none; transition: transform 1.1s cubic-bezier(.16, 1, .3, 1) calc(var(--i) * 45ms + .15s); }
+.ixb-hero-sub { max-width: 30ch; margin: clamp(28px, 3vw, 48px) 0 0; font-size: clamp(1.9rem, 1.55vw, 2.4rem); line-height: 1.4; color: var(--text); }
 
-/* ---------- gallery: a compact bento grid on white ---------- */
-.m.ixp.ixa-gallery { padding-top: clamp(56px, 6vw, 100px); padding-bottom: clamp(56px, 6vw, 100px); }
-.ixa-gallery .ixp-wrap { max-width: 1240px; }
-.ixa-bento {
-  position: relative; display: grid; gap: 16px;
-  grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: repeat(2, clamp(170px, 17vw, 260px));
+/* sizes for the mascot rig; the logo it holds rises about 0.4 of its height above it */
+.ixb-hero-art { --mh: min(54vh, 500px); --mw: calc(var(--mh) * 311 / 468); --lw: calc(var(--mw) * 1.4); position: relative; height: min(78vh, 720px); }
+.ixb-orbit {
+  position: absolute; left: 50%; top: 52%; width: 92%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  border: 1.5px dashed rgba(151, 0, 255, .28); animation: ixb-spin 40s linear infinite;
 }
-.ixa-g-1 { grid-column: 1; grid-row: 1 / span 2; }
-.ixa-g-2 { grid-column: 2; grid-row: 1 / span 2; }
-.ixa-g-3 { grid-column: 3; grid-row: 1; }
-.ixa-g-4 { grid-column: 3; grid-row: 2; }
-.ixa-g {
-  position: relative; margin: 0; overflow: hidden; border-radius: 24px; background: #F5EEFF; isolation: isolate;
-  box-shadow: 0 1px 2px rgba(23, 10, 40, .05), 0 14px 32px rgba(23, 10, 40, .08), 0 36px 72px rgba(23, 10, 40, .07);
-  transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+.ixb-orbit::after { content: ''; position: absolute; left: 50%; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 6px rgba(151, 0, 255, .15); }
+@keyframes ixb-spin { to { rotate: 360deg; } }
+/* the brand mark as a 3D tile that tilts with the mouse */
+.ixb-tile {
+  position: absolute; right: 2%; bottom: 14%; width: clamp(110px, 10vw, 170px); aspect-ratio: 1; border-radius: 28%; /* low right, clear of the logo */
+  overflow: hidden; box-shadow: 0 30px 60px rgba(151, 0, 255, .3), 0 0 0 6px rgba(255, 255, 255, .9);
+  transform: perspective(700px) rotateX(var(--rx, 12deg)) rotateY(var(--ry, -18deg)) rotateZ(-8deg);
+  transition: transform .5s cubic-bezier(.16, 1, .3, 1); will-change: transform;
 }
-.ixa-g::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(23, 10, 40, .06); pointer-events: none; }
-.ixa-g img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale .9s var(--ease); }
+.ixb-tile img { display: block; width: 100%; height: 100%; object-fit: cover; } /* the brand icon itself is the tile */
+/* the mascot carrying the logo (same pairing as the home hero), rising in */
+.ixb-rig {
+  position: absolute; left: 50%; bottom: 2%; width: var(--mw); height: var(--mh); translate: -42% 0;
+  animation: ixb-rise 1.4s cubic-bezier(.16, 1, .3, 1) .3s both;
+}
+.ixb-rig-mascot { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; filter: drop-shadow(0 24px 30px rgba(23, 10, 40, .18)); }
+.ixb-rig .ixb-rig-logo { /* beats the pages' ".ixp img { max-width: 100% }" */
+  position: absolute; z-index: 2; width: var(--lw); height: auto; max-width: none; left: calc(49.4% - var(--lw) / 2); /* wider than the mascot: no 100% cap */ top: calc(var(--mh) * .05 - var(--lw) * 360 / 798);
+  transform-origin: 50% 96%; animation: ixb-balance 4.4s ease-in-out 1.7s infinite;
+}
+@keyframes ixb-rise { from { opacity: 0; transform: translateY(18%); } to { opacity: 1; transform: none; } }
+@keyframes ixb-balance { 0%, 100% { rotate: -1.6deg; } 50% { rotate: 1.6deg; } }
+.ixb-scrollcue {
+  position: absolute; left: var(--gutter); bottom: 28px; display: flex; align-items: center; gap: 12px; margin: 0;
+  font-size: 1.15rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+}
+.ixb-scrollcue span { position: relative; width: 2px; height: 34px; background: rgba(23, 10, 40, .12); overflow: hidden; }
+.ixb-scrollcue span::after { content: ''; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: var(--accent); animation: ixb-drip 1.8s cubic-bezier(.65, 0, .35, 1) infinite; }
+@keyframes ixb-drip { to { top: 100%; } }
+
+/* ---------- 2. story: pinned, scrolls sideways (ideaxcorp-about.js sets the section height) ---------- */
+.m.ixp.ixb-story { padding: 0; }
+.ixb-story-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; align-items: center; }
+.ixb-story-track { display: flex; align-items: center; gap: clamp(48px, 6vw, 120px); padding: 0 var(--gutter); will-change: transform; }
+.ixb-panel { position: relative; flex: none; }
+.ixb-panel-intro { width: min(62vw, 900px); }
+.ixb-story-h { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(4.6rem, 6.4vw, 10.4rem); line-height: .92; letter-spacing: -.04em; color: var(--ink); }
+.ixb-lead { max-width: 44ch; margin: 28px 0 0; font-size: clamp(1.8rem, 1.35vw, 2.1rem); line-height: 1.5; color: var(--text); }
+.ixb-hint { margin: 40px 0 0; font-size: 1.2rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.ixb-hint span { display: inline-block; animation: ixb-nudge 1.6s ease-in-out infinite; }
+@keyframes ixb-nudge { 50% { transform: translateX(8px); } }
+.ixb-chapter { width: min(78vw, 1080px); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: clamp(32px, 4vw, 72px); }
+.ixb-chapter-flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+.ixb-chapter-flip .ixb-mask { order: 2; }
+.ixb-chapter-n {
+  position: absolute; left: -.04em; top: -.62em; z-index: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(10rem, 14vw, 22rem); line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px rgba(151, 0, 255, .22); pointer-events: none;
+}
+.ixb-chapter-flip .ixb-chapter-n { left: auto; right: 0; }
+.ixb-chapter-h { margin: 0 0 18px; font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 3.3vw, 5.2rem); line-height: 1; letter-spacing: -.03em; color: var(--ink); }
+.ixb-chapter-text { position: relative; z-index: 1; }
+.ixb-chapter-text p:not(.ixp-eyebrow), .ixb-vm p:not(.ixp-eyebrow), .ixb-vm-sub { margin: 0; font-size: clamp(1.6rem, 1.2vw, 1.9rem); line-height: 1.6; color: var(--muted); }
+/* images open from a slit as they arrive */
+.ixb-mask { position: relative; z-index: 1; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 22px; background: var(--tint); clip-path: inset(48% 0 48% 0 round 22px); transition: clip-path 1.3s cubic-bezier(.77, 0, .18, 1); }
+.ixb-mask.is-in { clip-path: inset(0 0 0 0 round 22px); }
+.ixb-mask img { width: 100%; height: 100%; object-fit: cover; scale: 1.25; transition: scale 1.8s cubic-bezier(.16, 1, .3, 1); }
+.ixb-mask.is-in img { scale: 1; }
+.ixb-panel-vm { width: min(86vw, 1180px); }
+.ixb-vm-sub { margin-bottom: 40px; }
+.ixb-vm { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 4vw, 72px); }
+.ixb-vm > div { padding-left: clamp(20px, 2vw, 32px); border-left: 2px solid var(--accent); }
+.ixb-vm p:not(.ixp-eyebrow) { font-family: var(--font-display); font-weight: 500; font-size: clamp(2rem, 1.9vw, 2.9rem); line-height: 1.22; letter-spacing: -.015em; color: var(--ink); }
+
+/* ---------- 3. philosophy ---------- */
+.ixb-big { max-width: none; font-size: var(--type-hero); text-transform: uppercase; }
+.ixb-big em { text-transform: none; }
+.ixb-philo-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 96px); align-items: center; margin-top: clamp(48px, 5vw, 88px); }
+.ixb-founder { margin: 0; }
+.ixb-founder-img { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 26px; background: var(--ink); rotate: -2deg; box-shadow: 0 30px 70px rgba(23, 10, 40, .16); }
+.ixb-founder-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; transition: scale 1s cubic-bezier(.16, 1, .3, 1); }
+@media (hover: hover) { .ixb-founder:hover .ixb-founder-img img { scale: 1.04; } }
+.ixb-founder figcaption { margin-top: 18px; font-size: 1.35rem; color: var(--muted); }
+.ixb-founder figcaption b { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--ink); }
+.ixb-philo-h { margin: 0 0 22px; font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 3vw, 4.4rem); line-height: 1; letter-spacing: -.03em; color: var(--ink); }
+.ixb-philo-text blockquote { position: relative; margin: 0 0 28px; padding-left: 28px; font-family: var(--font-accent); font-style: italic; font-size: clamp(2.6rem, 2.4vw, 3.6rem); line-height: 1.15; color: var(--ink); border-left: 2px solid var(--accent); }
+.ixb-philo-text p { margin: 0 0 14px; max-width: 58ch; color: var(--muted); }
+/* four pillars: one row of words; the hovered one widens and draws its icon */
+.ixb-pillars { list-style: none; margin: clamp(64px, 7vw, 120px) 0 0; padding: 0; display: flex; gap: 12px; }
+.ixb-pillar {
+  position: relative; flex: 1 1 0; min-width: 0; padding: 28px 26px 30px; border-top: 2px solid var(--ink); cursor: default; outline: none;
+  transition: flex-grow .7s cubic-bezier(.16, 1, .3, 1), background-color .4s ease;
+}
+.ixb-pillar:hover, .ixb-pillar:focus-visible { flex-grow: 1.9; background: #F7F2FE; border-top-color: var(--accent); }
+.ixb-pillar-icon { display: block; width: 52px; height: 52px; color: var(--accent); }
+.ixb-pillar-icon svg { width: 100%; height: 100%; overflow: visible; }
+.ixb-draw { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 160; stroke-dashoffset: 0; }
+.ixb-pillar:hover .ixb-draw, .ixb-pillar:focus-visible .ixb-draw { animation: ixb-draw 1.2s cubic-bezier(.65, 0, .35, 1); }
+@keyframes ixb-draw { from { stroke-dashoffset: 160; } to { stroke-dashoffset: 0; } }
+.ixb-pillar-n { position: absolute; right: 22px; top: 26px; font-size: 1.2rem; font-weight: 700; letter-spacing: .14em; color: var(--muted); }
+.ixb-pillar-t { margin: 22px 0 10px; font-family: var(--font-display); font-weight: 600; font-size: clamp(2.6rem, 2.3vw, 3.6rem); letter-spacing: -.03em; line-height: 1; color: var(--ink); transition: color .3s ease; }
+.ixb-pillar:hover .ixb-pillar-t, .ixb-pillar:focus-visible .ixb-pillar-t { color: var(--accent); }
+.ixb-pillar p { margin: 0; max-width: 34ch; color: var(--muted); }
+
+/* ---------- 4. expertise: typographic rows ---------- */
+.ixb-svc-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: end; gap: var(--gutter); margin-bottom: clamp(36px, 4vw, 64px); }
+.ixb-svc-head .ixb-lead { margin: 0; }
+.ixb-svc-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(23, 10, 40, .14); }
+.ixb-svc {
+  position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr) minmax(0, 30ch) 48px; align-items: center; gap: 24px;
+  padding: clamp(20px, 2.2vw, 34px) 8px; border-bottom: 1px solid rgba(23, 10, 40, .14); color: var(--ink); text-decoration: none; isolation: isolate;
+}
+.ixb-svc::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #F7F2FE; transform: scaleY(0); transform-origin: 50% 100%; transition: transform .55s cubic-bezier(.16, 1, .3, 1); }
+.ixb-svc-n { font-size: 1.3rem; font-weight: 700; letter-spacing: .12em; color: var(--muted); }
+.ixb-svc-name { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 4.4vw, 7rem); line-height: 1; letter-spacing: -.035em; transition: transform .6s cubic-bezier(.16, 1, .3, 1), color .3s ease; }
+.ixb-svc-desc { font-size: 1.5rem; line-height: 1.5; color: var(--muted); opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .5s cubic-bezier(.16, 1, .3, 1); }
+.ixb-svc-go { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(23, 10, 40, .2); transition: background-color .3s ease, color .3s ease, border-color .3s ease, rotate .5s cubic-bezier(.16, 1, .3, 1); }
+.ixb-svc-go svg { width: 20px; height: 20px; }
+/* the service's image floats beside the cursor (positioned by ideaxcorp-about.js) */
+.ixb-svc-img {
+  position: absolute; left: 0; top: 0; z-index: 2; width: clamp(200px, 18vw, 300px); aspect-ratio: 4 / 3; object-fit: cover; border-radius: 18px; pointer-events: none;
+  box-shadow: 0 30px 60px rgba(23, 10, 40, .22); opacity: 0; scale: .6; rotate: -6deg; transition: opacity .3s ease, scale .5s cubic-bezier(.34, 1.56, .64, 1), rotate .6s ease;
+}
 @media (hover: hover) {
-  .ixa-g:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 20px 44px rgba(23, 10, 40, .12), 0 48px 96px rgba(151, 0, 255, .1); }
-  .ixa-g:hover img { scale: 1.04; }
+  .ixb-svc:hover::before { transform: scaleY(1); }
+  .ixb-svc:hover .ixb-svc-name { transform: translateX(18px); color: var(--accent); }
+  .ixb-svc:hover .ixb-svc-desc { opacity: 1; transform: none; }
+  .ixb-svc:hover .ixb-svc-go { background: var(--accent); border-color: var(--accent); color: #FFF; rotate: 45deg; }
+  .ixb-svc:hover .ixb-svc-img { opacity: 1; scale: 1; rotate: 4deg; }
 }
-/* the badge sits where the first two images meet, overlapping both */
-.ixa-g-badge {
-  position: absolute; z-index: 2; left: calc((100% - 32px) * 1.5 / 3.5 + 8px); top: 50%; translate: -50% -50%; /* on the gap after the first column */
-  display: grid; place-items: center; width: clamp(112px, 10.5vw, 160px); aspect-ratio: 1; border-radius: 50%; text-align: center;
-  background: var(--accent); color: #FFF; font-size: 1.3rem; font-weight: 600; line-height: 1.3; letter-spacing: .02em;
-  outline: 6px solid #FFF; box-shadow: 0 20px 50px rgba(151, 0, 255, .35);
-}
-.ixa-g-badge b { display: block; font-family: var(--font-display); font-size: clamp(3.4rem, 3.4vw, 5.2rem); font-weight: 600; line-height: .95; letter-spacing: -.03em; }
+.ixb-svc:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.ixb-svc:focus-visible .ixb-svc-desc { opacity: 1; transform: none; }
 
-/* ---------- vision & mission: open statements, the second set lower ---------- */
-.ixa-vm .ixp-grid.cols-2 { align-items: start; }
-.ixa-vm .ixp-statement {
-  padding: 4px 0 4px clamp(24px, 3vw, 48px); border: 0; border-left: 1px solid #E7E2EE; border-radius: 0; background: none;
-}
-.ixa-vm .ixp-statement p:not(.ixp-eyebrow) { font-size: clamp(2.4rem, 2.1vw, 3.2rem); line-height: 1.2; } /* = the home quote size */
-.ixa-vm .ixp-statement + .ixp-statement { margin-top: clamp(48px, 7vw, 120px); }
-
-/* ---------- why choose: open, staggered, big outlined numbers ---------- */
+/* ---------- 5. why choose (kept): open, staggered, outlined numbers ---------- */
 .ixa-why .ixp-grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 96px); }
 .ixa-why .ixp-tile {
   display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px clamp(20px, 2.4vw, 36px); align-items: start;
@@ -109,54 +182,85 @@
   .ixa-why .ixp-tile:hover .ixp-num { color: var(--accent); }
 }
 
-/* ---------- testimonials: the middle story sits lower ---------- */
+/* ---------- 6. numbers: oversized, counting up ---------- */
+.ixb-stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gutter); margin: 0; }
+.ixb-stat { padding-top: 22px; border-top: 2px solid var(--ink); }
+.ixb-stat:nth-child(even) { margin-top: clamp(32px, 4vw, 72px); }
+.ixb-stat dt { font-family: var(--font-display); font-weight: 600; font-size: clamp(5rem, 6.2vw, 10rem); line-height: .9; letter-spacing: -.045em; color: var(--ink); white-space: nowrap; }
+.ixb-stat dt small { font-size: .38em; letter-spacing: -.02em; vertical-align: baseline; color: var(--ink); } /* the unit stays beside the big number */
+.ixb-stat dt span { color: var(--accent); }
+.ixb-stat dd { margin: 14px 0 0; max-width: 24ch; font-size: 1.5rem; line-height: 1.45; color: var(--muted); }
+
+/* ---------- 7. testimonials (kept): the middle story sits lower ---------- */
 .ixa-reviews .ixp-grid.cols-3 { align-items: start; }
 .ixa-reviews .ixp-grid.cols-3 > :nth-child(2) { margin-top: clamp(32px, 4vw, 72px); }
 
-/* the photo rises from further down and settles more slowly than the other reveals */
-.ixp-js .ixa-oval[data-reveal] { transform: translateY(90px) scale(.96); }
-.ixp-js .ixa-oval[data-reveal].is-in { transform: none; transition: opacity 1s ease-out, transform 1.4s cubic-bezier(.16, 1, .3, 1); }
+/* ---------- 8. final CTA: kinetic words behind ---------- */
+.m.ixp.ixb-cta { position: relative; overflow: hidden; text-align: center; }
+.ixb-cta-bg { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 2vw; pointer-events: none; }
+.ixb-kin { display: flex; width: max-content; margin: 0; white-space: nowrap; animation: ixb-kin 38s linear infinite; }
+.ixb-kin span { padding-right: .4em; font-family: var(--font-display); font-weight: 600; font-size: clamp(7rem, 11vw, 19rem); line-height: 1; letter-spacing: -.04em; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.5px rgba(151, 0, 255, .13); }
+.ixb-kin-rev { animation-direction: reverse; animation-duration: 46s; }
+@keyframes ixb-kin { to { transform: translateX(-50%); } }
+.ixb-cta .ixp-wrap { position: relative; }
+.ixb-cta .ixb-cta-h { max-width: 12ch; margin: 0 auto; font-size: var(--type-hero); text-transform: uppercase; }
+.ixb-cta .ixb-cta-h em { text-transform: none; }
+.ixb-magnetic { transition: translate .4s cubic-bezier(.16, 1, .3, 1), background-color .25s ease, color .25s ease, border-color .25s ease; }
+
+/* ---------- guide character (ideaxcorp-about.js): walks along the bottom as you scroll ---------- */
+.ixb-guide { position: fixed; left: 0; bottom: 6px; z-index: 40; width: 96px; height: 96px; pointer-events: none; opacity: 0; transition: opacity .5s ease; will-change: translate; }
+.ixb-guide.on { opacity: 1; }
+.ixb-guide img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 10px 12px rgba(23, 10, 40, .18)); }
+.ixb-guide.left img { scale: -1 1; }
+.ixb-guide-say {
+  position: absolute; left: 50%; bottom: calc(100% + 2px); translate: -50% 0; padding: 7px 12px; border-radius: 12px 12px 12px 3px;
+  background: var(--ink, #170A28); color: #FFF; font: 700 1.1rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(23, 10, 40, .2); transition: opacity .3s ease, scale .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ixb-guide-say.pop { animation: ixb-say .5s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes ixb-say { from { scale: .5; opacity: 0; } }
 
 /* ---------- tablets and phones ---------- */
-@media all and (max-width: 767.5px) {
-  /* two columns: the office photo across the top, then poster beside the two smaller images */
-  .ixa-bento { grid-template-columns: 1fr 1fr; grid-template-rows: clamp(180px, 46vw, 300px) repeat(2, clamp(130px, 34vw, 220px)); gap: 12px; }
-  .ixa-g-1 { grid-column: 1 / -1; grid-row: 1; }
-  .ixa-g-2 { grid-column: 1; grid-row: 2 / span 2; }
-  .ixa-g-3 { grid-column: 2; grid-row: 2; }
-  .ixa-g-4 { grid-column: 2; grid-row: 3; }
-  .ixa-g { border-radius: 18px; }
-  .ixa-g-badge { left: 50%; top: calc(clamp(180px, 46vw, 300px) + 6px); width: 100px; font-size: 1.1rem; outline-width: 5px; }
-  .ixa-g-badge b { font-size: 3rem; }
-}
 @media all and (max-width: 1000.5px) {
-  .ixa-story-text { grid-template-columns: minmax(0, 1fr); }
-  .ixa-story-text p:first-child, .ixa-story-text p:last-child { grid-column: 1; }
-  .ixa-story-text p:last-child { margin-top: 0; }
-  .ixa-story-char { position: relative; left: auto; bottom: auto; display: block; margin: 24px 0 0 auto; }
-  .ixa-vm .ixp-statement + .ixp-statement { margin-top: 0; }
+  .ixb-hero-grid { padding: 80px 0 72px; } /* still a full, centred first screen */
+  .ixb-hero-art { --mh: min(36svh, 340px); height: calc(var(--mh) * 1.5); margin-top: 24px; }
+  .ixb-scrollcue { display: none; }
+  /* the story simply stacks: no pinning on touch-sized screens */
+  .ixb-story-pin { position: static; height: auto; overflow: visible; display: block; }
+  .ixb-story-track { flex-direction: column; align-items: stretch; transform: none !important; padding: clamp(64px, 9vw, 110px) var(--gutter); }
+  .ixb-panel, .ixb-panel-intro, .ixb-chapter, .ixb-panel-vm { width: auto; }
+  .ixb-chapter, .ixb-chapter-flip { grid-template-columns: minmax(0, 1fr); }
+  .ixb-chapter-flip .ixb-mask { order: 0; }
+  .ixb-hint { display: none; }
+  .ixb-philo-grid { grid-template-columns: minmax(0, 1fr); }
+  .ixb-founder { width: min(100%, 380px); }
+  .ixb-pillars { flex-direction: column; }
+  .ixb-pillar:hover, .ixb-pillar:focus-visible { flex-grow: 1; }
+  .ixb-svc-head { grid-template-columns: minmax(0, 1fr); }
+  .ixb-svc { grid-template-columns: 44px minmax(0, 1fr) 40px; }
+  .ixb-svc-desc { grid-column: 2 / -1; opacity: 1; transform: none; }
+  .ixb-svc-go { width: 40px; height: 40px; grid-row: 1; grid-column: 3; }
+  .ixb-svc-img { display: none; }
   .ixa-why .ixp-grid.cols-4 { grid-template-columns: minmax(0, 1fr); }
   .ixa-why .ixp-tile:nth-child(even) { margin-top: 0; }
+  .ixb-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 40px; }
+  .ixb-stat:nth-child(even) { margin-top: 0; }
   .ixa-reviews .ixp-grid.cols-3 > :nth-child(2) { margin-top: 0; }
+  .ixb-vm { grid-template-columns: minmax(0, 1fr); }
+  .ixb-guide { width: 70px; height: 70px; }
 }
 @media all and (max-width: 600px) {
-  .ixa-oval { width: calc(100% - 24px); } /* as wide as a phone allows, so the photo is taller */
-  .ixa-oval::before, .ixa-oval-mask { border-radius: 22px; }
-  .ixa-oval-mask { outline-width: 4px; }
-  .ixa-oval-char { right: 3%; width: 90px; }
-  .ixa-story .ixp-h1 { text-indent: 10%; }
-  .ixa-why .ixp-tile { padding: 26px 0 34px; }
+  .ixb-title { font-size: clamp(4.8rem, 15vw, 7rem); }
+  .ixb-line { white-space: normal; }
+  .ixb-hero-art { --mh: min(32svh, 270px); }
+  .ixb-tile { width: 90px; }
+  .ixb-chapter-n { font-size: 9rem; }
+  .ixb-svc-name { font-size: clamp(2.6rem, 8vw, 3.4rem); }
+  .ixb-stats-grid { grid-template-columns: minmax(0, 1fr); }
+  .ixb-guide { width: 58px; height: 58px; }
+  .ixb-guide-say { font-size: .95rem; padding: 6px 9px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ixa-oval-char, .ixa-story-char { animation: none; }
-  .ixa-oval-mask img { transition: none; }
-  .ixa-g, .ixa-g img { transition: none; }
+  .ixb-orbit, .ixb-rig, .ixb-rig-logo, .ixb-kin, .ixb-scrollcue span::after, .ixb-hint span { animation: none; }
+  .ixb-ch > span, .ixb-mask, .ixb-mask img { transform: none; clip-path: none; scale: 1; transition: none; }
 }
-
-/* ---------- the whole About page on white, text sized like the home page ---------- */
-body:has(.ixa-hero) .page > .m.ixp { background: #FFF; }
-/* white sections follow each other: a hairline marks where one ends */
-body:has(.ixa-hero) .page > .m.ixp + .m.ixp:not(.ixa-gallery) { border-top: 1px solid #F1ECF6; }
-#philosophy .ixp-quote-body blockquote { font-size: clamp(2.4rem, 2.1vw, 3.2rem); line-height: 1.2; } /* = the home quote size */
-.ixp-cta .ixp-h1 { font-size: var(--type-hero); }
-.ixa-hero .ixp-facts dt, .ixa-why .ixp-tile .ixp-h3, #approach .ixp-h3 { letter-spacing: -.02em; }

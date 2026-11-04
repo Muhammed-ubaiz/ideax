@@ -20,15 +20,15 @@
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-contact.css?v=3">
 	<script src="/Assets/Js/ideaxcorp-contact.js?v=t1" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-motion.css?v=2">
-	<script src="/Assets/Js/ideaxcorp-motion.js?v=t1" defer></script>
+	<script src="/Assets/Js/ideaxcorp-motion.js?v=t5" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-pages.css?v=20">
-	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-about.css?v=11">
-	<script src="/Assets/Js/ideaxcorp-about.js?v=t1" defer></script>
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-about.css?v=26">
+	<script src="/Assets/Js/ideaxcorp-about.js?v=20" defer></script>
 	<script src="/Assets/Js/ideaxcorp-pages.js?v=t1" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-work.css?v=4_short">
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-clients.css?v=5_nowalk">
 	<script src="/Assets/Js/ideaxcorp-work.js?v=t1" defer></script>
-	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-reel.css?v=27_mhero">
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-reel.css?v=31_restored">
 	<meta name="twitter:image" content="../images.prismic.io/ribbit/aK1hXGGNHVfTOThw_ribbit_share24a39.png?auto=format,compress&amp;rect=0,0,2401,1261&amp;w=1200&amp;h=630">
 	<meta property="og:image" content="../images.prismic.io/ribbit/aK1hXGGNHVfTOThw_ribbit_share24a39.png?auto=format,compress&amp;rect=0,0,2401,1261&amp;w=1200&amp;h=630">
 	<link rel="image_src" type="image/jpeg" href="../images.prismic.io/ribbit/aK1hXGGNHVfTOThw_ribbit_share24a39.png?auto=format,compress&amp;rect=0,0,2401,1261&amp;w=1200&amp;h=630">
@@ -50,12 +50,16 @@
 </script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-mobile.css?v=6">
 	<script src="/Assets/Js/ideaxcorp-mobile.js?v=t1" defer></script>
-	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-hero.css?v=14">
-	<script src="/Assets/Js/ideaxcorp-hero.js?v=14" defer></script>
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-hero.css?v=22">
+	<script src="/Assets/Js/ideaxcorp-hero.js?v=22" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-bar.css?v=12">
 	<script src="/Assets/Js/ideaxcorp-bar.js?v=t2" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-transition.css?v=1">
 	<script src="/Assets/Js/ideaxcorp-transition.js?v=3" defer></script>
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-cursor.css?v=13">
+	<script src="/Assets/Js/ideaxcorp-cursor.js?v=12" defer></script>
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-journey.css?v=20">
+	<script src="/Assets/Js/ideaxcorp-journey.js?v=19" defer></script>
 </head>
 <body>
 <header>
@@ -142,23 +146,8 @@
 				</div>
 			</div>
 
-			<!-- Showreel and loop scaled by scroll -->
-			<div class="m showreel">
-				<div class="figure">
-					<div class="animations">
-						<div class="png-sequence" data-type="push" data-path="/Assets/Grx/sage_push/" data-length="174" data-speed="1" data-xadjust="2" data-yadjust="6" data-scale="1,1,0,0" data-rel="490,414" data-mobileoptimize="true"></div>
-						<div class="png-sequence" data-type="pull" data-path="/Assets/Grx/sage_pull/" data-length="25" data-speed="1.75" data-loop="false" data-xadjust="0" data-yadjust="-2" data-scale=".75,.75,100,50" data-rel="306,325" data-mobileoptimize="true"></div>
-					</div>
-				</div>
-				<div class="loop">
-					<div class="ix-reel" role="img" aria-label="Ideaxcorp"><img class="ix-logo ix-on-light" src="/Assets/Grx/ideaxcorp_logo_dark.webp" width="798" height="374" alt=""><img class="ix-logo ix-on-dark" src="/Assets/Grx/ideaxcorp_logo_light.webp" width="798" height="374" alt=""></div>
-					<button class="play-btn ix-hidden" tabindex="-1" aria-hidden="true" data-src=""><span class="label">Play</span><span class="icon"></span></button>
-				</div>
-			</div>
-			<div class="m showreelspace"></div>
-
-			<!-- Figures pushing around titles -->
-			<div class="m push-titles">
+			<!-- Home: figures push the titles in (the site's PushTitles), then the explorer walks the page with the scroll (ideaxcorp-journey.js) -->
+			<div class="m push-titles ixa-hero" data-walk="hero">
 				<div class="ix-pt-pin">
 				<div class="circular-text fade animin" style="--delay:.4s;">
 					<p>Ribbit is a</p>
@@ -198,7 +187,51 @@
 					<div class="svg"><img src="/Assets/Grx/based_in_cph.svg" alt=""></div>
 				</div>
 				</div>
-			</div><section class="m ix-work" id="our-portfolio" data-color="" aria-labelledby="ix-work-heading">
+			</div><section class="m ixp ix-about-home" id="about-us" data-walk="0.06" data-say="Meet Ideaxcorp" data-color="" aria-labelledby="ix-about-home-title">
+				<div class="ixp-wrap">
+					<div class="ix-ab-head">
+						<p class="ixp-eyebrow" data-reveal>About Ideaxcorp</p>
+						<h2 class="ixp-h2" id="ix-about-home-title" data-reveal>Built in the UAE, <em>grown across five markets.</em></h2>
+					</div>
+					<div class="ix-ab-grid">
+						<figure class="ix-ab-photo" data-reveal="zoom">
+							<img src="/Assets/Grx/site/team/founder-jaseel-hd.webp" width="1000" height="1400" alt="Jaseel Jalal, CEO and Founder of Ideaxcorp" loading="lazy" decoding="async">
+							<figcaption><b>Jaseel Jalal</b><span>CEO &amp; Founder</span></figcaption>
+						</figure>
+						<div class="ix-ab-body">
+							<div class="ix-ab-text" data-reveal>
+								<p>Ideax Corp began as a digital marketing and e-commerce agency in the UAE and expanded across the GCC (Qatar, KSA and Oman) and India (Kerala).</p>
+								<p>We give brands a structured system, whether they are starting from scratch or repositioning an established business, built on data-driven, measurable foundations rather than guesswork.</p>
+							</div>
+							<blockquote class="ix-ab-quote" data-reveal>
+								<p>Marketing should be guided by insight and real data, not guesswork.</p>
+								<cite>Jaseel Jalal, CEO &amp; Founder</cite>
+							</blockquote>
+							<dl class="ix-ab-facts" data-reveal>
+								<div><dt>2 offices</dt><dd>Deira, Dubai and Thrissur, Kerala</dd></div>
+								<div><dt>5 markets</dt><dd>UAE, Qatar, KSA, Oman and Kerala</dd></div>
+							</dl>
+							<div class="ixp-btns" data-reveal><a class="ixp-btn" href="/about/">More about us</a></div>
+						</div>
+					</div>
+				</div>
+			</section><section class="m ixp ixj-services" id="services" data-color="" data-walk="0.88" data-say="Our expertise" aria-labelledby="ixj-svc-title">
+				<div class="ixp-wrap">
+					<div class="ixb-svc-head">
+						<div><p class="ixp-eyebrow" data-reveal>What we do</p><h2 class="ixp-h1 ixj-h" id="ixj-svc-title" data-split>Our <em>expertise.</em></h2></div>
+						<p class="ixb-lead" data-reveal>Beyond our services, we build, support and scale your digital journey.</p>
+					</div>
+					<ol class="ixb-svc-list ixj-svc-list">
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg></span><span class="ixb-svc-name">Creative Branding</span><span class="ixb-svc-desc">Clear, consistent and memorable brand identity design that builds trust and customer connection.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/branding.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M9.5 10l-2 1.8 2 1.8M14.5 10l2 1.8-2 1.8M3 21h18"/></svg></span><span class="ixb-svc-name">Website Development &amp; UI/UX</span><span class="ixb-svc-desc">Clean, responsive, high-speed websites designed to convert visitors into paying clients.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/website.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg></span><span class="ixb-svc-name">Social Media Management</span><span class="ixb-svc-desc">Consistent, engaging and relevant content creation and community management across the platforms your customers use every day.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/smm.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M7 15l4-4 3 3 5-6"/><path d="M15 8h4v4"/></svg></span><span class="ixb-svc-name">Paid Advertisement</span><span class="ixb-svc-desc">Target-driven, high-ROI ad campaigns across Meta, Google and other ad networks, with measurable tracking.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/performance.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5M10.5 8v5"/></svg></span><span class="ixb-svc-name">Search Engine Optimization</span><span class="ixb-svc-desc">Long-term organic visibility, local search ranking and targeted buyer-intent traffic.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/seo.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></svg></span><span class="ixb-svc-name">Google Business Profile</span><span class="ixb-svc-desc">Local map presence and profile management that turns local Google searches into customers.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/gmb.webp" alt="" loading="lazy" decoding="async"></a></li>
+						<li><a class="ixb-svc ixj-svc" href="/services/" data-reveal><span class="ixj-svc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2l2 10h10l2-7H7"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="16.5" cy="19" r="1.4"/></svg></span><span class="ixb-svc-name">E-commerce &amp; Marketplaces</span><span class="ixb-svc-desc">Complete online store setup, product catalogue listing and marketplace optimisation (Amazon, Noon, Shopify and more) to drive sales.</span><span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><img class="ixb-svc-img" src="/Assets/Grx/site/services/ecommerce.webp" alt="" loading="lazy" decoding="async"></a></li>
+					</ol>
+				</div>
+			</section><section class="m ix-work" id="our-portfolio" data-walk="0.06" data-say="Our work" data-color="" aria-labelledby="ix-work-heading">
 				<div class="ix-pf-head">
 					<p class="ix-pf-eyebrow">Our Portfolio</p>
 					<h2 class="ix-pf-title" id="ix-work-heading"><span>Exceptional Digital</span> <span>Experiences</span></h2>
@@ -259,7 +292,18 @@
 						<span class="ix-work-btn"><span class="ix-work-btn-label">All Projects</span><span class="ix-work-btn-arrow" aria-hidden="true"></span></span>
 					</div>
 				</div>
-			</section><section class="m ix-clients" data-color="" aria-labelledby="ix-clients-heading">
+			</section><section class="m ixp ixj-why" id="why-ideaxcorp" data-color="" data-walk="0.88" data-say="Why us?" aria-labelledby="ixj-why-title">
+				<div class="ixp-wrap">
+					<p class="ixp-eyebrow" data-reveal>Why Ideaxcorp</p>
+					<h2 class="ixj-why-sub" id="ixj-why-title" data-reveal>Marketing guided by insight and real data, not guesswork.</h2>
+					<ul class="ixj-why-list">
+						<li class="ixj-why-item" tabindex="0" data-reveal><span class="ixj-why-n">01</span><span class="ixj-why-big">Creative <em>minds.</em></span><span class="ixj-why-text"><b>Strategy first.</b> Every project starts from your goals, your audience and your competitors.</span></li>
+						<li class="ixj-why-item" tabindex="0" data-reveal><span class="ixj-why-n">02</span><span class="ixj-why-big">Technical <em>excellence.</em></span><span class="ixj-why-text"><b>Full-funnel support.</b> Brand, website, search, social, ads and sales channels work together.</span></li>
+						<li class="ixj-why-item" tabindex="0" data-reveal><span class="ixj-why-n">03</span><span class="ixj-why-big">Real <em>results.</em></span><span class="ixj-why-text"><b>Performance-driven.</b> Every campaign is tracked, tested and tied to a business result.</span></li>
+					</ul>
+					<p class="ixj-why-foot" data-reveal><b>Regional market understanding.</b> We know how customers in the UAE, the GCC and Kerala search and buy.</p>
+				</div>
+			</section><section class="m ix-clients" data-walk="0.06" data-say="Our clients" data-color="" aria-labelledby="ix-clients-heading">
 				<div class="ix-clients-head">
 					<p class="ix-clients-eyebrow">Our Clients</p>
 					<h2 class="ix-clients-title" id="ix-clients-heading">Trusted by startups.<br><span>Built for scale.</span></h2>
@@ -333,35 +377,7 @@
 </div>
 					</li>
 				</ul>
-			</section><section class="m ixp ix-about-home" id="about-us" data-color="" aria-labelledby="ix-about-home-title">
-				<div class="ixp-wrap">
-					<div class="ix-ab-head">
-						<p class="ixp-eyebrow" data-reveal>About Ideaxcorp</p>
-						<h2 class="ixp-h2" id="ix-about-home-title" data-reveal>Built in the UAE, <em>grown across five markets.</em></h2>
-					</div>
-					<div class="ix-ab-grid">
-						<figure class="ix-ab-photo" data-reveal="zoom">
-							<img src="/Assets/Grx/site/team/founder-jaseel-hd.webp" width="1000" height="1400" alt="Jaseel Jalal, CEO and Founder of Ideaxcorp" loading="lazy" decoding="async">
-							<figcaption><b>Jaseel Jalal</b><span>CEO &amp; Founder</span></figcaption>
-						</figure>
-						<div class="ix-ab-body">
-							<div class="ix-ab-text" data-reveal>
-								<p>Ideax Corp began as a digital marketing and e-commerce agency in the UAE and expanded across the GCC (Qatar, KSA and Oman) and India (Kerala).</p>
-								<p>We give brands a structured system, whether they are starting from scratch or repositioning an established business, built on data-driven, measurable foundations rather than guesswork.</p>
-							</div>
-							<blockquote class="ix-ab-quote" data-reveal>
-								<p>Marketing should be guided by insight and real data, not guesswork.</p>
-								<cite>Jaseel Jalal, CEO &amp; Founder</cite>
-							</blockquote>
-							<dl class="ix-ab-facts" data-reveal>
-								<div><dt>2 offices</dt><dd>Deira, Dubai and Thrissur, Kerala</dd></div>
-								<div><dt>5 markets</dt><dd>UAE, Qatar, KSA, Oman and Kerala</dd></div>
-							</dl>
-							<div class="ixp-btns" data-reveal><a class="ixp-btn" href="/about/">More about us</a></div>
-						</div>
-					</div>
-				</div>
-			</section><section class="m ixp ix-blog-home" id="blog" data-color="" aria-labelledby="ix-blog-home-title">
+			</section><section class="m ixp ix-blog-home" id="blog" data-walk="0.88" data-say="Fresh ideas" data-color="" aria-labelledby="ix-blog-home-title">
 				<div class="ixp-wrap">
 					<div class="ix-blog-head">
 						<div class="ix-blog-heading">
@@ -379,7 +395,17 @@
 						<li class="ix-blog-item" data-reveal><article class="ixp-card"><a class="ixp-card-link" href="https://ideaxcorp.com/aeo-geo-seo-for-businesses/" target="_blank" rel="noopener"><span class="ixp-card-media"><img class="ix-blog-blur" src="/Assets/Grx/site/blog/aeo-geo-seo-hd.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><img src="/Assets/Grx/site/blog/aeo-geo-seo-hd.webp" alt="" loading="lazy" decoding="async"></span><span class="ixp-card-body"><span class="ixp-card-meta"><span class="ix-blog-tag">SEO</span><time datetime="2026-08-13">13 Aug 2026</time></span><span class="ixp-card-title">AEO vs GEO vs SEO: What Should Businesses Focus on in 2026?</span><span class="ixp-card-text">What each one means, and where businesses should focus their marketing budget first.</span><span class="ixp-card-more">Read more</span></span></a></article></li>
 					</ul>
 				</div>
-			</section><section class="m ix-contact ix-contact-home" id="contact-us" data-color="" aria-labelledby="ix-contact-home-title">
+			</section><section class="m ixp ixb-cta ixj-cta" data-color="" data-walk="cta" data-say="Click here!" aria-labelledby="ixj-cta-title">
+				<div class="ixb-cta-bg" aria-hidden="true">
+					<p class="ixb-kin"><span>Let’s create what’s next • Let’s create what’s next • Let’s create what’s next • </span><span>Let’s create what’s next • Let’s create what’s next • Let’s create what’s next • </span></p>
+					<p class="ixb-kin ixb-kin-rev"><span>Creative minds • Technical excellence • Real results • </span><span>Creative minds • Technical excellence • Real results • </span></p>
+				</div>
+				<div class="ixp-wrap">
+					<h2 class="ixp-h1 ixb-cta-h" id="ixj-cta-title" data-split>Let’s create <em>what’s next.</em></h2>
+					<p class="ixp-lead" data-reveal>Starting from scratch or repositioning an established business, we’d love to hear what you’re working on.</p>
+					<div class="ixp-btns ixj-cta-btns" data-reveal><a class="ixp-btn ixb-magnetic" href="#contact-us">Get in touch</a><a class="ixp-btn ixp-btn--ghost is-out ixb-magnetic" href="https://wa.me/971567448005" target="_blank" rel="noopener">WhatsApp us</a></div>
+				</div>
+			</section><section class="m ix-contact ix-contact-home" id="contact-us" data-walk="0.06" data-say="Say hello!" data-color="" aria-labelledby="ix-contact-home-title">
 				<div class="ix-contact-grid">
 					<div class="ix-contact-left">
 					<p class="ix-contact-pill">Contact Us</p>
@@ -695,7 +721,7 @@
 	]
 },{"@id":"https://ribbit.dk/#website","@type":"WebSite","url":"https://ribbit.dk/","name":"Ribbit","description":"","inLanguage":"en-US"},{"@type":"WebPage","url": "https://ribbit.dk/","name":"Ribbit","description":"","inLanguage":"en-US"}]}
 </script>
-<script src="/Assets/Js/min9eda.js?v=30_mobile_push"></script>
+<script src="/Assets/Js/min9eda.js?v=52_edges"></script>
 </body>
 
 <!-- Mirrored from https://ribbit.dk/index.html?cache_ by HTTrack Website Copier/3.x [XR&CO], Thu, 29 Oct 2026 08:23:45 GMT -->

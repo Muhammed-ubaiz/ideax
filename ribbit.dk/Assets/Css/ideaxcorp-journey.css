@@ -1,0 +1,103 @@
+/* Home journey (ideaxcorp-journey.js). After the title scene the explorer walks the bottom of the screen with
+   the scroll, stopping in each section. Also: the home services rows (icons), the "Why Ideaxcorp" lines and the CTA's call-out. Loaded on
+   every page; everything is scoped to the home page's own classes. */
+
+/* ---------- the title scene opening the page: a longer pin on desktops and laptops, so the figures can bring
+   the three lines in one after another (min9eda.js, SkewedTitleAnimation) ---------- */
+@media all and (min-width: 768px) {
+  .m.push-titles.ixa-hero:has(.ix-pt-pin) { height: 250vh; height: 250svh; }
+}
+/* depth behind the scene: two soft brand-tint glows and a faint dot grid fading out from the middle */
+.m.push-titles.ixa-hero .ix-pt-pin::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 42% 38% at 82% 18%, rgba(151, 0, 255, .07), rgba(151, 0, 255, 0) 70%),
+    radial-gradient(ellipse 40% 36% at 14% 86%, rgba(151, 0, 255, .06), rgba(151, 0, 255, 0) 70%),
+    radial-gradient(rgba(23, 10, 40, .10) 1px, transparent 1.3px) 0 0 / 30px 30px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, #000 30%, transparent 85%);
+}
+/* the figures stand on something: a soft contact shadow under each pose (hidden with its pose) */
+.m.push-titles.ixa-hero .line .png-sequence::after {
+  content: ''; position: absolute; left: 18%; right: 18%; bottom: -2%; height: 7%; z-index: -1; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(23, 10, 40, .22), rgba(23, 10, 40, 0));
+}
+/* a wordless scroll cue while only the figures are on screen; gone once the scroll starts */
+.m.push-titles.ixa-hero .ix-pt-pin::after {
+  content: ''; position: absolute; left: 50%; bottom: max(28px, 4vh); z-index: 8; width: 24px; height: 38px; margin-left: -12px;
+  box-sizing: border-box; border: 1.5px solid rgba(23, 10, 40, .28); border-radius: 14px; pointer-events: none;
+  background: radial-gradient(circle, #9700FF 2.5px, transparent 3px) 50% 8px / 8px 8px no-repeat;
+  animation: ixj-cue 1.8s cubic-bezier(.65, 0, .35, 1) infinite;
+  transition: opacity .5s ease, translate .5s cubic-bezier(.16, 1, .3, 1);
+}
+.m.push-titles.ixa-hero.ixj-moved .ix-pt-pin::after { opacity: 0; translate: 0 12px; }
+@keyframes ixj-cue { 0% { background-position: 50% 7px; } 55% { background-position: 50% 20px; } 56%, 100% { background-position: 50% 7px; } }
+@media (prefers-reduced-motion: reduce) { .m.push-titles.ixa-hero .ix-pt-pin::after { animation: none; } }
+
+/* ---------- the walking character (one fixed element for the whole page), styled as the About page's guide ---------- */
+.ixj-guide {
+  --g: 104px; /* its height; the explorer_idle frames (345x390) fill their box */
+  position: fixed; left: 0; bottom: 6px; z-index: 40; width: calc(var(--g) * .8846); height: var(--g); pointer-events: none; opacity: 0;
+  transform-origin: 50% 100%; will-change: translate, scale, rotate; /* no fade: it takes over from the hero figure in place */
+}
+.ixj-guide.on { opacity: 1; }
+.ixj-guide img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 10px 12px rgba(23, 10, 40, .18)); }
+.ixj-guide.left img { scale: -1 1; }
+.ixj-say {
+  position: absolute; left: 40%; bottom: calc(100% + 4px); translate: -50% 0; padding: 7px 12px; /* over its head */ border-radius: 12px 12px 12px 3px;
+  background: #170A28; color: #FFF; font: 700 1.1rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(23, 10, 40, .2); opacity: 0; transition: opacity .3s ease;
+}
+.ixj-guide.talk .ixj-say { opacity: 1; }
+.ixj-say.pop { animation: ixj-say .5s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes ixj-say { from { scale: .5; opacity: 0; } }
+
+/* ---------- services rows on the home page: an animated icon leads each row ---------- */
+.ixj-services em { font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent); }
+.ixj-h { max-width: none; font-size: var(--type-hero); text-transform: uppercase; }
+.ixj-h em { text-transform: none; }
+.ixj-svc-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: #F4ECFF; color: var(--accent); transition: background-color .3s ease, color .3s ease, rotate .5s cubic-bezier(.34, 1.56, .64, 1); }
+.ixj-svc-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 90; stroke-dashoffset: 0; }
+@media (hover: hover) {
+  .ixj-svc:hover .ixj-svc-icon { background: var(--accent); color: #FFF; rotate: -8deg; }
+  .ixj-svc:hover .ixj-svc-icon svg { animation: ixj-draw 1s cubic-bezier(.65, 0, .35, 1); }
+}
+@keyframes ixj-draw { from { stroke-dashoffset: 90; } to { stroke-dashoffset: 0; } }
+
+/* ---------- why Ideaxcorp: three oversized lines that open on hover ---------- */
+.ixj-why-sub { max-width: 26ch; margin: 0 0 clamp(36px, 4vw, 64px); font-family: var(--font-accent); font-style: italic; font-weight: 400; font-size: clamp(2.6rem, 2.6vw, 4rem); line-height: 1.15; color: var(--ink, #170A28); }
+.ixj-why-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(23, 10, 40, .14); }
+.ixj-why-item {
+  position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr) minmax(0, 34ch); align-items: center; gap: 24px;
+  padding: clamp(18px, 2vw, 30px) 0; border-bottom: 1px solid rgba(23, 10, 40, .14); outline: none; cursor: default;
+}
+.ixj-why-n { font-size: 1.3rem; font-weight: 700; letter-spacing: .12em; color: rgba(23, 10, 40, .5); }
+.ixj-why-big { font-family: var(--font-display); font-weight: 600; font-size: clamp(4rem, 7vw, 11.6rem); line-height: .95; letter-spacing: -.045em; color: #170A28; transition: transform .7s cubic-bezier(.16, 1, .3, 1); }
+.ixj-why-big em { font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent); }
+.ixj-why-text { font-size: 1.6rem; line-height: 1.5; color: rgba(26, 26, 26, .64); opacity: .35; transition: opacity .4s ease, transform .5s cubic-bezier(.16, 1, .3, 1); }
+.ixj-why-text b { color: #170A28; }
+.ixj-why-item:hover .ixj-why-big, .ixj-why-item:focus-visible .ixj-why-big { transform: translateX(22px); }
+.ixj-why-item:hover .ixj-why-text, .ixj-why-item:focus-visible .ixj-why-text { opacity: 1; transform: translateX(-6px); }
+.ixj-why-foot { max-width: 60ch; margin: 28px 0 0; color: rgba(26, 26, 26, .64); }
+.ixj-why-foot b { color: #170A28; }
+
+.ixj-cta .ixp-lead { margin-left: auto; margin-right: auto; }
+.ixj-cta .ixj-cta-btns { justify-content: center; }
+
+/* ---------- the CTA lights up when the character arrives and points at it ---------- */
+.ixj-cta.ixj-arrived .ixj-cta-btns .ixp-btn:first-child { animation: ixj-pulse 1.6s ease-in-out infinite; }
+@keyframes ixj-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(151, 0, 255, .45); } 50% { box-shadow: 0 0 0 12px rgba(151, 0, 255, 0); } }
+
+/* ---------- tablets and phones ---------- */
+@media all and (max-width: 1000.5px) {
+  .ixj-guide { --g: 80px; }
+  .ixj-why-item { grid-template-columns: 44px minmax(0, 1fr); }
+  .ixj-why-text { grid-column: 2; opacity: 1; }
+}
+@media all and (max-width: 600px) {
+  .ixj-guide { --g: 64px; }
+  .ixj-say { font-size: .95rem; padding: 6px 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixj-cta.ixj-arrived .ixj-cta-btns .ixp-btn:first-child { animation: none; }
+}

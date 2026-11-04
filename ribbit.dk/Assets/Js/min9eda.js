@@ -1717,8 +1717,38 @@ x&&(D.revert(),x.revert(),D=x=null)}}
 function PushTitles(b){function h(b){for(b=0;b<w;b++)q[b].resized()}function g(){try{D=document.fonts.check("24rem FKTEcho")}catch(F){h(null);return}D?h(null):x=setTimeout(g,100)}function k(b){u=_smoothScroller._wsdelta;b||0!=u||(u=.5);for(b=0;b<w;b++)q[b].render(u)}for(var m=b.getElementsByClassName("line"),w=m.length,q=[],z=0;z<w;z++)q.push(new SkewedTitle(z,m[z]));var u=0,x;GLBEvents(window,"resize",h,!0);var D=!0;g();_viewportObserver.observe(b,function(){GLBEvents(window,"scroll",k,!0);k(null)},
 function(){GLBEvents(window,"scroll",k,!1)});this.destroy=function(){GLBEvents(window,"resize",h,!1);GLBEvents(window,"scroll",k,!1);_viewportObserver.unobserve(b);clearTimeout(x);for(var g=0;g<w;g++)q[g].destroy(),q[g]=null}}
 function SkewedTitle(b,h){for(var g=h.getElementsByClassName("animations"),k=g.length,m=[],w=0;w<k;w++)m.push(new SkewedTitleAnimation(w,b,g[w],h));this.resized=function(){for(var b=0;b<k;b++)m[b].resized()};this.render=function(b){if(!_pageTransitioning)for(var g=0;g<k;g++)m[g].render(b)};this.destroy=function(){for(var b=0;b<k;b++)m[b].destroy(),m[b]=null}}
-function SkewedTitleAnimation(b,h,g,k){function m(){S&&S.load()}var w=GLB._reliableSh,q=100,z=100,u=0,x=0,D=0,F=0;k=k.getElementsByClassName("text");var N=k[0],O;1<k.length&&(O=k[1]);var B=N.getElementsByTagName("span"),I=B.length,R=(h+b)%2+1;2==R&&(R=-1);var G=N;1<I&&1==b&&O?G=O.getElementsByTagName("span")[1]:1<I&&(G=B[b]);h=g.getElementsByClassName("png-sequence");O=h.length;var H,S,K,Q=-1==g.className.indexOf("right");for(k=0;k<O;k++){var J=h[k].getAttribute("data-type")||"";"push"==J?H=new PNGSequence(h[k],
-"push"):"pull"==J?S=new PNGSequence(h[k],"pull"):"idle"==J&&(K=new PNGSequence(h[k],"idle"))}S&&S.off();K&&K.off();var U,fa=!1,ta=!1;_viewportObserver.observe(g,function(){fa||(fa=!0,H&&(H.on(),H.load()),U=setTimeout(m,200));ta=!0;K&&K.inView()},function(){ta=!1;K&&K.outView()});this.resized=function(){w=GLB.offsetY(N);q=B[0].offsetWidth;z=B[0].offsetHeight;1<I&&(q=0==b?q+B[1].offsetWidth:B[1].offsetWidth);x=g.offsetWidth};this.render=function(h){var k=GLB._reliableSh/2-(w-GLB._windowScrollY)-.7*
+function SkewedTitleAnimation(b,h,g,k){var ixL=h;function m(){S&&S.load()}var w=GLB._reliableSh,q=100,z=100,u=0,x=0,D=0,F=0;k=k.getElementsByClassName("text");var N=k[0],O;1<k.length&&(O=k[1]);var B=N.getElementsByTagName("span"),I=B.length,R=(h+b)%2+1;2==R&&(R=-1);var G=N;1<I&&1==b&&O?G=O.getElementsByTagName("span")[1]:1<I&&(G=B[b]);h=g.getElementsByClassName("png-sequence");O=h.length;var H,S,K,Q=-1==g.className.indexOf("right");for(k=0;k<O;k++){var J=h[k].getAttribute("data-type")||"";"push"==J?H=new PNGSequence(h[k],
+"push"):"pull"==J?S=new PNGSequence(h[k],"pull"):"idle"==J&&(K=new PNGSequence(h[k],"idle"))}S&&S.off();K&&K.off();var U,fa=!1,ta=!1;_viewportObserver.observe(g,function(){fa||(fa=!0,H&&(window._ixPtHero&&768<=GLB._vw||H.on(),H.load()),U=setTimeout(m,200));ta=!0;K&&K.inView()},function(){ta=!1;K&&K.outView()});this.resized=function(){ixFirst=!0;w=GLB.offsetY(N);q=B[0].offsetWidth;z=B[0].offsetHeight;1<I&&(q=0==b?q+B[1].offsetWidth:B[1].offsetWidth);x=g.offsetWidth};
+// Ideaxcorp: when these titles open the page (window._ixPtHero, set by ideaxcorp-journey.js) on a desktop or
+// laptop, each word starts at the screen edge on its own side, mostly outside it, and its figure brings it in
+// as you scroll: line by line, eased, with the figure's walk frames running on the distance covered and a
+// small lean into the move. Word and figure share one offset, tweened (scrub-like) instead of jumping.
+var ixFirst=!0,ixSy=null,ixLean=null;
+function ixHero(){
+  var vw=GLB._vw,sh=GLB._reliableSh,sec=g.closest(".push-titles"),sy=GLB._windowScrollY-(sec?GLB.offsetY(sec):0);
+  var fwd=null==ixSy||sy>=ixSy;ixSy=sy;
+  // where the word rests (its rect without the current offset), and how far out it starts: past its edge
+  // of the screen with about four fifths of it still showing
+  var cx=gsap.getProperty(G,"x")||0,r=(G==N?B[0]:G).getBoundingClientRect(),rl=r.left-cx,rr=r.right-cx; // a one-word line moves its full-width box: measure the word
+  var far=0<R?rl+.2*r.width:vw-rr+.2*r.width;
+  // the lines take turns: each moves over three quarters of a screen of scroll, the next one starting 0.2 screens later
+  var p=window.matchMedia("(prefers-reduced-motion: reduce)").matches?1:Math.max(0,Math.min(1,(sy-ixL*.2*sh)/(.75*sh))),e=(1-Math.cos(Math.PI*p))/2; // reduced motion: the finished titles
+  var off=-R*far*(1-e),rest=0>=p||1<=p;
+  // figure state: idle while waiting or done, pushing forwards, pulling back when scrolling up. The poses that
+  // should not show are switched off on every update (the site switches the push pose on when it comes into view)
+  if(rest){H&&H.off();S&&S.off();2!=F&&(F=2,K&&(K.load(),K.on()))}
+  else if(fwd||!S){S&&S.off();K&&K.off();0!=F&&(F=0,H&&H.on())}
+  else{H&&H.off();K&&K.off();1!=F&&(F=1,S.on())}
+  var Bp=1-far*e/Math.max(120,1.1*x)%1;
+  // the word leans while it is being moved (smaller than the site's 15deg)
+  u=rest?0:fwd?-8:8;D!=u&&(gsap.killTweensOf(G,"skewX"),0==u?gsap.to(G,.6,{skewX:"0deg",transformOrigin:"0 100%",force3D:!0,ease:"back.out(2)"}):gsap.to(G,.5,{skewX:R*u+"deg",transformOrigin:"0 100%",force3D:!0,ease:"power3.out"}),D=u);
+  var fx=Q?1==b?off+vw/2-q/2:off+vw/2-x-q/2:off+vw/2+q/2;
+  if(ixFirst)ixFirst=!1,gsap.set(G,{x:off,transformOrigin:"0 100%",force3D:!0}),gsap.set(g,{x:fx,rotation:0,transformOrigin:"50% 100%"});
+  else{gsap.to(G,{x:off,duration:1.1,ease:"power3.out",overwrite:"auto",force3D:!0});gsap.to(g,{x:fx,duration:1.1,ease:"power3.out",overwrite:"auto"});
+    // a slight lean into the direction of travel, easing back upright once the scroll stops
+    if(!rest){gsap.to(g,{rotation:R*(fwd?2.5:-2.5),transformOrigin:"50% 100%",duration:.4,ease:"sine.out",overwrite:"auto"});ixLean&&ixLean.kill();ixLean=gsap.delayedCall(.3,function(){gsap.to(g,{rotation:0,duration:.8,ease:"sine.inOut",overwrite:"auto"})})}}
+  ta&&H&&H.progress(Bp);ta&&S&&S.progress(1-Bp)}
+this.render=function(h){if(window._ixPtHero&&768<=GLB._vw){ixHero();return}var k=GLB._reliableSh/2-(w-GLB._windowScrollY)-.7*
 z;GLB._isMobile&&(k*=GLB._vw<768?.85:2);var m=k/(GLB._reliableSh/2),B=1- -k/(GLB._reliableSh/2)%1;if(1<B)B=1,2!=F&&(F=2,H&&H.off(),S&&S.off(),K&&(K.load(),K.on()));else if(0<h){if(0!=F){F=0;if(H)H.on();S&&S.off();K&&K.off()}}else if(1!=F){F=1;if(S)H&&H.off(),S.on();else if(H)H.on();K&&K.off()}0<m&&(m=0);u=0>k?0<h?-15:15:0;D!=u&&(gsap.killTweensOf(N),0==u?gsap.to(G,.5+.5*Math.random(),{skewX:"0deg",transformOrigin:"0 100%",force3D:!0,ease:"back"}):gsap.to(G,.5,{skewX:R*u+"deg",transformOrigin:"0 100%",force3D:!0,
 ease:"expo"}),D=u);gsap.set(G,{x:R*m*GLB._vw/4,transformOrigin:"0 100%",force3D:!0});g&&(Q?1==b?gsap.set(g,{x:R*m*GLB._vw/4+GLB._vw/2-q/2}):gsap.set(g,{x:R*m*GLB._vw/4+GLB._vw/2-x-q/2}):gsap.set(g,{x:R*m*GLB._vw/4+GLB._vw/2+q/2}));ta&&H&&H.progress(B);ta&&S&&S.progress(1-B)};this.destroy=function(){clearTimeout(U);_viewportObserver.unobserve(g);H&&(H.destroy(),H=null);S&&(S.destroy(),S=null);K&&(K.destroy(),K=null)}}
 function PNGSequence(b,h){function g(){gsap.ticker.remove(k);gsap.killTweensOf(x);clearTimeout(ya);qa=!1}function k(){if(!qa&&N){V+=x._twProg*gsap.ticker.deltaRatio(60);if(1<=V){if(!S&&"autoplay"==h){b.dispatchEvent(new GLBEvent("cycleOver"));return}V=1;K&&.25>Math.random()?(qa=!0,ya=setTimeout(m,1E3*Math.random())):Q?(qa=!0,ya=0==J?setTimeout(m,2500+1500*Math.random()):setTimeout(m,1E3*J)):V=0}x.progress(V)}}function m(){V=0;qa=!1}function w(){gsap.to(x,1,{_twProg:.75*ja+Math.random()*ja*.5,ease:"quad.inOut",
