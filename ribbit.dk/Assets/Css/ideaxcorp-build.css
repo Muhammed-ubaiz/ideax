@@ -1,0 +1,67 @@
+/* Home hero (ideaxcorp-build.js): the characters pick up the headline words and carry them into place as you
+   scroll. The section is tall and its stage is pinned (sticky) while a scrubbed GSAP timeline plays; the words
+   and the characters are placed by the script in pixels, so everything here is the look. */
+
+.m.ixs { --ink: #1A1A1A; --accent: #9700FF; position: relative; height: 450vh; height: 450svh; background: #FFF; }
+.ixs-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+
+/* background: white with soft violet light and a faint dot grid */
+.ixs-bg { position: absolute; inset: 0; pointer-events: none; }
+.ixs-blob { position: absolute; border-radius: 50%; filter: blur(10px); }
+.ixs-blob-1 { right: -12vw; top: -18vh; width: 52vw; height: 52vw; background: radial-gradient(closest-side, rgba(151, 0, 255, .13), rgba(151, 0, 255, 0)); animation: ixs-drift 14s ease-in-out infinite alternate; }
+.ixs-blob-2 { left: -16vw; bottom: -30vh; width: 56vw; height: 56vw; background: radial-gradient(closest-side, rgba(181, 102, 255, .16), rgba(181, 102, 255, 0)); animation: ixs-drift 17s ease-in-out infinite alternate-reverse; }
+.ixs-blob-3 { left: 34vw; top: 30vh; width: 34vw; height: 34vw; background: radial-gradient(closest-side, rgba(151, 0, 255, .06), rgba(151, 0, 255, 0)); animation: ixs-drift 20s ease-in-out infinite alternate; }
+.ixs-grid {
+  position: absolute; inset: 0; opacity: .55; background-image: radial-gradient(rgba(23, 10, 40, .12) 1px, transparent 1.3px); background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 25%, transparent 85%); mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 25%, transparent 85%);
+}
+@keyframes ixs-drift { to { translate: 3vw 4vh; } }
+
+/* floating decorations (positions and their entrance are set by the script) */
+.ixs-decor { position: absolute; inset: 0; pointer-events: none; }
+.ixs-d { position: absolute; left: 0; top: 0; display: block; animation: ixs-float 6s ease-in-out infinite; }
+.ixs-d:nth-child(2n) { animation-duration: 7.5s; animation-direction: alternate-reverse; }
+.ixs-d:nth-child(3n) { animation-duration: 9s; }
+.ixs-spark { width: 28px; height: 28px; background: linear-gradient(135deg, #B566FF, #9700FF); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); filter: drop-shadow(0 4px 10px rgba(151, 0, 255, .35)); }
+.ixs-ring { width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(151, 0, 255, .35); }
+.ixs-dot { width: 12px; height: 12px; border-radius: 50%; background: #9700FF; box-shadow: 0 0 0 6px rgba(151, 0, 255, .12), 0 6px 14px rgba(151, 0, 255, .35); }
+@keyframes ixs-float { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -12px; rotate: 8deg; } }
+
+/* the words: large and extra bold, black and brand purple */
+.ixs-title { position: absolute; inset: 0; z-index: 3; margin: 0; pointer-events: none; }
+.ixs-word {
+  position: absolute; left: 0; top: 0; display: block; font-family: var(--font-display); font-weight: 700; line-height: .9;
+  letter-spacing: -.04em; white-space: nowrap; color: var(--ink); will-change: transform; transform-origin: 50% 50%;
+  --lift: 0; /* 0 on the ground, 1 lifted: the shadow falls further and softer */
+  text-shadow: 0 calc(10px + var(--lift) * 22px) calc(30px + var(--lift) * 24px) rgba(23, 10, 40, calc(.08 + var(--lift) * .06));
+}
+.ixs-w-full, .ixs-w-agency { color: var(--accent); text-shadow: 0 calc(10px + var(--lift) * 22px) calc(30px + var(--lift) * 24px) rgba(151, 0, 255, calc(.18 + var(--lift) * .08)); }
+/* waiting to be picked up, a word bobs gently */
+.ixs-word.ixs-waiting { animation: ixs-bob 3.2s ease-in-out infinite; }
+.ixs-w-full.ixs-waiting, .ixs-w-agency.ixs-waiting { animation-duration: 3.8s; animation-delay: -1.2s; }
+@keyframes ixs-bob { 50% { translate: 0 -10px; } }
+
+/* effects: dust puffs as a word lands, the swoosh under "Curious", the progress row */
+.ixs-fx { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.ixs-puff { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; opacity: 0; background: radial-gradient(circle, rgba(181, 102, 255, .55), rgba(181, 102, 255, 0) 70%); }
+.ixs-swoosh { position: absolute; left: 0; top: 0; overflow: visible; filter: drop-shadow(0 6px 10px rgba(151, 0, 255, .3)); }
+.ixs-prog { position: absolute; left: 50%; bottom: max(26px, 4vh); display: flex; gap: 10px; translate: -50% 0; }
+.ixs-prog i { display: block; width: 10px; height: 10px; border-radius: 50%; background: #9700FF; opacity: .25; transform: scale(.6); box-shadow: 0 0 0 4px rgba(151, 0, 255, .1); }
+
+/* the characters: each box is anchored at its feet; the frames swap inside it */
+.ixs-cast { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.ixs-char { position: absolute; left: 0; top: 0; width: var(--h, 160px); height: var(--h, 160px); will-change: transform; }
+.ixs-float { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.ixs-char img {
+  position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; translate: -50% 0; transform-origin: 50% 100%;
+  filter: drop-shadow(0 14px 18px rgba(23, 10, 40, .16));
+}
+.ixs-char img.ixs-flip { scale: -1 1; }
+/* a soft contact shadow under each character */
+.ixs-float::after { content: ''; position: absolute; left: 15%; right: 15%; bottom: -3%; height: 8%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(23, 10, 40, .22), rgba(23, 10, 40, 0)); }
+
+/* reduced motion: the finished headline in one screen */
+.m.ixs.ixs-static { height: 100vh; height: 100svh; }
+@media (prefers-reduced-motion: reduce) {
+  .ixs-blob, .ixs-d, .ixs-word.ixs-waiting { animation: none; }
+}

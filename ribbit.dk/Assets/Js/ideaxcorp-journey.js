@@ -1,6 +1,7 @@
 // Home journey (styling in ideaxcorp-journey.css). One character, the explorer, carries the whole page:
-//  1. the hero is the site's own title scene ([data-walk="hero"]): the figures bring the words in (min9eda.js);
-//  2. once "Marketing Agency" has landed, the explorer that pushed "Marketing" jumps straight down out of the
+//  1. the hero ([data-walk="hero"]) is the scene where the characters carry the headline words into place
+//     (ideaxcorp-build.js), or the site's title scene where they push them in (min9eda.js);
+//  2. once the headline is built, the explorer by "Marketing" jumps straight down out of the
 //     scene: a crouch, a spring up, a fall (shrinking to walking size) and a squash-and-rebound landing at the
 //     bottom of the screen. The walking guide takes over from the hero figure in the same place, pose and size,
 //     so it is one character throughout; scrolling back up plays the jump in reverse;
@@ -11,13 +12,13 @@
 // Everything follows a smoothed copy of the scroll position, so it scrubs with the scroll and never jumps.
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  var FRAMES = 40, frames = [] // explorer_idle: the hero explorer's own resting pose (345x390), facing right
+  var FRAMES = 40, frames = [], steps = [] // explorer_idle: its resting pose (345x390); explorer_push: its walk, leaning on its staff (360x360); both face right
   var hero = null, guide = null, img = null, say = null
-  var ss = null, x = null, lastX = null, dir = 1, walk = 0, bob = 0, lastFrame = -1, label = '', ctaSec = null
+  var ss = null, x = null, lastX = null, dir = 1, walk = 0, movedAt = 0, lastFrame = '', label = '', ctaSec = null
   var from = null // the hero explorer's place on screen when the jump starts
   var running = false, lastT = 0
 
-  function src(i) { return '/Assets/Grx/explorer_idle/' + String(i).padStart(3, '0') + '.png' }
+  function src(i, set) { return '/Assets/Grx/explorer_' + (set || 'idle') + '/' + String(i).padStart(3, '0') + '.webp?v=2' } // lossless WebP copies of the frames
 
   function build() {
     if (guide) return
@@ -25,7 +26,14 @@
     guide.innerHTML = '<span class="ixj-say"></span><img src="' + src(0) + '" alt="" width="345" height="390">'
     document.body.appendChild(guide)
     img = guide.querySelector('img'); say = guide.querySelector('.ixj-say')
-    for (var i = 0; i < FRAMES; i++) { var im = new Image(); im.src = src(i); frames.push(im) }
+    // fetched once the page has loaded, so they don't hold up the load event (and the site's intro with it)
+    var fetchAll = function () {
+      for (var i = 0; i < FRAMES; i++) {
+        var im = new Image(); im.src = src(i); frames.push(im)
+        var st = new Image(); st.src = src(i, 'push'); steps.push(st)
+      }
+    }
+    if (document.readyState === 'complete') fetchAll(); else window.addEventListener('load', fetchAll, { once: true })
   }
 
   function setup() {
@@ -46,11 +54,13 @@
 
   // the explorer in the hero ("Marketing"), and the frame it is showing
   function heroFig() {
+    var c = hero.querySelector('[data-ixs-char="explorer"]')
+    if (c) return c
     var lines = hero.querySelectorAll('.line')
     return lines[2] ? lines[2].querySelector('.animations:not(.smaller)') : null
   }
   function figRect(a) {
-    var im = a && a.querySelector('.png-sequence:not(.hide) .img:not(.hide)')
+    var im = a && (a.querySelector('.png-sequence:not(.hide) .img:not(.hide)') || a.querySelector('img'))
     var r = im && im.getBoundingClientRect()
     return r && r.width ? { cx: r.left + r.width / 2, bottom: r.bottom, h: r.height } : null
   }
@@ -77,9 +87,12 @@
     // scroll; on phones they show at once), and over before the hero lets go of the screen
     var top = hero.offsetTop, pinEnd = top + hero.offsetHeight - vh
     var j0 = Math.min(top + (w >= 768 ? 1.2 : 0.06) * vh, pinEnd - 0.3 * vh), j1 = j0 + 0.26 * vh
+    if (hero.dataset.jump0) { j0 = top + parseFloat(hero.dataset.jump0) * (pinEnd - top); j1 = top + parseFloat(hero.dataset.jump1) * (pinEnd - top) } // the hero says when
     var t = reduced ? (ss > j0 ? 1 : 0) : clamp((ss - j0) / (j1 - j0))
     var fig = heroFig()
-    if (t <= 0) { var fr = figRect(fig); if (fr) from = fr } // keeps the hero figure's place up to date until it jumps
+    // the hero figure's place: where the hero scene says it stands (ideaxcorp-build.js), or else its place on screen
+    if (hero.dataset.handoff) from = JSON.parse(hero.dataset.handoff)
+    else if (t <= 0) { var fr = figRect(fig); if (fr) from = fr } // keeps it up to date until it jumps
     if (!from) from = { cx: w * 0.15, bottom: vh * 0.7, h: gh * 1.5 }
 
     // where it lands: straight below the hero figure, standing on the bottom of the screen
@@ -109,9 +122,8 @@
       var max = document.documentElement.scrollHeight - vh
       var p = clamp((ss - j1) / Math.max(1, max - j1))
       x = landX + ((w - gw) * 0.9 - landX) * p
-      if (lastX !== null && Math.abs(x - lastX) > 0.2) { dir = x < lastX ? -1 : 1; walk += Math.abs(x - lastX) }
-      bob = !reduced && lastX !== null && Math.abs(x - lastX) > 0.2 ? -Math.abs(Math.sin(walk / (gh * 0.45) * Math.PI)) * gh * 0.06 : bob * 0.8
-      lastX = x; tx = x; ty = bob
+      if (lastX !== null && Math.abs(x - lastX) > 0.2) { dir = x < lastX ? -1 : 1; walk += Math.abs(x - lastX); movedAt = now }
+      lastX = x; tx = x
       // the section in the middle of the screen names itself
       var mid = vh / 2, secs = document.querySelectorAll('[data-say]')
       for (var i = 0; i < secs.length; i++) {
@@ -122,15 +134,18 @@
 
     // the hero figure hands over to the guide the moment the jump starts (same frames, place and size)
     var shown = t > 0 && ready && !document.body.classList.contains('ix-transitioning')
-    if (fig) fig.style.visibility = t > 0 ? 'hidden' : ''
+    if (fig) fig.style.visibility = shown ? 'hidden' : '' // hidden only while the guide stands in for it, so it never vanishes
     guide.classList.toggle('on', shown)
     guide.classList.toggle('left', t >= 1 && dir < 0)
     guide.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'
     guide.style.scale = (sc * sqx).toFixed(4) + ' ' + (sc * sqy).toFixed(4)
     guide.style.rotate = rot.toFixed(2) + 'deg'
     // its resting loop plays all the time, as the hero figure's does
-    var fi = reduced ? 0 : Math.floor(now / 50) % FRAMES
-    if (fi !== lastFrame && frames[fi] && frames[fi].complete) { img.src = frames[fi].src; lastFrame = fi }
+    // walking: its walk cycle, the steps keeping pace with the ground it covers; standing (and jumping): its resting loop
+    var walking = !reduced && t >= 1 && now - movedAt < 180
+    var set = walking ? steps : frames, fi = walking ? Math.floor(walk / 2.6) % FRAMES : reduced ? 0 : Math.floor(now / 50) % FRAMES
+    var key = (walking ? 'w' : 'i') + fi
+    if (key !== lastFrame && set[fi] && set[fi].complete) { img.src = set[fi].src; lastFrame = key }
 
     // the bubble names the section in view
     if (speech && speech !== label) { label = speech; say.textContent = speech; say.classList.remove('pop'); void say.offsetWidth; say.classList.add('pop') }

@@ -1739,7 +1739,7 @@ function ixHero(){
   if(rest){H&&H.off();S&&S.off();2!=F&&(F=2,K&&(K.load(),K.on()))}
   else if(fwd||!S){S&&S.off();K&&K.off();0!=F&&(F=0,H&&H.on())}
   else{H&&H.off();K&&K.off();1!=F&&(F=1,S.on())}
-  var Bp=1-far*e/Math.max(120,1.1*x)%1;
+  var Bp=far*e/Math.max(120,1.1*x)%1; // forwards as the word moves in, so the figure steps forwards while it pushes
   // the word leans while it is being moved (smaller than the site's 15deg)
   u=rest?0:fwd?-8:8;D!=u&&(gsap.killTweensOf(G,"skewX"),0==u?gsap.to(G,.6,{skewX:"0deg",transformOrigin:"0 100%",force3D:!0,ease:"back.out(2)"}):gsap.to(G,.5,{skewX:R*u+"deg",transformOrigin:"0 100%",force3D:!0,ease:"power3.out"}),D=u);
   var fx=Q?1==b?off+vw/2-q/2:off+vw/2-x-q/2:off+vw/2+q/2;
