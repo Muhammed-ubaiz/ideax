@@ -1,29 +1,30 @@
 // Home hero (styling in ideaxcorp-build.css): the headline builds itself as you scroll, and the characters come in
 // to join it. One GSAP master timeline, scrubbed by ScrollTrigger over the tall section while its stage stays pinned:
 //  1. the first screen: the four words oversized and upright in a zig-zag across the screen ("Curious" top left,
-//     "Full-service" right, "Marketing" lower left, "Agency" lower right), drifting a little at different speeds as
-//     the scroll starts (parallax); no characters yet;
-//  2. the words glide and shrink into the stacked "Curious / Full-service / Marketing Agency", one after another,
-//     each landing with a puff of dust and filling its dot in the progress row;
-//  3. the characters walk in from the edges to their words (the creator and the explorer from the left, the jester
-//     and the small figure from the right), facing their way, in their own walk frames;
-//  4. each hops beside its word, and the word bounces on its landing; the swoosh draws under "Curious" and the
-//     decorations gather round;
+//     "Full-service" right, "Marketing" lower left, "Agency" lower right); no characters yet;
+//  2. one after another, each character walks in from its edge to its word (the creator and the explorer from the
+//     left, the jester and the small figure from the right), in its own walk frames;
+//  3. it puts its hands on the word's outer edge, leans in, and pushes the word to its place in the stacked
+//     "Curious / Full-service / Marketing Agency": the word moves only while it is pushed, shrinking to the
+//     headline's size, the hands on its edge all the way; it lands with a puff of dust and fills its dot;
+//  4. the swoosh draws under "Curious" and the decorations gather round;
 //  5. the explorer jumps down into the page (ideaxcorp-journey.js; the section's data-jump0/1 and data-handoff say
 //     when and from where); the others stay with the headline.
 // Positions are computed in pixels from the screen size and rebuilt on resize.
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   // walk/idle: frame folder, count, width/height; face: which way the walk frames look (1 right, -1 left);
+  // pull: its pull frames (leaning back, dragging), used when the scroll takes its word back the other way;
+  // hops: instead of walking, it bounds in this many hops (the creator, who has no walk of her own);
   // go: its walk without a word (null: its standing pose with a sway and a step-hop), goFace: which way that looks,
   // goScale: how much larger that walk is drawn to match its standing size;
   // side: the side of its word it pushes from: "Curious" and "Marketing" come in from the left, "Full-service" and
   // "Agency" from the right; end: the side it finishes on; size: height relative to the others;
   // hand / handH: its hands' distance from its centre and their height above its feet, in character heights
   var CAST = {
-    creator: { word: 'curious', side: -1, end: -1, walk: ['creator_push', 40], idle: ['creator_idle', 51], go: ['creator_push', 40], goFace: 1, face: 1, size: 1, hand: .56, handH: .62 },
+    creator: { word: 'curious', side: -1, end: -1, walk: ['creator_push', 40], pull: ['creator_pull', 40], idle: ['creator_idle', 51], go: null, hops: 3, face: 1, size: 1, hand: .56, handH: .62 },
     jester: { word: 'full', side: 1, end: 1, walk: ['jester_push_2', 58], idle: ['jester_idle_2', 51], go: ['jester_push_2', 58], goFace: -1, face: -1, size: .92, hand: .56, handH: .42 },
-    explorer: { word: 'marketing', side: -1, end: -1, walk: ['explorer_push', 40], idle: ['explorer_idle', 40], go: ['explorer_push', 40], goFace: 1, face: 1, size: .86, hand: .5, handH: .56 },
+    explorer: { word: 'marketing', side: -1, end: -1, walk: ['explorer_push', 40], pull: ['explorer_pull', 40], idle: ['explorer_idle', 40], go: ['explorer_push', 40], goFace: 1, face: 1, size: .86, hand: .5, handH: .56 },
     outlaw: { word: 'agency', side: 1, end: 1, walk: ['outlaw_push', 24], idle: ['outlaw_idle', 25], go: ['outlaw_pull', 26], goFace: 1, goScale: 1.25, face: 1, size: .8, hand: .52, handH: .55 }
   }
   var NAMES = ['creator', 'jester', 'explorer', 'outlaw']
@@ -55,12 +56,16 @@
       var moving = !reduced && now - c.movedAt < 140
       // the pushing pose only while it holds its word (from the lift until it is set down); walking without it,
       // its own walk, or (the creator, who has none) its standing pose with a sway and a step-hop
-      var t = tl ? tl.time() : 0, holding = false, going = moving // (no pushing pose in this scene: walking or standing)
-      var set = holding ? c.walk : going && c.go ? c.go : c.idle, list = frames[set[0]], count = set[1]
+      var t = tl ? tl.time() : 0, holding = !reduced && t >= c.holdFrom && t <= c.holdTo, going = moving && !holding // holding: its pushing pose even while the scroll rests
+      // scrolling back, a character that has pull frames drags its word back in them (instead of pushing backwards)
+      var pulling = holding && c.back && c.pull
+      var set = pulling ? c.pull : holding ? c.walk : going && c.go ? c.go : c.idle, list = frames[set[0]], count = set[1]
       var stepping = holding || going && c.go
-      if (stepping && moving) c.fa = (c.fa || 0) + (c.back ? -1 : 1) * dt * .024
+      if (stepping && moving) c.fa = (c.fa || 0) + (c.back && !pulling ? -1 : 1) * dt * .024 // a pull plays forwards
       var i = stepping ? ((Math.floor(c.fa || 0) % count) + count) % count : Math.floor(now / 50 + k * 11) % count
-      var flip = holding ? c.face !== -c.side : going && c.go ? c.goFace !== c.dir : false // faces its word, or its way
+      // it always faces the way it walks in (towards its word); scrolling back, its walk plays in reverse (a rewind),
+      // rather than turning round as well, which made it walk backwards
+      var flip = holding ? c.face !== -c.side : going && c.go ? c.goFace !== -c.side : false
       var sway = going && !c.go, ph = (c.fa || 0) / 6 * Math.PI
       c.img.style.bottom = sway ? (Math.abs(Math.sin(ph)) * c.el.offsetHeight * .07).toFixed(1) + 'px' : ''
       c.img.style.rotate = sway ? (Math.sin(ph) * 5).toFixed(2) + 'deg' : ''
@@ -91,62 +96,83 @@
     // (word: [side it is set against, y as a share of the height, scale]); kept inside the screen
     var ini = mob ? { curious: [-1, .2, 1.18], full: [1, .4, 1.25], marketing: [-1, .6, 1.4], agency: [1, .78, 1.6] }
       : { curious: [-1, .2, 1.55], full: [1, .45, 1.35], marketing: [-1, .66, 1.4], agency: [1, .86, 1.55] }
-    var pad = mob ? W * .05 : W * .045
+    var base = mob ? W * .15 : Math.min(H * .2, W * .108)
+    // each word stands in from its edge by the room its character needs beside it (the frames are drawn wider than
+    // the box), and is never wider than what is left
+    var who = { curious: 'creator', full: 'jester', marketing: 'explorer', agency: 'outlaw' }
     Object.keys(ini).forEach(function (k) {
-      var v = ini[k], sc = Math.min(v[2], (W - 2 * pad) / wd[k].w) // never wider than the screen
+      var c = CAST[who[k]], ch = base * c.size, pad = ch * (c.hand + .75) + W * .02
+      var v = ini[k], sc = Math.min(v[2], (W - pad - W * .04) / wd[k].w)
       v[2] = sc; v.x = v[0] < 0 ? pad + sc * wd[k].w / 2 : W - pad - sc * wd[k].w / 2; v.y = H * v[1]
     })
-    var base = mob ? W * .15 : Math.min(H * .2, W * .108)
     return { W: W, H: H, mob: mob, wd: wd, fin: fin, ini: ini, base: base }
   }
 
   // ---------- the master timeline ----------
   function build() {
     kill()
+    if (!sec || !document.body.contains(sec)) return // the page has been swapped out meanwhile
     var L = layout(), W = L.W, H = L.H, fx0 = extras()
     tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } })
-    // G: the words glide; C: the characters walk in; J: they hop; S5: the headline is complete; S6: the explorer jumps down
-    var G = .7, C = 1.7, J = 4.3, S5 = 4.1, S6 = 6.6, END = 8
+    // T0: the first character sets off, TURN apart; S5: the headline is complete; S6: the explorer jumps down
+    var T0 = .5, TURN = .55, S5 = T0 + 3 * TURN + 1 + .35 + 2.1, S6 = S5 + 1.4, END = S6 + 1.4
 
-    // 1. the first screen, with a little parallax as the scroll starts (each word at its own speed)
-    var drift = { curious: .03, full: -.02, marketing: .025, agency: -.03 } // small, so nothing drifts off the screen
     NAMES.forEach(function (n, k) {
       var c = CAST[n], wd = L.wd[c.word], el = c.el, wordEl = wd.el, side = c.side
       c.wordEl = wordEl; wordEl.style.setProperty('--lift', 0)
       var ch = L.base * c.size; el.style.setProperty('--h', ch.toFixed(1) + 'px')
       c.p = c.p || { w: 0 }; c.p.w = 0; c.lastW = null
       var feet = function (cy, s) { return cy + wd.h * s * .38 } // a word's baseline, from its centre and scale
-      var fx = L.fin[c.word][0], fy = L.fin[c.word][1], iv = L.ini[c.word]
-      gsap.set(wordEl, { xPercent: -50, yPercent: -50, x: iv.x, y: iv.y, scale: iv[2], rotation: 0, opacity: 1 })
-      var t1 = G + k * .3
-      c.waitTo = t1
-      tl.to(wordEl, { y: iv.y + drift[c.word] * H, duration: t1, ease: 'sine.inOut' }, 0)
-      // 2. glides into its place in the headline, shrinking, with a slight sway on the way
-      var dg = 1.8
-      tl.to(wordEl, { x: fx, y: fy, scale: 1, duration: dg, ease: 'power3.inOut' }, t1)
-      tl.to(wordEl, { keyframes: { rotation: [0, -side * 3, side * 1.5, 0], easeEach: 'sine.inOut' }, duration: dg }, t1)
-      var land = t1 + dg - .15, bx = [fx - wd.w * .46, fx + wd.w * .46], by = fy + wd.h * .36
+      var fx = L.fin[c.word][0], fy = L.fin[c.word][1], iv = L.ini[c.word], s0 = iv[2]
+      // 1. the word on the first screen; its character just off its edge
+      gsap.set(wordEl, { xPercent: -50, yPercent: -50, x: iv.x, y: iv.y, scale: s0, rotation: 0, opacity: 1 })
+      var grabX = iv.x + side * (s0 * wd.w / 2 + c.hand * ch), grabY = feet(iv.y, s0)
+      var x0 = side < 0 ? -ch : W + ch
+      gsap.set(el, { xPercent: -50, yPercent: -100, x: x0, y: grabY, rotation: 0, opacity: 1 })
+      // 2. walks in to its word
+      var T = T0 + k * TURN, dw = 1
+      if (c.hops) {
+        // bounds in: crouch, spring up, land with a squash, a few times, in her standing pose
+        var hop = { t: 0 }, hh = ch * .3, nh = c.hops
+        tl.to(hop, { t: 1, duration: dw + .3, ease: 'none', onUpdate: function () {
+          var e = hop.t, ph = e * nh, u = ph % 1
+          gsap.set(el, { x: x0 + (grabX - x0) * (1 - Math.pow(1 - e, 1.4)), y: grabY - Math.sin(Math.PI * Math.min(1, u * 1.15)) * hh * (1 - e * .25) })
+          var sq = u < .12 ? 1 - .14 * Math.sin(Math.PI * u / .12) : u > .9 ? 1 - .12 * Math.sin(Math.PI * (u - .9) / .1) : 1 + .08 * Math.sin(Math.PI * (u - .12) / .78)
+          gsap.set(c.float, { scaleY: sq, scaleX: 2 - sq })
+        } }, T - .3)
+      } else {
+        tl.to(el, { x: grabX, duration: dw, ease: 'power1.out' }, T)
+        tl.to(c.p, { w: '+=' + (Math.abs(grabX - x0) / 3), duration: dw, ease: 'power1.out' }, T)
+      }
+      // 3. hands on the word: it braces and leans in
+      var t3 = T + dw
+      c.waitTo = t3; c.holdFrom = t3; c.holdTo = t3 + .35 + 2.1 // its pushing pose, from the contact to the last shove
+      tl.to(c.float, { scaleY: .92, scaleX: 1.05, duration: .35, ease: 'power2.out' }, t3)
+      tl.to(el, { rotation: -side * 7, duration: .35, ease: 'power2.out' }, t3)
+      // ... and pushes it to its place: the word shrinking to the headline's size, the hands on its edge throughout
+      var push = { t: 0 }, t4 = t3 + .35, d4 = 2.1
+      tl.to(push, { t: 1, duration: d4, ease: 'power2.inOut', onUpdate: function () {
+        var e = push.t, sc = s0 + (1 - s0) * e, cx = iv.x + (fx - iv.x) * e, cy = iv.y + (fy - iv.y) * e
+        gsap.set(wordEl, { x: cx, y: cy, scale: sc, rotation: -side * 2 * Math.sin(Math.PI * e) })
+        gsap.set(el, { x: cx + side * (sc * wd.w / 2 + c.hand * ch), y: feet(cy, sc) })
+      } }, t4)
+      tl.to(c.float, { keyframes: { scaleY: [.92, 1.03, .94, 1.03, .95, 1], scaleX: [1.05, .98, 1.04, .98, 1.03, 1], easeEach: 'sine.inOut' }, duration: d4 }, t4)
+      tl.to(el, { keyframes: { rotation: [7, 10, 6, 9, 5].map(function (r) { return -side * r }), easeEach: 'sine.inOut' }, duration: d4 }, t4)
+      tl.to(c.p, { w: '+=' + (Math.hypot(fx - iv.x, fy - iv.y) / 3 + 30), duration: d4, ease: 'power2.inOut' }, t4)
+      // 4. the word settles with a little give, the character straightens and steps back; a puff of dust, its dot fills
+      var t5 = t4 + d4, standX = fx + side * (wd.w / 2 + c.hand * ch + ch * .12), ffeet = feet(fy, 1)
+      tl.to(wordEl, { keyframes: { scaleX: [1, 1.05, .98, 1], scaleY: [1, .95, 1.02, 1], easeEach: 'sine.out' }, duration: .6 }, t5)
+      tl.to(el, { x: standX, rotation: 0, duration: .5, ease: 'power2.out' }, t5)
+      tl.to(c.p, { w: '+=' + (ch * .12 / 3), duration: .5, ease: 'power2.out' }, t5)
+      var bx = [fx - wd.w * .46, fx + wd.w * .46], by = fy + wd.h * .36
       for (var j = 0; j < 6; j++) {
         var pf = fx0.querySelector('.ixs-puff[data-i="' + (k * 6 + j) + '"]'), o = j < 3 ? -1 : 1, a = (j % 3) * .5 + .25
         gsap.set(pf, { x: bx[j < 3 ? 0 : 1], y: by, scale: 0, opacity: 0 })
-        tl.to(pf, { keyframes: [{ scale: 1, opacity: .9, duration: .05 }, { x: '+=' + (o * ch * (.25 + a * .2)), y: '-=' + (ch * (.05 + a * .12)), scale: 1.8, opacity: 0, duration: .55, ease: 'power2.out' }] }, land)
+        tl.to(pf, { keyframes: [{ scale: 1, opacity: .9, duration: .05 }, { x: '+=' + (o * ch * (.25 + a * .2)), y: '-=' + (ch * (.05 + a * .12)), scale: 1.8, opacity: 0, duration: .55, ease: 'power2.out' }] }, t5)
       }
-      tl.to(fx0.querySelectorAll('.ixs-prog i')[k], { scale: 1, opacity: 1, duration: .3, ease: 'back.out(3)' }, land)
-      // 3. walks in from its edge to stand beside its word
-      var standX = fx + side * (wd.w / 2 + c.hand * ch + ch * .12), ffeet = feet(fy, 1)
-      standX = Math.max(ch * .55 + 8, Math.min(W - ch * .55 - 8, standX)) // (on narrow screens it stays on screen)
-      var x0 = side < 0 ? -ch : W + ch, tc = C + k * .3, dc = 1.9
-      gsap.set(el, { xPercent: -50, yPercent: -100, x: x0, y: ffeet, rotation: 0, opacity: 1 })
-      tl.to(el, { x: standX, duration: dc, ease: 'power1.out' }, tc)
-      tl.to(c.p, { w: '+=' + (Math.abs(standX - x0) / 3), duration: dc, ease: 'power1.out' }, tc)
+      tl.to(fx0.querySelectorAll('.ixs-prog i')[k], { scale: 1, opacity: 1, duration: .3, ease: 'back.out(3)' }, t5)
       // where the explorer stands (screen pixels: the stage is pinned): the journey jumps it down from here
       if (n === 'explorer') sec.dataset.handoff = JSON.stringify({ cx: Math.round(standX), bottom: Math.round(ffeet), h: Math.round(ch) })
-      // 4. a hop beside its word (crouch, up, squash on landing), and the word bounces as it lands
-      var tj = J + k * .22, hopH = ch * .28
-      tl.to(c.float, { scaleY: .86, scaleX: 1.08, duration: .18, ease: 'power2.in' }, tj)
-      tl.to(el, { keyframes: [{ y: ffeet - hopH, duration: .28, ease: 'power2.out' }, { y: ffeet, duration: .24, ease: 'power2.in' }] }, tj + .18)
-      tl.to(c.float, { keyframes: [{ scaleY: 1.1, scaleX: .94, duration: .28 }, { scaleY: .88, scaleX: 1.08, duration: .24 }, { scaleY: 1, scaleX: 1, duration: .3, ease: 'back.out(2)' }] }, tj + .18)
-      tl.to(wordEl, { keyframes: [{ y: fy + wd.h * .05, scaleY: .94, duration: .12, ease: 'power2.out' }, { y: fy, scaleY: 1, duration: .35, ease: 'back.out(3)' }] }, tj + .7)
     })
 
     // the swoosh drawn under "Curious" once the headline is complete
@@ -217,7 +243,7 @@
       var c = CAST[n]
       c.el = sec.querySelector('[data-ixs-char="' + n + '"]'); c.float = c.el.querySelector('.ixs-float'); c.img = c.el.querySelector('img')
       c.key = ''; c.movedAt = 0; c.p = c.p || { w: 0 }
-      load(c.walk); load(c.idle); if (c.go) load(c.go)
+      load(c.walk); load(c.idle); if (c.go) load(c.go); if (c.pull) load(c.pull)
       // a gentle float, apart from the scroll scene
       if (!reduced) floats.push(gsap.to(c.float, { y: -6, duration: 1.6 + k * .25, ease: 'sine.inOut', yoyo: true, repeat: -1 }))
     })

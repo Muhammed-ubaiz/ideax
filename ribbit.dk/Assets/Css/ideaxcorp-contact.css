@@ -252,3 +252,80 @@
   .ix-contact .ix-office-list dd { padding-left: 44px; }
   .ix-contact .ix-office-status { margin-left: 0; } /* was indented for a flag the cards no longer have */
 }
+
+/* ---------- office cards: v2 layout ----------
+   A dark brand band holds the office name, its city and the open badge. Below it the four details sit as
+   2x2 tiles, and the Maps button runs the full width. Same markup and content. */
+.ix-contact .ix-office { border-radius: 26px; border: 1px solid #ECE6F4; background: #FFF; isolation: isolate; }
+.ix-contact .ix-office::before { display: none; }
+.ix-contact .ix-office-body { padding: 0; gap: 0; }
+
+.ix-contact .ix-office-head {
+  position: relative; overflow: hidden; margin: 0; padding: 30px 30px 28px; border: 0; align-items: flex-start; gap: 16px;
+  background: radial-gradient(120% 140% at 100% 0%, rgba(151, 0, 255, .55), transparent 55%), #170A28; color: #FFF;
+}
+.ix-contact .ix-office-head::before { /* fine dot grid */
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(rgba(255, 255, 255, .16) 1px, transparent 1.2px); background-size: 14px 14px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000); mask-image: linear-gradient(90deg, transparent 30%, #000);
+}
+.ix-contact .ix-office-head::after { /* map pin mark */
+  content: ''; position: absolute; right: 26px; bottom: -18px; width: 92px; height: 92px; z-index: 0; pointer-events: none; opacity: .14;
+  background: #FFF;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .5s var(--ease);
+}
+.ix-contact .ix-office-head > * { position: relative; z-index: 1; }
+.ix-contact .ix-office-titles { gap: 8px; }
+.ix-contact .ix-office-title { color: #FFF; font-size: clamp(2.8rem, 2.4vw, 3.4rem); }
+.ix-contact .ix-office-sub {
+  display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, .7); font-size: 1.35rem;
+}
+.ix-contact .ix-office-sub::before { content: ''; width: 18px; height: 2px; border-radius: 2px; background: #C77DFF; }
+.ix-contact .ix-office-status {
+  margin-left: auto; background: rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .82);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.ix-contact .ix-office-status.open { background: rgba(52, 211, 113, .14); color: #7CF0A8; box-shadow: inset 0 0 0 1px rgba(124, 240, 168, .3); }
+
+.ix-contact .ix-office-list {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 24px 24px 20px;
+}
+.ix-contact .ix-office-list > div {
+  display: flex; flex-direction: column; gap: 12px; padding: 18px; border: 1px solid #F0EBF6; border-radius: 16px;
+  background: #FAF8FD; align-items: stretch; transition: background-color .25s ease, border-color .25s ease, transform .25s var(--ease);
+}
+.ix-contact .ix-office-list > div:last-child { border-bottom: 1px solid #F0EBF6; }
+.ix-contact .ix-office-list dt {
+  gap: 10px; font-size: 1.15rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(26, 26, 26, .5);
+}
+.ix-contact .ix-office-list dt svg {
+  width: 16px; height: 16px; padding: 8px; border-radius: 10px; background: #FFF; color: var(--accent);
+  box-shadow: 0 0 0 1px #EDE4F8, 0 4px 10px rgba(151, 0, 255, .08);
+}
+.ix-contact .ix-office-list dd { padding: 0; font-size: clamp(1.45rem, 1.05vw, 1.6rem); line-height: 1.5; }
+@media (hover: hover) {
+  .ix-contact .ix-office-list > div:hover { background: #F5EEFF; border-color: #E4D4FA; }
+  .ix-contact .ix-office:hover .ix-office-head::after { transform: translateY(-6px) rotate(-6deg); }
+}
+
+.ix-contact .ix-office-map-link {
+  align-self: stretch; justify-content: center; margin: auto 24px 24px; padding: 16px 22px 15px; border-radius: 14px;
+  background: var(--ink); box-shadow: 0 10px 24px rgba(23, 10, 40, .18); transition: background-color .2s ease, transform .2s var(--ease), box-shadow .2s ease;
+}
+.ix-contact .ix-office-map-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (hover: hover) {
+  .ix-contact .ix-office-map-link:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 30px rgba(151, 0, 255, .3); }
+}
+.ix-contact-page .ix-office-map { min-height: 420px; }
+
+@media all and (max-width: 600px) {
+  .ix-contact .ix-office-head { flex-direction: column; gap: 14px; padding: 24px 20px 22px; }
+  .ix-contact .ix-office-status { margin-left: 0; }
+  .ix-contact .ix-office-head::after { width: 70px; height: 70px; right: 16px; }
+  .ix-contact .ix-office-list { grid-template-columns: 1fr; gap: 10px; padding: 16px; }
+  .ix-contact .ix-office-list > div { padding: 16px; gap: 10px; }
+  .ix-contact .ix-office-list dd { padding-left: 0; }
+  .ix-contact .ix-office-map-link { margin: auto 16px 16px; }
+}

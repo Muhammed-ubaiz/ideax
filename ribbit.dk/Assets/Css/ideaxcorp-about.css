@@ -264,3 +264,284 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
   .ixb-orbit, .ixb-rig, .ixb-rig-logo, .ixb-kin, .ixb-scrollcue span::after, .ixb-hint span { animation: none; }
   .ixb-ch > span, .ixb-mask, .ixb-mask img { transform: none; clip-path: none; scale: 1; transition: none; }
 }
+
+/* ---------- philosophy: v2 layout ----------
+   The founder and the philosophy text share one dark brand panel: the photo sits straight on the left with
+   the name on a glass label, and the text is white beside it with a large quote mark. The four pillars become
+   even cards with the icon on a lavender tile and an outlined number. Same markup and content. */
+.ixb-philo-grid {
+  position: relative; isolation: isolate; overflow: hidden; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4.5vw, 80px); padding: clamp(16px, 1.8vw, 28px); padding-right: clamp(24px, 5vw, 88px);
+  border-radius: 32px; background: #170A28; color: #FFF;
+  box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 30px 80px rgba(23, 10, 40, .18);
+}
+.ixb-philo-grid::before { /* brand glow and a fine dot grid behind the text */
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(60% 80% at 100% 0%, rgba(151, 0, 255, .45), transparent 60%),
+              radial-gradient(40% 60% at 60% 110%, rgba(151, 0, 255, .22), transparent 70%);
+}
+.ixb-philo-grid::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .45;
+  background-image: radial-gradient(rgba(255, 255, 255, .14) 1px, transparent 1.2px); background-size: 16px 16px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 40%, #000); mask-image: linear-gradient(90deg, transparent 40%, #000);
+}
+.ixb-founder { position: relative; }
+.ixb-founder-img { rotate: 0deg; border-radius: 22px; aspect-ratio: 4 / 5; box-shadow: none; background: #0E0618; }
+.ixb-founder figcaption {
+  position: absolute; left: 14px; right: 14px; bottom: 14px; margin: 0; display: flex; flex-direction: column; gap: 2px;
+  padding: 14px 18px 13px; border-radius: 16px; color: rgba(255, 255, 255, .72); font-size: 1.3rem;
+  background: rgba(23, 10, 40, .55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2);
+}
+.ixb-founder figcaption b { color: #FFF; font-size: 1.9rem; line-height: 1.1; }
+
+.ixb-philo-text { padding: clamp(8px, 2vw, 32px) 0; }
+.ixb-philo-h { color: #FFF; }
+.ixb-philo-h em, .ixb-philo-text blockquote em { color: #C77DFF; }
+.ixb-philo-text blockquote {
+  margin: 0 0 32px; padding: 0 0 28px; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .14); color: #FFF;
+  font-size: clamp(2.6rem, 2.3vw, 3.4rem); line-height: 1.18;
+}
+.ixb-philo-text blockquote::before {
+  content: '\201C'; display: block; height: .5em; margin: 0 0 12px -4px; font-family: var(--font-accent); font-style: normal;
+  font-size: 2.6em; line-height: .9; color: #B266FF;
+}
+.ixb-philo-text p { color: rgba(255, 255, 255, .72); }
+.ixb-philo-text p:last-child { margin-bottom: 0; color: #FFF; font-weight: 500; }
+
+/* pillars: four even cards */
+.ixb-pillars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: clamp(24px, 2.4vw, 40px); }
+.ixb-pillar {
+  display: flex; flex-direction: column; padding: 28px 26px 30px; border: 1px solid #EEE9F4; border-radius: 24px; background: #FFF;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 14px 34px rgba(23, 10, 40, .05);
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease, border-color .3s ease, background-color .3s ease;
+}
+.ixb-pillar::after { /* accent rule that grows on hover */
+  content: ''; position: absolute; left: 26px; right: 26px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0;
+  background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .45s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-pillar:hover, .ixb-pillar:focus-visible {
+  flex-grow: 0; transform: translateY(-6px); background: #FCFAFF; border-color: #E2D2F8;
+  box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 24px 54px rgba(151, 0, 255, .12);
+}
+.ixb-pillar:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.ixb-pillar:hover::after, .ixb-pillar:focus-visible::after { transform: scaleX(1); }
+.ixb-pillar-icon {
+  box-sizing: border-box; width: 64px; height: 64px; padding: 14px; border-radius: 18px; background: #F3EAFF;
+  transition: background-color .3s ease, color .3s ease;
+}
+.ixb-pillar:hover .ixb-pillar-icon, .ixb-pillar:focus-visible .ixb-pillar-icon { background: var(--accent); color: #FFF; }
+.ixb-pillar-n {
+  top: 22px; right: 24px; font-family: var(--font-display); font-size: 4.4rem; font-weight: 600; letter-spacing: -.03em; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1px #D9CBEA;
+}
+.ixb-pillar-t { margin: 28px 0 10px; font-size: clamp(2.4rem, 2vw, 3rem); }
+.ixb-pillar p { font-size: 1.45rem; line-height: 1.55; }
+
+@media all and (max-width: 1100px) {
+  .ixb-pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media all and (max-width: 900px) {
+  .ixb-philo-grid { grid-template-columns: minmax(0, 1fr); padding: 16px 16px 28px; }
+  .ixb-founder { width: 100%; }
+  .ixb-founder-img { aspect-ratio: 4 / 3; }
+  .ixb-founder-img img { object-position: 50% 12%; }
+  .ixb-philo-text { padding: 8px 12px 0; }
+  .ixb-pillars { flex-direction: row; }
+}
+@media all and (max-width: 600px) {
+  .ixb-philo-grid { border-radius: 24px; }
+  .ixb-founder-img { aspect-ratio: 4 / 4.4; }
+  .ixb-pillars { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ixb-pillar { padding: 22px 20px 24px; }
+  .ixb-pillar-n { font-size: 3.6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixb-pillar, .ixb-pillar::after { transition: none; }
+  .ixb-pillar:hover, .ixb-pillar:focus-visible { transform: none; }
+}
+
+/* ---------- expertise: v2 layout ----------
+   The oversized rows with a cursor-following image become a grid of image cards: each service shows its
+   picture, number, name, description and arrow at once. The last one runs the full width. Same markup. */
+.ixb-svc-list {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; border-top: 0;
+}
+.ixb-svc-list > li { display: flex; }
+.ixb-svc-list .ixb-svc {
+  flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto auto 1fr;
+  grid-template-areas: "img img" "n go" "name name" "desc desc"; align-items: start; gap: 0;
+  padding: 0 0 28px; overflow: hidden; border: 1px solid #EEE9F4; border-radius: 24px; background: #FFF;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 14px 34px rgba(23, 10, 40, .05);
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease, border-color .3s ease;
+}
+.ixb-svc-list .ixb-svc::before { display: none; }
+.ixb-svc-list .ixb-svc-img {
+  grid-area: img; position: relative; z-index: 0; width: 100%; aspect-ratio: 3 / 2; border-radius: 0; opacity: 1; scale: 1; rotate: 0deg;
+  translate: none !important; box-shadow: none; transform-origin: 50% 0; transition: transform .7s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-svc-list .ixb-svc-n {
+  grid-area: n; align-self: center; margin: 24px 0 0 26px; justify-self: start; padding: 6px 11px 5px; border-radius: 999px;
+  background: #F3EAFF; color: var(--accent); font-size: 1.15rem;
+}
+.ixb-svc-list .ixb-svc-go {
+  grid-area: go; position: relative; z-index: 1; margin: 18px 22px 0 0; width: 44px; height: 44px; background: #FFF;
+}
+.ixb-svc-list .ixb-svc-name {
+  grid-area: name; margin: 18px 26px 10px; font-size: clamp(2.4rem, 1.9vw, 3rem); line-height: 1.05; letter-spacing: -.03em; text-wrap: balance;
+}
+.ixb-svc-list .ixb-svc-desc { grid-area: desc; margin: 0 26px; opacity: 1; transform: none; font-size: 1.45rem; line-height: 1.55; }
+
+@media (hover: hover) {
+  .ixb-svc-list .ixb-svc:hover {
+    transform: translateY(-6px); border-color: #E2D2F8;
+    box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 26px 56px rgba(151, 0, 255, .13);
+  }
+  .ixb-svc-list .ixb-svc:hover .ixb-svc-img { opacity: 1; scale: 1; rotate: 0deg; transform: scale(1.05); }
+  .ixb-svc-list .ixb-svc:hover .ixb-svc-name { transform: none; color: var(--accent); }
+}
+.ixb-svc-list .ixb-svc:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* the seventh card: image beside the text, across the whole row (the image stays near its own 450px size) */
+.ixb-svc-list > li:last-child { grid-column: 1 / -1; }
+.ixb-svc-list > li:last-child .ixb-svc {
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr) auto; grid-template-rows: 1fr auto auto auto 1fr;
+  grid-template-areas: "img . ." "img n go" "img name name" "img desc desc" "img . ."; padding: 0;
+}
+.ixb-svc-list > li:last-child .ixb-svc-img { align-self: stretch; height: 100%; aspect-ratio: auto; min-height: 280px; }
+.ixb-svc-list > li:last-child .ixb-svc-n { margin: 32px 0 0 40px; }
+.ixb-svc-list > li:last-child .ixb-svc-go { margin: 26px 28px 0 0; }
+.ixb-svc-list > li:last-child .ixb-svc-name { margin: 20px 40px 12px; font-size: clamp(2.8rem, 2.6vw, 4rem); }
+.ixb-svc-list > li:last-child .ixb-svc-desc { margin: 0 40px 36px; max-width: 52ch; }
+
+@media all and (max-width: 1100px) {
+  .ixb-svc-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media all and (max-width: 900px) {
+  .ixb-svc-list .ixb-svc { grid-template-columns: minmax(0, 1fr) auto; }
+  .ixb-svc-list .ixb-svc-go { grid-area: go; }
+  .ixb-svc-list .ixb-svc-desc { grid-area: desc; }
+  .ixb-svc-list .ixb-svc-img { display: block; }
+}
+@media all and (max-width: 700px) {
+  .ixb-svc-list { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .ixb-svc-list > li:last-child .ixb-svc {
+    grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: "img img" "n go" "name name" "desc desc"; padding: 0 0 26px;
+  }
+  .ixb-svc-list > li:last-child .ixb-svc-img { height: auto; aspect-ratio: 3 / 2; min-height: 0; }
+  .ixb-svc-list > li:last-child .ixb-svc-n { margin: 22px 0 0 22px; }
+  .ixb-svc-list > li:last-child .ixb-svc-go { margin: 16px 18px 0 0; }
+  .ixb-svc-list > li:last-child .ixb-svc-name, .ixb-svc-list .ixb-svc-name { margin: 16px 22px 8px; font-size: clamp(2.4rem, 7vw, 2.8rem); }
+  .ixb-svc-list > li:last-child .ixb-svc-desc, .ixb-svc-list .ixb-svc-desc { margin: 0 22px; }
+  .ixb-svc-list .ixb-svc-n { margin: 22px 0 0 22px; }
+  .ixb-svc-list .ixb-svc-go { margin: 16px 18px 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixb-svc-list .ixb-svc, .ixb-svc-list .ixb-svc-img { transition: none; }
+  .ixb-svc-list .ixb-svc:hover, .ixb-svc-list .ixb-svc:hover .ixb-svc-img { transform: none; }
+}
+
+/* ---------- team: v3 layout (a photo for everyone) ----------
+   Five equal portrait cards. Each photo fills its card, with the name and role on a glass label at the
+   bottom. A member without a photo yet shows their initials in the same frame. To add a photo, put
+   <img src="../Assets/Grx/site/team/NAME.webp" alt="NAME" loading="lazy" decoding="async"> inside the card's
+   .ixp-team-photo div and remove the "ixp-team-mono" class, aria-hidden and the <span> of initials.
+   Portrait photos (4:5, at least 600x750) work best. */
+.ixb-team .ixp-team { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+.ixb-team .ixp-team > li { flex: 1 1 0; min-width: 0; margin-top: 0 !important; }
+.ixb-team .ixp-team figure {
+  position: relative; overflow: hidden; border-radius: 24px; background: #170A28;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .05), 0 16px 38px rgba(23, 10, 40, .08);
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease;
+}
+.ixb-team .ixp-team .ixp-team-photo { aspect-ratio: 4 / 5; border-radius: 0; }
+.ixb-team .ixp-team .ixp-team-photo img {
+  position: absolute; inset: 0; filter: none; object-position: 50% 15%; transition: transform .8s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-team .ixp-team .ixp-team-photo::after { /* shade under the label */
+  opacity: 1; background: linear-gradient(180deg, transparent 45%, rgba(23, 10, 40, .82));
+}
+/* initials stand in until a photo is added */
+.ixb-team .ixp-team .ixp-team-mono { background: radial-gradient(120% 90% at 20% 0%, #B24DFF 0%, #7A00D1 45%, #2A0B4D 100%); }
+.ixb-team .ixp-team .ixp-team-mono span {
+  margin-top: -18%; font-size: clamp(5rem, 5vw, 7.6rem); color: rgba(255, 255, 255, .92); letter-spacing: -.04em;
+}
+.ixb-team .ixp-team figcaption {
+  position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; padding: 14px 16px 15px; border-radius: 16px; color: #FFF;
+  background: rgba(23, 10, 40, .4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2);
+}
+.ixb-team .ixp-team figcaption b { color: #FFF; font-size: clamp(1.8rem, 1.4vw, 2.2rem); line-height: 1.1; letter-spacing: -.02em; }
+.ixb-team .ixp-team figcaption span { margin-top: 5px; font-size: 1.25rem; color: rgba(255, 255, 255, .75); }
+/* the founder's label carries a small accent mark */
+.ixb-team .ixp-team > li:first-child figcaption span { color: #D9A8FF; font-weight: 600; }
+
+@media (hover: hover) {
+  .ixb-team .ixp-team li:hover figure { transform: translateY(-6px); box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 28px 60px rgba(151, 0, 255, .18); }
+  .ixb-team .ixp-team li:hover img { filter: none; transform: scale(1.05); }
+  .ixb-team .ixp-team li:hover .ixp-team-mono span { transform: scale(1.06) rotate(-4deg); }
+}
+.ixb-team .ixp-team li:focus-within figure { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+@media all and (max-width: 1000.5px) {
+  .ixb-team .ixp-team > li { flex: 0 0 calc((100% - 36px) / 3); }
+}
+@media all and (max-width: 600px) {
+  .ixb-team .ixp-team { gap: 12px; }
+  .ixb-team .ixp-team > li { flex: 0 0 calc((100% - 12px) / 2); }
+  .ixb-team .ixp-team figure { border-radius: 18px; }
+  .ixb-team .ixp-team figcaption { left: 8px; right: 8px; bottom: 8px; padding: 10px 11px 11px; border-radius: 12px; }
+  .ixb-team .ixp-team figcaption b { font-size: 1.6rem; }
+  .ixb-team .ixp-team figcaption span { font-size: 1.1rem; line-height: 1.3; }
+  .ixb-team .ixp-team .ixp-team-mono span { font-size: 4.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixb-team .ixp-team figure, .ixb-team .ixp-team img { transition: none; }
+  .ixb-team .ixp-team li:hover figure, .ixb-team .ixp-team li:hover img { transform: none; }
+}
+
+/* ---------- expertise: compact ----------
+   Smaller cards: four to a row, shorter images, tighter type. The seventh card spans two columns. */
+.ixb-svc-list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.ixb-svc-list .ixb-svc { padding-bottom: 20px; border-radius: 20px; }
+.ixb-svc-list .ixb-svc-img { aspect-ratio: 16 / 10; }
+.ixb-svc-list .ixb-svc-n { margin: 16px 0 0 18px; padding: 5px 9px 4px; font-size: 1.05rem; }
+.ixb-svc-list .ixb-svc-go { margin: 12px 14px 0 0; width: 36px; height: 36px; }
+.ixb-svc-list .ixb-svc-go svg { width: 16px; height: 16px; }
+.ixb-svc-list .ixb-svc-name { margin: 12px 18px 8px; font-size: clamp(1.8rem, 1.35vw, 2.1rem); }
+.ixb-svc-list .ixb-svc-desc { margin: 0 18px; font-size: 1.3rem; line-height: 1.5; }
+
+.ixb-svc-list > li:last-child { grid-column: span 2; }
+.ixb-svc-list > li:last-child .ixb-svc { grid-template-columns: minmax(0, 46%) minmax(0, 1fr) auto; padding: 0; }
+.ixb-svc-list > li:last-child .ixb-svc-img { min-height: 0; }
+.ixb-svc-list > li:last-child .ixb-svc-n { margin: 0 0 0 22px; }
+.ixb-svc-list > li:last-child .ixb-svc-go { margin: 0 16px 0 0; }
+.ixb-svc-list > li:last-child .ixb-svc-name { margin: 12px 22px 8px; font-size: clamp(1.9rem, 1.5vw, 2.3rem); }
+.ixb-svc-list > li:last-child .ixb-svc-desc { margin: 0 22px; }
+
+@media all and (max-width: 1100px) {
+  .ixb-svc-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ixb-svc-list > li:last-child { grid-column: span 3; }
+}
+@media all and (max-width: 900px) {
+  .ixb-svc-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ixb-svc-list > li:last-child { grid-column: 1 / -1; }
+}
+@media all and (max-width: 700px) {
+  .ixb-svc-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ixb-svc-list .ixb-svc, .ixb-svc-list > li:last-child .ixb-svc { padding-bottom: 16px; border-radius: 16px; }
+  .ixb-svc-list .ixb-svc-n, .ixb-svc-list > li:last-child .ixb-svc-n { margin: 12px 0 0 12px; }
+  .ixb-svc-list .ixb-svc-go, .ixb-svc-list > li:last-child .ixb-svc-go { margin: 8px 8px 0 0; width: 32px; height: 32px; }
+  .ixb-svc-list .ixb-svc-name, .ixb-svc-list > li:last-child .ixb-svc-name { margin: 10px 12px 6px; font-size: 1.6rem; }
+  .ixb-svc-list .ixb-svc-desc, .ixb-svc-list > li:last-child .ixb-svc-desc { margin: 0 12px; font-size: 1.2rem; }
+}
+@media all and (max-width: 420px) {
+  .ixb-svc-list { grid-template-columns: minmax(0, 1fr); }
+  .ixb-svc-list .ixb-svc-img, .ixb-svc-list > li:last-child .ixb-svc-img { aspect-ratio: 16 / 8; }
+}
+/* the new service images are on white: the wide seventh card shows its whole image (no crop of its title text) */
+.ixb-svc-list > li:last-child .ixb-svc-img { object-fit: contain; background: #FFF; }
+@media (hover: hover) { .ixb-svc-list > li:last-child .ixb-svc:hover .ixb-svc-img { transform: scale(1.02); } }
+/* team of eight: four to a row on desktop (two rows), three on tablet, two on phone */
+@media all and (min-width: 1000.5px) { .ixb-team .ixp-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); } }

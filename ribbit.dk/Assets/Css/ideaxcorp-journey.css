@@ -101,3 +101,58 @@
 @media (prefers-reduced-motion: reduce) {
   .ixj-cta.ixj-arrived .ixj-cta-btns .ixp-btn:first-child { animation: none; }
 }
+
+/* at the end of a page the bubble offers the next page: it can be clicked */
+.ixj-guide.next .ixj-say { pointer-events: auto; cursor: pointer; background: #9700FF; box-shadow: 0 10px 24px rgba(151, 0, 255, .35); }
+@media (hover: hover) { .ixj-guide.next .ixj-say:hover { background: #7A00D1; } }
+/* one guide walks every page (ideaxcorp-journey.js), so the About page's own stands down */
+html.ix-journey .ixb-guide { display: none; }
+
+/* ---------- "What we do" (home): the services as a card grid, no images ----------
+   three columns: "Creative Branding" a wide feature card in the brand purple, the rest white cards, the last one
+   wide to close the grid; two columns on tablets, one on phones. Each whole card is one link. */
+.ixw-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.4vw, 22px); }
+.ixw-card { min-width: 0; }
+.ixw-feature, .ixw-wide { grid-column: span 2; }
+.ixw-link {
+  position: relative; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; min-height: clamp(230px, 19vw, 300px);
+  padding: clamp(22px, 2.2vw, 34px); border-radius: 24px; background: #FFF; color: var(--ink, #170A28); text-decoration: none;
+  border: 1px solid rgba(23, 10, 40, .09);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 10px 30px -12px rgba(60, 20, 110, .14);
+  transition: transform .45s cubic-bezier(.16, 1, .3, 1), box-shadow .45s ease, border-color .3s ease;
+}
+.ixw-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: auto; }
+.ixw-n { font-size: 1.25rem; font-weight: 700; letter-spacing: .14em; color: rgba(23, 10, 40, .4); }
+.ixw-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: #F4ECFF; color: #9700FF; transition: background-color .3s ease, color .3s ease, rotate .5s cubic-bezier(.34, 1.56, .64, 1); }
+.ixw-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ixw-name { display: block; margin-top: clamp(28px, 3vw, 48px); font-family: var(--font-display); font-weight: 600; font-size: clamp(2.2rem, 1.9vw, 3rem); line-height: 1.08; letter-spacing: -.025em; text-wrap: balance; }
+.ixw-desc { display: block; max-width: 46ch; margin-top: 10px; font-size: 1.5rem; line-height: 1.55; color: rgba(26, 26, 26, .64); }
+.ixw-go { position: absolute; right: clamp(20px, 2vw, 30px); bottom: clamp(20px, 2vw, 30px); display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(23, 10, 40, .16); color: var(--ink, #170A28); transition: background-color .3s ease, color .3s ease, border-color .3s ease, rotate .45s cubic-bezier(.16, 1, .3, 1); }
+.ixw-go svg { width: 18px; height: 18px; }
+.ixw-desc { padding-right: 52px; } /* clear of the arrow */
+/* the feature card: the brand purple, white text */
+.ixw-feature .ixw-link { background: radial-gradient(120% 140% at 100% 0%, #B566FF 0%, #9700FF 45%, #6E00C4 100%); color: #FFF; border-color: transparent; box-shadow: 0 18px 40px -14px rgba(151, 0, 255, .55); }
+.ixw-feature .ixw-n { color: rgba(255, 255, 255, .7); }
+.ixw-feature .ixw-icon { background: rgba(255, 255, 255, .16); color: #FFF; }
+.ixw-feature .ixw-name { font-size: clamp(2.8rem, 2.8vw, 4.4rem); }
+.ixw-feature .ixw-desc { color: rgba(255, 255, 255, .82); }
+.ixw-feature .ixw-go { border-color: rgba(255, 255, 255, .45); color: #FFF; }
+@media (hover: hover) {
+  .ixw-link:hover { transform: translateY(-4px); border-color: rgba(151, 0, 255, .35); box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 22px 44px -14px rgba(60, 20, 110, .24); }
+  .ixw-link:hover .ixw-icon { background: #9700FF; color: #FFF; rotate: -8deg; }
+  .ixw-link:hover .ixw-go { background: #9700FF; border-color: #9700FF; color: #FFF; rotate: 45deg; }
+  .ixw-feature .ixw-link:hover .ixw-icon { background: #FFF; color: #9700FF; }
+  .ixw-feature .ixw-link:hover .ixw-go { background: #FFF; border-color: #FFF; color: #9700FF; }
+}
+.ixw-link:focus-visible { outline: 3px solid #9700FF; outline-offset: 3px; }
+@media all and (max-width: 1000.5px) {
+  .ixw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ixw-wide { grid-column: auto; }
+}
+@media all and (max-width: 600px) {
+  .ixw-grid { grid-template-columns: minmax(0, 1fr); }
+  .ixw-feature { grid-column: auto; }
+  .ixw-link { min-height: 0; }
+  .ixw-name { margin-top: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .ixw-link, .ixw-icon, .ixw-go { transition: none; } }

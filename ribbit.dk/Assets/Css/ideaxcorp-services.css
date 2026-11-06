@@ -1,0 +1,194 @@
+/* Services page: the same look as the Home and About pages. White page with hairlines between sections,
+   cards with soft borders and layered shadows, lavender number pills, and a dark brand panel (glow and dot
+   grid) for the process. Loaded on every page (page swaps keep the head); every rule is scoped to the
+   Services page with body:has(#service-details). Same markup and content. */
+
+/* ---------- the whole page on white, as About ---------- */
+body:has(#service-details) .page > .m.ixp:not(.ixp-cta) { background: #FFF; }
+body:has(#service-details) .page > .m.ixp + .m.ixp:not(.ixp-cta) { border-top: 1px solid #F1ECF6; }
+
+/* number pill used across the page */
+body:has(#service-details) .ixp-index .n,
+body:has(#service-details) #why-it-works .ixp-num {
+  display: inline-block; justify-self: start; width: max-content; padding: 6px 11px 5px; border-radius: 999px;
+  background: #F3EAFF; color: var(--accent); font-size: 1.15rem; font-weight: 700; letter-spacing: .1em;
+}
+
+/* ---------- Our expertise: the index becomes cards ---------- */
+body:has(#service-details) .ixp-index {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; border-top: 0;
+}
+body:has(#service-details) .ixp-index > li { display: flex; }
+body:has(#service-details) .ixp-index > li:last-child { grid-column: span 2; }
+body:has(#service-details) .ixp-index a {
+  flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto 1fr;
+  grid-template-areas: "n a" "t t" "d d"; align-items: start; gap: 0; padding: 24px 24px 28px;
+  border: 1px solid #EEE9F4; border-radius: 24px; background: radial-gradient(120% 90% at 100% 0%, #F8F2FF 0%, #FFF 60%);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 14px 34px rgba(23, 10, 40, .05); color: var(--ink);
+  transition: transform .35s var(--ease), box-shadow .35s ease, border-color .3s ease;
+}
+body:has(#service-details) .ixp-index a::before { display: none; }
+body:has(#service-details) .ixp-index .n { grid-area: n; padding-left: 11px; }
+body:has(#service-details) .ixp-index .a {
+  grid-area: a; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%;
+  border: 1px solid rgba(23, 10, 40, .16); font-size: 1.8rem; line-height: 1; background: #FFF;
+  transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .5s var(--ease);
+}
+body:has(#service-details) .ixp-index .t {
+  grid-area: t; margin: 40px 0 10px; font-size: clamp(2.2rem, 1.8vw, 2.8rem); font-weight: 600; line-height: 1.08; text-wrap: balance;
+}
+body:has(#service-details) .ixp-index .d { grid-area: d; display: block; max-width: 40ch; font-size: 1.45rem; line-height: 1.55; }
+@media (hover: hover) {
+  body:has(#service-details) .ixp-index a:hover {
+    transform: translateY(-6px); border-color: #E2D2F8; box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 26px 56px rgba(151, 0, 255, .13);
+  }
+  body:has(#service-details) .ixp-index a:hover .n { color: var(--accent); }
+  body:has(#service-details) .ixp-index a:hover .d { color: var(--muted); }
+  body:has(#service-details) .ixp-index a:hover .t { transform: none; color: var(--accent); }
+  body:has(#service-details) .ixp-index a:hover .a { transform: rotate(45deg); background: var(--accent); border-color: var(--accent); color: #FFF; }
+}
+body:has(#service-details) .ixp-index a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- service details: each service on its own card ---------- */
+body:has(#service-details) #service-details .ixp-wrap { display: grid; gap: 24px; }
+body:has(#service-details) .ixp-svc {
+  margin: 0; padding: clamp(20px, 2.2vw, 32px); padding-right: clamp(24px, 4vw, 64px); border: 1px solid #EEE9F4; border-radius: 32px;
+  background: #FFF; box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 18px 44px rgba(23, 10, 40, .06);
+}
+body:has(#service-details) .ixp-svc:first-child { padding-top: clamp(20px, 2.2vw, 32px); border-top: 1px solid #EEE9F4; }
+body:has(#service-details) .ixp-svc:nth-child(even) { padding-right: clamp(20px, 2.2vw, 32px); padding-left: clamp(24px, 4vw, 64px); }
+/* 3:2, the images' own shape, so nothing in them (such as the text in the branding image) is cropped */
+body:has(#service-details) .ixp-svc-visual { border-radius: 22px; box-shadow: none; aspect-ratio: 3 / 2; background: #F6F0FF; }
+/* the images are on white: multiply lets the frame's soft lavender show through their white */
+body:has(#service-details) .ixp-svc-visual img { mix-blend-mode: multiply; }
+body:has(#service-details) .ixp-svc-visual .ixp-svc-no {
+  background: var(--accent); color: #FFF; box-shadow: 0 6px 16px rgba(151, 0, 255, .3);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+body:has(#service-details) .ixp-checks li {
+  padding: 12px 14px 12px 44px; border-radius: 14px; background: #FAF8FD; border: 1px solid #F0EBF6; font-size: 1.45rem;
+}
+body:has(#service-details) .ixp-checks li::before { left: 14px; top: 13px; }
+
+/* ---------- Our working process: a dark brand panel, as the About philosophy ---------- */
+body:has(#service-details) #process { background: #FFF; color: var(--ink); }
+body:has(#service-details) #process .ixp-wrap {
+  position: relative; isolation: isolate; overflow: hidden; padding: clamp(36px, 5vw, 80px) clamp(24px, 4.5vw, 72px);
+  border-radius: 32px; background: #170A28; color: #FFF;
+  box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 30px 80px rgba(23, 10, 40, .18);
+}
+body:has(#service-details) #process .ixp-wrap::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(60% 80% at 100% 0%, rgba(151, 0, 255, .45), transparent 60%),
+              radial-gradient(40% 60% at 0% 110%, rgba(151, 0, 255, .22), transparent 70%);
+}
+body:has(#service-details) #process .ixp-wrap::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .45;
+  background-image: radial-gradient(rgba(255, 255, 255, .14) 1px, transparent 1.2px); background-size: 16px 16px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 40%, #000); mask-image: linear-gradient(90deg, transparent 40%, #000);
+}
+body:has(#service-details) #process .ixp-steps { gap: 14px; }
+body:has(#service-details) #process .ixp-steps li {
+  padding: 26px 24px 28px; border: 0; border-radius: 22px; background: rgba(255, 255, 255, .05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); transition: background-color .3s ease, transform .35s var(--ease);
+}
+body:has(#service-details) #process .ixp-steps li::after {
+  left: 24px; right: 24px; top: auto; bottom: 0; width: auto; transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease);
+}
+body:has(#service-details) #process .ixp-steps li.is-in::after { width: auto; transform: scaleX(1); }
+body:has(#service-details) #process .ixp-steps li::before { margin-bottom: 30px; font-size: clamp(4.4rem, 4vw, 6.4rem); }
+@media (hover: hover) {
+  body:has(#service-details) #process .ixp-steps li:hover { background: rgba(255, 255, 255, .09); transform: translateY(-4px); }
+}
+
+/* ---------- Why our approach works: cards as the About pillars ---------- */
+body:has(#service-details) #why-it-works .ixp-grid { gap: 16px; }
+body:has(#service-details) #why-it-works .ixp-tile {
+  border: 1px solid #EEE9F4; border-radius: 24px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 14px 34px rgba(23, 10, 40, .05);
+}
+body:has(#service-details) #why-it-works .ixp-tile::after {
+  content: ''; position: absolute; left: 26px; right: 26px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0;
+  background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease);
+}
+body:has(#service-details) #why-it-works .ixp-num { margin-bottom: 36px; }
+body:has(#service-details) #why-it-works .ixp-h3 { font-weight: 600; letter-spacing: -.025em; }
+@media (hover: hover) {
+  body:has(#service-details) #why-it-works .ixp-tile:hover { border-color: #E2D2F8; box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 24px 54px rgba(151, 0, 255, .12); }
+  body:has(#service-details) #why-it-works .ixp-tile:hover::after { transform: scaleX(1); }
+}
+
+/* ---------- smaller screens ---------- */
+@media all and (max-width: 1100px) {
+  body:has(#service-details) .ixp-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body:has(#service-details) .ixp-index > li:last-child { grid-column: 1 / -1; }
+}
+@media all and (max-width: 1000.5px) {
+  body:has(#service-details) .ixp-index a { grid-template-columns: minmax(0, 1fr) auto; }
+  body:has(#service-details) .ixp-svc, body:has(#service-details) .ixp-svc:nth-child(even) { padding: 16px 16px 28px; }
+  body:has(#service-details) .ixp-svc-body { padding: 0 8px; }
+}
+@media all and (max-width: 600px) {
+  body:has(#service-details) .ixp-index { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  body:has(#service-details) .ixp-index a { padding: 20px 20px 22px; }
+  body:has(#service-details) .ixp-index .t { margin-top: 26px; }
+  body:has(#service-details) .ixp-svc { border-radius: 24px; }
+  body:has(#service-details) #process .ixp-wrap { border-radius: 24px; padding: 32px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:has(#service-details) .ixp-index a, body:has(#service-details) #process .ixp-steps li { transition: none; }
+  body:has(#service-details) .ixp-index a:hover, body:has(#service-details) #process .ixp-steps li:hover { transform: none; }
+}
+
+/* ---------- Related projects: shorter images (4:3 instead of the tall 4:5) ---------- */
+body:has(#service-details) #related-work .ixp-card-media { aspect-ratio: 4 / 3; border-radius: 20px; }
+body:has(#service-details) #related-work .ixp-card-title { font-size: clamp(2rem, 1.6vw, 2.4rem); }
+
+/* ---------- hero: as the About and Home heroes ----------
+   A full first screen, everything centred: the pill label, an oversized uppercase title with the second
+   line in the purple italic, the intro under it and the two facts as small cards, on a soft centred glow. */
+body:has(#service-details) .m.ixp.ixp-hero { position: relative; isolation: isolate; padding-top: 0; padding-bottom: 0; }
+body:has(#service-details) .ixp-hero::before {
+  content: ''; position: absolute; left: 50%; top: 50%; z-index: -1; width: 80vw; height: 85vh; translate: -50% -50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(151, 0, 255, .14), rgba(201, 162, 255, .08) 45%, rgba(255, 255, 255, 0) 75%);
+}
+body:has(#service-details) .ixp-hero .ixp-wrap {
+  box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 110px 0 72px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+body:has(#service-details) .ixp-hero .ixp-eyebrow { margin-left: auto; margin-right: auto; }
+body:has(#service-details) .ixp-hero .ixp-h1 {
+  max-width: none; margin: 0; font-weight: 600; text-transform: uppercase;
+  font-size: clamp(5.4rem, 9vw, 15rem); line-height: .88; letter-spacing: -.045em; color: var(--ink);
+}
+body:has(#service-details) .ixp-hero .ixp-h1 em { display: block; text-transform: none; font-size: .98em; letter-spacing: -.02em; }
+body:has(#service-details) .ixp-hero-char { display: none; }
+
+body:has(#service-details) .ixp-hero-meta {
+  display: flex; flex-direction: column; align-items: center; gap: clamp(24px, 2.6vw, 36px);
+  margin-top: clamp(28px, 3vw, 48px); padding-top: 0; border-top: 0;
+}
+body:has(#service-details) .ixp-hero-meta .ixp-lead {
+  max-width: 46ch; margin: 0 auto; font-size: clamp(1.7rem, 1.3vw, 2.1rem); line-height: 1.5; color: rgba(26, 26, 26, .78);
+}
+body:has(#service-details) .ixp-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+body:has(#service-details) .ixp-facts div {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px 12px 14px; border: 1px solid #EEE9F4; border-radius: 999px;
+  background: rgba(255, 255, 255, .8); text-align: left;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 12px 28px rgba(23, 10, 40, .06);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+body:has(#service-details) .ixp-facts div::before {
+  content: ''; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(151, 0, 255, .18);
+}
+body:has(#service-details) .ixp-facts dt { font-size: clamp(1.7rem, 1.3vw, 2rem); color: var(--ink); white-space: nowrap; }
+body:has(#service-details) .ixp-facts dd { margin: 0; font-size: 1.3rem; }
+
+@media all and (max-width: 767.5px) {
+  body:has(#service-details) .ixp-hero .ixp-wrap { padding: 100px 0 56px; min-height: 92svh; }
+  body:has(#service-details) .ixp-hero .ixp-h1 { font-size: clamp(4.4rem, 13vw, 6.4rem); }
+  body:has(#service-details) .ixp-facts div { border-radius: 18px; padding: 12px 16px; }
+  body:has(#service-details) .ixp-facts { flex-direction: column; align-items: stretch; width: 100%; max-width: 340px; }
+  body:has(#service-details) .ixp-facts div { flex-wrap: wrap; row-gap: 2px; }
+  body:has(#service-details) .ixp-facts dd { flex-basis: 100%; padding-left: 22px; font-size: 1.25rem; }
+}
