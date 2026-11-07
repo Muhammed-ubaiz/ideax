@@ -1,11 +1,17 @@
-// Page transitions. The site's own router (min9eda.js) already loads the next page in the background and
-// reveals it through a growing ellipse (the #circle-mask clip path, 0.8s) over the old page. This adds:
-//  - the navbar's links (logo, MENU links, Get In Touch) go through that router too, instead of a full reload;
-//  - a purple Ideaxcorp ring that rides just outside the ellipse, so the wipe has a brand edge;
-//  - body.ix-transitioning while it runs (the old page sinks back a little; see ideaxcorp-transition.css).
-// Back/forward already go through the router's popstate handler.
+// Page transitions: a full-screen curtain, left to right.
+// The site's own router (min9eda.js) loads the next page in the background, lays it over the old one
+// (.page.masked) and, after window._ixPageT seconds, removes the old page and sets the scroll. Within that
+// time (see ideaxcorp-transition.css):
+//   0 – 45%  the old page fades, blurs a touch and drifts left while the curtain sweeps in from the left;
+//  45 – 55%  the screen is covered: the new page takes its place underneath;
+//  55 – 100% the curtain slides off to the right, revealing the new page from left to right, and its
+//            heading and content fade up in their usual stagger.
+// Back/forward go through the router's popstate handler, so they get the same curtain.
+// This script also routes the navbar's links through the router, and tells the site's scripts the moment
+// the next page is inserted (ix:pageadded), so they set it up before it is first drawn.
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window._ixPageT = reduced ? 0.3 : 1.1 // the router's page swap, in seconds (the CSS keyframes use the same 1.1s)
 
   function internal(a) {
     var href = a.getAttribute('href') || ''
@@ -20,34 +26,35 @@
     _router.setUrl(a.getAttribute('href'))
   })
 
-  // tell the site's scripts the moment the router inserts the next page, so they set it up (arm its scroll
-  // reveals, split headings...) before it is first drawn, instead of on their next timer tick
   var main = document.querySelector('main')
   if (main && window.MutationObserver) new MutationObserver(function (list) {
     for (var i = 0; i < list.length; i++) for (var j = 0; j < list[i].addedNodes.length; j++) {
       var n = list[i].addedNodes[j]
-      if (n.classList && n.classList.contains('page')) { window.dispatchEvent(new Event('ix:pageadded')); return }
+      if (n.classList && n.classList.contains('page')) {
+        // a page that arrived by a transition (the home hero hides until it has laid itself out; 2.5s at most)
+        n.classList.add('ix-arrived'); setTimeout(function () { n.classList.remove('ix-arrived') }, 2500)
+        window.dispatchEvent(new Event('ix:pageadded')); return
+      }
     }
   }).observe(main, { childList: true })
 
-  // the ring follows the clip path's own transform every frame while a page is being revealed
-  var ring = null, on = false
+  // the curtain: one element, made once; CSS runs it while body.ix-transitioning is on
+  var curtain = document.createElement('div')
+  curtain.className = 'ix-curtain'
+  curtain.setAttribute('aria-hidden', 'true')
+  curtain.innerHTML = '<span class="ix-curtain-edge"></span><span class="ix-curtain-mark"></span>'
+  function addCurtain() { if (!curtain.parentNode) document.body.appendChild(curtain) }
+  if (document.body) addCurtain(); else document.addEventListener('DOMContentLoaded', addCurtain)
+
+  // on while the router has a page laid over another (it adds .masked to the new page for the whole swap)
+  var on = false
   function frame() {
     var masked = document.querySelector('main .page.masked')
     if ((masked !== null) !== on) {
       on = !on
+      addCurtain()
+      if (on) void curtain.offsetWidth // restart the curtain's animation from its first frame
       document.body.classList.toggle('ix-transitioning', on)
-      // the old page shrinks about the middle of what is on screen, wherever it was scrolled to
-      var old = on && document.querySelector('main .page.removing')
-      if (old) old.style.transformOrigin = '50% ' + Math.round(window.innerHeight / 2 - old.getBoundingClientRect().top) + 'px'
-      if (!ring) { ring = document.createElement('div'); ring.className = 'ix-pt-ring'; ring.setAttribute('aria-hidden', 'true'); document.body.appendChild(ring) }
-      ring.style.display = on && !reduced ? 'block' : 'none'
-    }
-    if (on && ring && !reduced) {
-      // the router animates the clip path with a CSS transform (translate, rotate, scale about its 0,0 centre)
-      var clip = document.getElementById('circle-mask')
-      var tf = clip && clip.style.transform
-      if (tf) ring.style.transform = tf + ' scale(1.14)'
     }
     requestAnimationFrame(frame)
   }

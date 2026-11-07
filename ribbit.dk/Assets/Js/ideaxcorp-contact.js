@@ -86,7 +86,7 @@
       }
       function fail() {
         status.className = 'ix-contact-status err'
-        status.textContent = 'Sorry, the message could not be sent. Please email us at ' + form.dataset.email + ' or WhatsApp +971 56 744 8005.'
+        status.textContent = 'Sorry, the message could not be sent. Please email us at ' + form.dataset.email + ' or WhatsApp ' + (window.ixPhone ? window.ixPhone().display : '') + '.'
       }
     })
   }

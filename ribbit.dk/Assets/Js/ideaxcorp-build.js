@@ -195,6 +195,7 @@
 
     // the journey (ideaxcorp-journey.js) has the explorer jump down while the others walk off
     sec.dataset.jump0 = (S6 / END).toFixed(3); sec.dataset.jump1 = ((S6 + 1.1) / END).toFixed(3)
+    sec.classList.add('ixs-built') // laid out (the page transition waits for this before showing the scene)
 
     if (reduced || !window.ScrollTrigger) {
       // no scroll scene: the finished headline. Without ScrollTrigger yet (it loads without holding up the page),
