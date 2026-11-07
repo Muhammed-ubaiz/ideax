@@ -1,6 +1,8 @@
 // Ideaxcorp contact section: reveal on scroll, form validation, and sending.
-// This site has no server, so "Send Message" opens the visitor's email app with the message filled in,
-// addressed to the email on the form (data-email). The status line says so.
+// Sending: with a Web3Forms access key on the form (data-key), the message is posted to Web3Forms, which
+// emails it to the inbox the key was made for; the visitor gets a thank-you on the page. Without a key it
+// falls back to opening the visitor's email app, addressed to data-email. A hidden "botcheck" box catches
+// spam bots (people never see or tick it).
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -20,7 +22,8 @@
   }
 
   function setError(field, msg) {
-    var wrap = field.closest('.ix-field'), err = wrap.querySelector('.ix-field-error')
+    var wrap = field.closest('.ix-field'), err = wrap && wrap.querySelector('.ix-field-error')
+    if (!wrap) return // (the hidden spam trap is not a visible field)
     wrap.classList.toggle('invalid', !!msg)
     field.setAttribute('aria-invalid', msg ? 'true' : 'false')
     if (msg && !err) { err = document.createElement('span'); err.className = 'ix-field-error'; err.id = field.id + '-error'; wrap.appendChild(err) }
@@ -32,6 +35,7 @@
     if (field.required && !v) return 'Please fill in this field.'
     if (field.type === 'email' && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return 'Please enter a valid email address.'
     if (field.type === 'tel' && v && !/^\+?[\d\s()-]{7,}$/.test(v)) return 'Please enter a valid phone number.'
+    if (field.type === 'url' && v && !/^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(v)) return 'Please enter a website address, like yourbusiness.com.'
     return ''
   }
 
@@ -39,7 +43,7 @@
     var status = form.querySelector('.ix-contact-status')
     Array.prototype.forEach.call(form.querySelectorAll('input, textarea'), function (f) {
       f.addEventListener('blur', function () { if (f.value) setError(f, check(f)) })
-      f.addEventListener('input', function () { if (f.closest('.ix-field').classList.contains('invalid')) setError(f, check(f)) })
+      f.addEventListener('input', function () { var w = f.closest('.ix-field'); if (w && w.classList.contains('invalid')) setError(f, check(f)) })
     })
     form.addEventListener('submit', function (e) {
       e.preventDefault()
@@ -49,12 +53,41 @@
       })
       status.className = 'ix-contact-status'
       if (first) { status.textContent = 'Please check the highlighted fields.'; status.classList.add('err'); first.focus(); return }
-      var v = function (n) { return form.elements[n].value.trim() }
-      var body = 'Name: ' + v('name') + '\nPhone: ' + v('phone') + '\nEmail: ' + v('email') + '\nSubject: ' + v('subject') + '\n\n' + v('message')
-      var href = 'mailto:' + form.dataset.email + '?subject=' + encodeURIComponent('[Website] ' + v('subject') + ' – ' + v('name')) + '&body=' + encodeURIComponent(body)
-      window.location.href = href
-      status.textContent = 'Your email app should now open with your message ready to send. If it doesn’t, email us at ' + form.dataset.email + '.'
-      status.classList.add('ok')
+      var v = function (n) { var el = form.elements[n]; return el ? el.value.trim() : '' }
+      var bot = form.elements.botcheck
+      if (bot && bot.checked) { done(); return } // a bot ticked the hidden box: quietly drop it
+      var extra = [['Website', v('website')], ['Goal', v('goal')], ['Timeline', v('timeline')]].filter(function (p) { return p[1] })
+      var key = (form.dataset.key || '').trim()
+      if (!key) { // no Web3Forms key yet: the visitor's email app, as before
+        var NL = String.fromCharCode(10)
+        var body = 'Name: ' + v('name') + NL + 'Phone: ' + v('phone') + NL + 'Email: ' + v('email') + NL + 'Subject: ' + v('subject') +
+          extra.map(function (p) { return NL + p[0] + ': ' + p[1] }).join('') + NL + NL + v('message')
+        window.location.href = 'mailto:' + form.dataset.email + '?subject=' + encodeURIComponent('[Website] ' + v('subject') + ' – ' + v('name')) + '&body=' + encodeURIComponent(body)
+        status.textContent = 'Your email app should now open with your message ready to send. If it doesn’t, email us at ' + form.dataset.email + '.'
+        status.classList.add('ok')
+        return
+      }
+      var btn = form.querySelector('[type="submit"]'); btn.disabled = true
+      status.textContent = 'Sending…'
+      var data = { access_key: key, subject: '[Website] ' + v('subject') + ' – ' + v('name'), from_name: 'Ideaxcorp website',
+        name: v('name'), email: v('email'), phone: v('phone'), service: v('subject'), message: v('message'), page: location.pathname }
+      extra.forEach(function (p) { data[p[0].toLowerCase()] = p[1] })
+      fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) })
+        .then(function (r) { return r.json() })
+        .then(function (r) { if (r && r.success) done(); else fail() })
+        .catch(fail)
+        .then(function () { btn.disabled = false })
+      function done() {
+        var who = v('name').split(' ')[0] // (read before the form is cleared)
+        form.reset()
+        status.className = 'ix-contact-status ok'
+        status.textContent = 'Thank you' + (who ? ', ' + who : '') + '! Your message has been sent. We reply within 24 hours.'
+        if (window.gtag) window.gtag('event', 'generate_lead', { form: 'contact' }) // (once GA4 is added)
+      }
+      function fail() {
+        status.className = 'ix-contact-status err'
+        status.textContent = 'Sorry, the message could not be sent. Please email us at ' + form.dataset.email + ' or WhatsApp +971 56 744 8005.'
+      }
     })
   }
 

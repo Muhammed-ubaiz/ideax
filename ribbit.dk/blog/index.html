@@ -44,14 +44,16 @@
 	<link rel="icon" href="../Assets/Grx/ideaxcorp_icon.webp" media="(prefers-color-scheme: light)">
 	<link rel="shortcut icon" href="../Assets/Grx/ideaxcorp_icon.webp">
 	<link rel="stylesheet" type="text/css" href="../Assets/Css/global9eda.css?v=28_fonts">
-	<script src="../Assets/Js/ideaxcorp-nav.js" defer></script>
-	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-contact.css?v=4">
-	<script src="../Assets/Js/ideaxcorp-contact.js?v=t1" defer></script>
+	<script src="../Assets/Js/ideaxcorp-nav.js?v=2" defer></script>
+	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-contact.css?v=5">
+	<script src="../Assets/Js/ideaxcorp-contact.js?v=t3" defer></script>
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-motion.css?v=2">
 	<script src="../Assets/Js/ideaxcorp-motion.js?v=t5" defer></script>
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-pages.css?v=20">
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-about.css?v=39">
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-services.css?v=9">
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-float.css?v=1">
+	<script src="/Assets/Js/ideaxcorp-float.js?v=1" defer></script>
 	<script src="/Assets/Js/ideaxcorp-about.js?v=20" defer></script>
 	<script src="../Assets/Js/ideaxcorp-pages.js?v=t1" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-work.css?v=4_short">
@@ -269,148 +271,11 @@
 	</div>
 </footer>
 
-<div class="booking-flow">
+<div class="booking-flow" aria-hidden="true"><!-- the old booking overlay, emptied: min9eda.js still looks for this structure when it starts -->
 	<div class="inner">
-		<button class="browse-btn solid close" aria-label="Close overlay"><span class="icon"></span></button>
-		<form class="custom-form">
-			<div class="steps">
-				<div class="step">
-					<div class="l canoverflow">
-						<h2 class="slidey animin repeat" data-delay=".1">Let's get to <br>know each other</h2>
-						<div class="txt slidey animin repeat" data-delay=".15">
-							<label>What's your name? <span class="star">*</span></label>
-							<input type="text" id="name" name="name" placeholder="John Doe" data-label="Name" required>
-							<label>What's your email? <span class="star">*</span></label>
-							<input type="email" id="email" name="email" placeholder="abc@mail.com" data-label="Email" required>
-							<label>What company do you work for?</label>
-							<input type="text" id="company" name="company" placeholder="Google" data-label="Company">
-						</div>
-					</div>
-					<div class="r">
-						<div class="figure slidex animin repeat" data-delay=".3">
-							<div class="png-sequence" data-type="idle" data-path="/Assets/Grx/jester_book/" data-length="11" data-speed="1" data-xadjust="0" data-yadjust="0" data-scale="1,1,0,0" data-rel="1184,1150"></div>
-						</div>
-					</div>
-				</div>
-				<div class="step">
-					<div class="l canoverflow">
-						<h2 class="slidey animin repeat" data-delay=".1">Script & References</h2>
-						<div class="txt slidey animin repeat" data-delay=".15">
-							<label>A brief description of the project <span class="star">*</span></label>
-							<textarea rows="4" id="description" name="description" placeholder="Goes here..." data-label="Description" required></textarea>
-							<label>Will you provide a script, or should we work it out together?</label>
-							<input type="text" id="script" name="script" placeholder="Let's work on it together" data-label="Script">
-							<label>Are there any video references or examples you could share to help us understand what youre looking for?</label>
-							<input type="text" id="references" name="references" placeholder="The Disney / Pixar movie “Cars”" data-label="References">
-						</div>
-					</div>
-					<div class="r">
-						<div class="figure slidex animin repeat" data-delay=".3">
-							<div class="png-sequence" data-type="idle" data-path="/Assets/Grx/sage_book/" data-length="7" data-speed="1" data-xadjust="0" data-yadjust="0" data-scale="1,1,0,0" data-rel="1195,1013"></div>
-						</div>
-					</div>
-				</div>
-				<div class="step">
-					<div class="l canoverflow">
-						<h2 class="slidey animin repeat" data-delay=".1">Technical</h2>
-						<div class="txt slidey animin repeat" data-delay=".15">
-							<label>How long does the video need to be? <span class="star">*</span></label>
-							<label class="radio"><input type="radio" name="length" value="15 Sec. or less" data-label="Video length"><span class="checkmark"></span>15 Sec. or less</label>
-							<label class="radio"><input type="radio" name="length" value="30-60 Sec." data-label="Video length"><span class="checkmark"></span>30-60 Sec.</label>
-							<label class="radio"><input type="radio" name="length" value="60-90 Sec." data-label="Video length"><span class="checkmark"></span>60-90 Sec.</label>
-							<label class="radio"><input type="radio" name="length" value="2 Min. +" data-label="Video length"><span class="checkmark"></span>2 Min. +</label>
-							<label class="radio"><input type="radio" name="length" value="Unsure" data-label="Video length"><span class="checkmark"></span>Unsure</label>
-							
-							<label>Which of these price ranges best matches your budget? <span class="star">*</span></label>
-							<label class="radio"><input type="radio" name="price" value="€3-6k" data-label="Price range"><span class="checkmark"></span>€3-6k</label>
-							<label class="radio"><input type="radio" name="price" value="€6-12k" data-label="Price range"><span class="checkmark"></span>€6-12k</label>
-							<label class="radio"><input type="radio" name="price" value="€12-25k" data-label="Price range"><span class="checkmark"></span>€12-25k</label>
-							<label class="radio"><input type="radio" name="price" value="€25-50k" data-label="Price range"><span class="checkmark"></span>€25-50k</label>
-							<label class="radio"><input type="radio" name="price" value="€50k+" data-label="Price range"><span class="checkmark"></span>€50k+</label>
-							<label class="radio"><input type="radio" name="price" value="Unsure" data-label="Price range"><span class="checkmark"></span>Unsure</label>
-						</div>
-					</div>
-					<div class="r">
-						<div class="figure slidex animin repeat" data-delay=".3">
-							<div class="png-sequence" data-type="idle" data-path="/Assets/Grx/explorer_book/" data-length="9" data-speed="1" data-xadjust="0" data-yadjust="0" data-scale="1,1,0,0" data-rel="1058,1160"></div>
-						</div>
-					</div>
-				</div>
-				<div class="step">
-					<div class="l canoverflow">
-						<h2 class="slidey animin repeat" data-delay=".1">Deadline & Format</h2>
-						<div class="txt slidey animin repeat" data-delay=".15">
-							<label>Do you have an ideal deadline for the project?</label>
-							<input type="text" id="deadline" name="deadline" placeholder="Within 2 months..." data-label="Deadline">
-							<label>Where will the video be used?</label>
-							<input type="text" id="where" name="where" placeholder="In our physical stores and on SOME..." data-label="Where will the video be used">
-						</div>
-					</div>
-					<div class="r">
-						<div class="figure slidex animin repeat" data-delay=".3">
-							<div class="png-sequence" data-type="idle" data-path="/Assets/Grx/creator_book/" data-length="9" data-speed="1" data-xadjust="0" data-yadjust="0" data-scale="1,1,0,0" data-rel="570,1126"></div>
-						</div>
-					</div>
-				</div>
-				<div class="step">
-					<div class="l canoverflow">
-						<h2 class="slidey animin repeat" data-delay=".1">Voiceover & Music</h2>
-						<div class="txt slidey animin repeat" data-delay=".15">
-							<label>Would you like to include a voiceover? <span class="star">*</span></label>
-							<input type="text" id="voiceover" name="voiceover" placeholder="Someone sounding like Morgan Freeman..." data-label="Voiceover" required>
-							<label>Would you like to include music on the project? <span class="star">*</span></label>
-							<input type="text" id="music" name="music" placeholder="Electronic, techy sounding music, yes..." data-label="Music" required>
-						</div>
-					</div>
-					<div class="r">
-						<div class="figure slidex animin repeat" data-delay=".3">
-							<div class="png-sequence" data-type="idle" data-path="/Assets/Grx/outlaw_book/" data-length="11" data-speed="1" data-xadjust="0" data-yadjust="0" data-scale="1,1,0,0" data-rel="888,990"></div>
-						</div>
-					</div>
-				</div>
-				<div class="step">
-					<div class="cal">
-						<div class="circular-text slidey animin" style="--delay:.15s;">
-							<h3>Book a Date</h3>
-							<div class="svg"><img src="../Assets/Grx/bookadate.svg" alt=""></div>
-						</div>
-						<div style="width:auto;height:auto;" id="my-cal-inline"></div>
-					</div>
-					<div class="intro-figures">
-						<div class="jester">
-							<picture class="lazy fade">
-								<img src="../Assets/Grx/intro/jester.png" width="1350" height="735" alt="" loading="lazy" decoding="async" draggable="false">
-							</picture>
-						</div>
-						<div class="explorer">
-							<picture class="lazy fade">
-								<img src="../Assets/Grx/intro/explorer.png" width="638" height="715" alt="" loading="lazy" decoding="async" draggable="false">
-							</picture>
-						</div>
-						<div class="sage">
-							<picture class="lazy fade">
-								<img src="../Assets/Grx/intro/sage.png" width="390" height="766" alt="" loading="lazy" decoding="async" draggable="false">
-							</picture>
-						</div>
-						<div class="outlaw">
-							<picture class="lazy fade">
-								<img src="../Assets/Grx/intro/outlaw.png" width="575" height="447" alt="" loading="lazy" decoding="async" draggable="false">
-							</picture>
-						</div>
-						<div class="creator">
-							<picture class="lazy fade">
-								<img src="../Assets/Grx/intro/creator.png" width="785" height="709" alt="" loading="lazy" decoding="async" draggable="false">
-							</picture>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-		<div class="nav">
-			<button class="browse-btn left solid" aria-label="Previous step"><span class="icon"></span></button>
-			<div class="indi"><span>1</span>/5</div>
-			<button class="icon-btn yellow next" aria-label="Next step"><span>Next step</span><span class="icon"></span></button>
-		</div>
+		<button class="browse-btn solid close" tabindex="-1" aria-label="Close overlay"><span class="icon"></span></button>
+		<form class="custom-form"><div class="steps"><div class="step"></div></div></form>
+		<div class="nav"><button class="browse-btn left solid" tabindex="-1" aria-label="Previous step"><span class="icon"></span></button><div class="indi"><span>1</span></div><button class="icon-btn yellow next" tabindex="-1" aria-label="Next step"><span></span><span class="icon"></span></button></div>
 	</div>
 </div>
 

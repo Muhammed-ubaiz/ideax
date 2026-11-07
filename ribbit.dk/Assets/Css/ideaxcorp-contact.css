@@ -329,3 +329,8 @@
   .ix-contact .ix-office-list dd { padding-left: 0; }
   .ix-contact .ix-office-map-link { margin: auto 16px 16px; }
 }
+
+/* form extras: the spam trap is off-screen for people (bots fill it), and "(optional)" is quieter */
+.ix-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ix-opt { font-weight: 500; color: var(--muted); }
+.ix-contact-send:disabled { opacity: .6; cursor: progress; }
