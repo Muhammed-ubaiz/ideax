@@ -253,82 +253,123 @@
   .ix-contact .ix-office-status { margin-left: 0; } /* was indented for a flag the cards no longer have */
 }
 
-/* ---------- office cards: v2 layout ----------
-   A dark brand band holds the office name, its city and the open badge. Below it the four details sit as
-   2x2 tiles, and the Maps button runs the full width. Same markup and content. */
-.ix-contact .ix-office { border-radius: 26px; border: 1px solid #ECE6F4; background: #FFF; isolation: isolate; }
-.ix-contact .ix-office::before { display: none; }
-.ix-contact .ix-office-body { padding: 0; gap: 0; }
+/* ---------- office cards: v3 ----------
+   A light card. The country code (data-code on .ix-office-body) sits large and outlined in the top corner;
+   the office name, city, open badge and local time head the card; the details run as a clean list (label left,
+   value right) and a purple "Open in Google Maps" pill closes it. Same content; on the Contact page the map sits
+   beside it, inset in the card. */
+.ix-contact .ix-office {
+  position: relative; border-radius: 28px; border: 1px solid #ECE5F5; background: #FFF; isolation: isolate; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 30px 70px -28px rgba(76, 18, 140, .22);
+  transition: transform .5s var(--ease), box-shadow .5s var(--ease), border-color .4s ease;
+}
+.ix-contact .ix-office::before { /* accent line along the top, drawn in on hover */
+  content: ''; display: block; position: absolute; left: 0; right: 0; top: 0; width: auto; height: 3px; border-radius: 0; z-index: 3;
+  background: linear-gradient(90deg, #9700FF, #C77DFF 60%, #9700FF); transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .7s var(--ease);
+}
+.ix-contact .ix-office-body {
+  position: relative; display: flex; flex-direction: column; gap: 0; padding: 0; min-height: 100%; overflow: hidden;
+  background: radial-gradient(90% 70% at 100% 0%, #F6EEFF, rgba(246, 238, 255, 0) 70%), #FFF;
+}
+.ix-contact .ix-office-body::before { /* AE / IN, outlined */
+  content: attr(data-code); position: absolute; bottom: -.16em; right: -.02em; z-index: 0; pointer-events: none;
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(12rem, 12vw, 18rem); line-height: 1; letter-spacing: -.06em;
+  color: transparent; -webkit-text-stroke: 1.5px rgba(151, 0, 255, .16);
+  transition: transform .8s var(--ease), -webkit-text-stroke-color .5s ease; transform-origin: 100% 100%;
+}
+.ix-contact .ix-office-body > * { position: relative; z-index: 1; }
 
+/* head */
 .ix-contact .ix-office-head {
-  position: relative; overflow: hidden; margin: 0; padding: 30px 30px 28px; border: 0; align-items: flex-start; gap: 16px;
-  background: radial-gradient(120% 140% at 100% 0%, rgba(151, 0, 255, .55), transparent 55%), #170A28; color: #FFF;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px 16px; margin: 0; padding: 34px 34px 26px;
+  border: 0; background: none; color: var(--ink); overflow: visible;
 }
-.ix-contact .ix-office-head::before { /* fine dot grid */
-  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
-  background-image: radial-gradient(rgba(255, 255, 255, .16) 1px, transparent 1.2px); background-size: 14px 14px;
-  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000); mask-image: linear-gradient(90deg, transparent 30%, #000);
+.ix-contact .ix-office-head::before, .ix-contact .ix-office-head::after { display: none; }
+.ix-contact .ix-office-titles { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ix-contact .ix-office-title {
+  font-family: var(--font-display); font-style: normal; font-weight: 600; color: var(--ink);
+  font-size: clamp(3rem, 2.6vw, 3.8rem); line-height: 1; letter-spacing: -.035em;
 }
-.ix-contact .ix-office-head::after { /* map pin mark */
-  content: ''; position: absolute; right: 26px; bottom: -18px; width: 92px; height: 92px; z-index: 0; pointer-events: none; opacity: .14;
-  background: #FFF;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E") center / contain no-repeat;
-  transition: transform .5s var(--ease);
-}
-.ix-contact .ix-office-head > * { position: relative; z-index: 1; }
-.ix-contact .ix-office-titles { gap: 8px; }
-.ix-contact .ix-office-title { color: #FFF; font-size: clamp(2.8rem, 2.4vw, 3.4rem); }
-.ix-contact .ix-office-sub {
-  display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, .7); font-size: 1.35rem;
-}
-.ix-contact .ix-office-sub::before { content: ''; width: 18px; height: 2px; border-radius: 2px; background: #C77DFF; }
+.ix-contact .ix-office-sub { display: inline-flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 500; color: rgba(26, 26, 26, .58); }
+.ix-contact .ix-office-sub::before { content: ''; width: 20px; height: 2px; border-radius: 2px; background: var(--accent); }
 .ix-contact .ix-office-status {
-  margin-left: auto; background: rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .82);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  margin-left: auto; padding: 8px 13px 7px; font-size: 1.2rem; background: #F2EEF7; color: var(--muted); box-shadow: none;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.ix-contact .ix-office-status.open { background: rgba(52, 211, 113, .14); color: #7CF0A8; box-shadow: inset 0 0 0 1px rgba(124, 240, 168, .3); }
+.ix-contact .ix-office-status.open { background: #E6F7EC; color: #157A3A; box-shadow: inset 0 0 0 1px #C9EDD5; }
+.ix-contact .ix-office-local {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; margin-top: 4px; padding: 7px 12px 6px; border-radius: 999px;
+  background: #FFF; box-shadow: 0 0 0 1px #ECE5F5; font-size: 1.2rem; font-weight: 600; color: var(--muted);
+}
+.ix-contact .ix-office-local svg { width: 14px; height: 14px; color: var(--accent); }
+.ix-contact .ix-office-local .ix-time { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
-.ix-contact .ix-office-list {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 24px 24px 20px;
-}
+/* details */
+.ix-contact .ix-office-list { display: block; margin: 0 34px 26px; padding: 0; border-top: 1px solid #EEE7F6; }
 .ix-contact .ix-office-list > div {
-  display: flex; flex-direction: column; gap: 12px; padding: 18px; border: 1px solid #F0EBF6; border-radius: 16px;
-  background: #FAF8FD; align-items: stretch; transition: background-color .25s ease, border-color .25s ease, transform .25s var(--ease);
+  display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: center; margin: 0; padding: 16px 0;
+  border: 0; border-bottom: 1px solid #EEE7F6; border-radius: 0; background: none;
+  transition: background-color .3s ease, border-radius .3s ease;
 }
-.ix-contact .ix-office-list > div:last-child { border-bottom: 1px solid #F0EBF6; }
+.ix-contact .ix-office-list > div:last-child { border-bottom: 1px solid #EEE7F6; }
 .ix-contact .ix-office-list dt {
-  gap: 10px; font-size: 1.15rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(26, 26, 26, .5);
+  display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(26, 26, 26, .5);
 }
 .ix-contact .ix-office-list dt svg {
-  width: 16px; height: 16px; padding: 8px; border-radius: 10px; background: #FFF; color: var(--accent);
-  box-shadow: 0 0 0 1px #EDE4F8, 0 4px 10px rgba(151, 0, 255, .08);
+  box-sizing: content-box; width: 16px; height: 16px; padding: 9px; border-radius: 50%; background: #F4ECFF; color: var(--accent); box-shadow: none;
+  transition: background-color .3s ease, color .3s ease, transform .4s var(--ease);
 }
-.ix-contact .ix-office-list dd { padding: 0; font-size: clamp(1.45rem, 1.05vw, 1.6rem); line-height: 1.5; }
+.ix-contact .ix-office-list dd { margin: 0; padding: 0; font-size: clamp(1.5rem, 1.1vw, 1.65rem); font-weight: 500; line-height: 1.5; color: var(--text); }
+.ix-contact .ix-office-list dd a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 600; text-decoration: none; border: 0; }
+.ix-contact .ix-office-list dd a::after {
+  content: '\2197'; font-size: .9em; color: var(--accent); opacity: 0; translate: -4px 2px; transition: opacity .25s ease, translate .35s var(--ease);
+}
 @media (hover: hover) {
-  .ix-contact .ix-office-list > div:hover { background: #F5EEFF; border-color: #E4D4FA; }
-  .ix-contact .ix-office:hover .ix-office-head::after { transform: translateY(-6px) rotate(-6deg); }
+  .ix-contact .ix-office-list > div:hover dt svg { background: var(--accent); color: #FFF; transform: rotate(-8deg) scale(1.06); }
+  .ix-contact .ix-office-list dd a:hover { color: var(--accent); }
+  .ix-contact .ix-office-list dd a:hover::after { opacity: 1; translate: 0 0; }
+  .ix-contact .ix-office:hover { transform: translateY(-6px); border-color: #DCC8F7; box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 40px 80px -30px rgba(120, 30, 210, .35); }
+  .ix-contact .ix-office:hover::before { transform: scaleX(1); }
+  .ix-contact .ix-office:hover .ix-office-body::before { transform: translate(-8px, -6px); -webkit-text-stroke-color: rgba(151, 0, 255, .32); }
 }
 
+/* the Maps button: at the bottom, so both cards end level */
 .ix-contact .ix-office-map-link {
-  align-self: stretch; justify-content: center; margin: auto 24px 24px; padding: 16px 22px 15px; border-radius: 14px;
-  background: var(--ink); box-shadow: 0 10px 24px rgba(23, 10, 40, .18); transition: background-color .2s ease, transform .2s var(--ease), box-shadow .2s ease;
+  align-self: flex-start; display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin: auto 34px 32px;
+  padding: 15px 24px 14px; border: 0; border-radius: 999px; background: var(--accent); color: #FFF;
+  font-size: 1.25rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  box-shadow: 0 12px 28px rgba(151, 0, 255, .28); transition: background-color .25s ease, transform .35s var(--ease), box-shadow .35s var(--ease);
 }
+.ix-contact .ix-office-map-link::after { content: '\2192'; font-size: 1.15em; letter-spacing: 0; transition: translate .35s var(--ease); }
 .ix-contact .ix-office-map-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (hover: hover) {
-  .ix-contact .ix-office-map-link:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 30px rgba(151, 0, 255, .3); }
+  .ix-contact .ix-office-map-link:hover { background: #7A00D1; transform: translateY(-2px); box-shadow: 0 18px 36px rgba(151, 0, 255, .36); }
+  .ix-contact .ix-office-map-link:hover::after { translate: 4px 0; }
 }
-.ix-contact-page .ix-office-map { min-height: 420px; }
+
+/* Contact page: the map inset on the right of the card */
+.ix-contact-page .ix-office-map { margin: 12px; min-height: 420px; border-radius: 20px; overflow: hidden; background: #F4F0F9; }
 
 @media all and (max-width: 600px) {
-  .ix-contact .ix-office-head { flex-direction: column; gap: 14px; padding: 24px 20px 22px; }
+  .ix-contact .ix-office { border-radius: 22px; }
+  .ix-contact .ix-office-head { padding: 26px 20px 20px; }
   .ix-contact .ix-office-status { margin-left: 0; }
-  .ix-contact .ix-office-head::after { width: 70px; height: 70px; right: 16px; }
-  .ix-contact .ix-office-list { grid-template-columns: 1fr; gap: 10px; padding: 16px; }
-  .ix-contact .ix-office-list > div { padding: 16px; gap: 10px; }
-  .ix-contact .ix-office-list dd { padding-left: 0; }
-  .ix-contact .ix-office-map-link { margin: auto 16px 16px; }
+  .ix-contact .ix-office-body::before { font-size: 10rem; }
+  .ix-contact .ix-office-list { margin: 0 20px 22px; }
+  .ix-contact .ix-office-list > div { grid-template-columns: 1fr; gap: 8px; margin: 0; padding: 14px 0; }
+  .ix-contact .ix-office-list dd { padding-left: 46px; }
+  .ix-contact .ix-office-map-link { align-self: stretch; margin: auto 20px 20px; }
+  .ix-contact-page .ix-office-map { margin: 0 8px 8px; min-height: 280px; }
 }
+@media (prefers-reduced-motion: reduce) {
+  .ix-contact .ix-office, .ix-contact .ix-office::before, .ix-contact .ix-office-body::before { transition: none; }
+}
+
+/* Contact page: pill, heading, then the intro under it */
+.ix-contact-page .ix-contact-pill { margin-top: 0; }
+.ix-contact-page .ix-contact-title + .ix-contact-intro { margin: -8px 0 32px; }
 
 /* form extras: the spam trap is off-screen for people (bots fill it), and "(optional)" is quieter */
 .ix-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

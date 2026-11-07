@@ -1,0 +1,130 @@
+/* About page team cards: the interactive introduction (behaviour: ideaxcorp-team.js). The default card is the
+   one in ideaxcorp-about.css; everything here applies only while a card is live (.ixt-live). */
+.ixb-team .ixp-team > li { position: relative; perspective: 1100px; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.ixb-team .ixp-team > li:focus-visible figure { outline: 3px solid #9700FF; outline-offset: 4px; }
+.ixb-team .ixp-team figure { transform-style: preserve-3d; will-change: auto; }
+.ixb-team .ixp-team .ixp-team-photo { transition: transform .7s cubic-bezier(.16, 1, .3, 1), box-shadow .7s cubic-bezier(.16, 1, .3, 1); }
+
+/* the card comes forward and turns a little towards the mouse */
+.ixb-team .ixp-team > li.ixt-live { z-index: 6; }
+.ixb-team .ixp-team > li.ixt-live figure {
+  transform: translateY(-12px) scale(1.07) rotateX(var(--ixt-rx, 0deg)) rotateY(var(--ixt-ry, 0deg));
+  border-color: #CDB0F5;
+  box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 50px 90px -30px rgba(110, 20, 200, .55), 0 0 0 6px rgba(151, 0, 255, .08);
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1), box-shadow .7s cubic-bezier(.16, 1, .3, 1), border-color .4s ease;
+}
+/* the portrait lifts out of the card towards the visitor */
+.ixb-team .ixp-team > li.ixt-live .ixp-team-photo {
+  transform: translateY(-24px) translateZ(56px) scale(1.07);
+  box-shadow: 0 40px 60px -22px rgba(40, 0, 80, .5), 0 0 0 1px rgba(255, 255, 255, .55), 0 0 40px -6px rgba(151, 0, 255, .3);
+}
+/* …and comes alive: a slow push in to the face, then a gentle breathing drift (no mouth animation). Transitions,
+   not keyframes, so it eases back just as smoothly when the visitor leaves. */
+.ixb-team .ixp-team .ixp-team-photo img, .ixt-pop img {
+  transform-origin: 50% 16%;
+  transition: scale 1s cubic-bezier(.16, 1, .3, 1), translate 1s cubic-bezier(.16, 1, .3, 1), transform .8s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-team .ixp-team > li.ixt-live .ixp-team-photo img, .ixb-team .ixp-team > li.ixt-live .ixt-pop img {
+  scale: 1.2; transform: none; animation: ixt-breathe 6s ease-in-out 1s infinite;
+}
+@keyframes ixt-breathe {
+  0%, 100% { transform: none; }
+  35% { transform: scale(1.012) translate(-.5%, -.3%) rotate(-.4deg); }
+  70% { transform: scale(1.006) translate(.4%, .2%) rotate(.3deg); }
+}
+
+/* stepping out of the frame (members with a cut-out portrait, data-pop): the photo rises inside the frame while a
+   cut-out of the same photo, exactly on top of it, carries the head on up past the frame's top edge */
+.ixb-team .ixp-team > li.ixt-live.ixt-has-pop .ixp-team-photo img, .ixb-team .ixp-team > li.ixt-live .ixt-pop img { translate: 0 -24%; }
+.ixt-pop {
+  position: absolute; top: 8px; left: 8px; right: 8px; aspect-ratio: 1 / 1; z-index: 2; pointer-events: none; opacity: 0;
+  clip-path: inset(-80% -30% 100% -30%); /* only what rises above the frame */
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1), opacity .2s ease .6s;
+}
+.ixt-pop img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%;
+  filter: drop-shadow(0 -4px 14px rgba(40, 0, 80, .22));
+}
+.ixb-team .ixp-team > li.ixt-live .ixt-pop {
+  opacity: 1; transform: translateY(-24px) translateZ(56px) scale(1.07);
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1), opacity .15s ease;
+}
+.ixb-team .ixp-team > li.ixt-live .ixp-team-mono::before { animation: ixt-orb 3.2s ease-in-out infinite; }
+@keyframes ixt-orb { 0%, 100% { transform: scale(1.1); } 50% { transform: scale(1.2); } }
+
+/* cinematic light: a soft sheen sweeps across once, and a purple rim glows at the edges */
+.ixt-light {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit; opacity: 0;
+  background:
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .28) 45%, transparent 60%) -160% 0 / 250% 100% no-repeat,
+    radial-gradient(120% 90% at 50% 0%, transparent 60%, rgba(151, 0, 255, .18) 100%);
+  transition: opacity .5s ease;
+}
+.ixb-team .ixp-team > li.ixt-live .ixt-light { opacity: 1; animation: ixt-sheen 1.3s cubic-bezier(.4, 0, .2, 1) .15s both; }
+@keyframes ixt-sheen { from { background-position: -160% 0, 0 0; } to { background-position: 260% 0, 0 0; } }
+
+/* the member's video (when there is one) over the portrait */
+.ixt-video {
+  position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%;
+  opacity: 0; transition: opacity .45s ease; pointer-events: none;
+}
+.ixb-team .ixp-team > li.ixt-playing .ixt-video { opacity: 1; }
+
+/* the introduction */
+.ixt-intro {
+  position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 3; padding: 11px 13px 12px; border-radius: 13px; color: #FFF;
+  transform-style: flat;
+  background: rgba(23, 10, 40, .62); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16), 0 12px 28px rgba(23, 10, 40, .3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3);
+  opacity: 0; transform: translateZ(80px) translateY(14px) scale(.97); transform-origin: 50% 100%; pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.ixb-team .ixp-team > li.ixt-live .ixt-intro {
+  opacity: 1; transform: translateZ(80px); pointer-events: auto;
+  transition: opacity .5s ease .3s, transform .6s cubic-bezier(.16, 1, .3, 1) .3s;
+}
+/* the name and role step back under the caption */
+.ixb-team .ixp-team figcaption { transition: opacity .3s ease; }
+.ixb-team .ixp-team > li.ixt-live figcaption { opacity: 0; }
+.ixt-tag {
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 1rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #E2C2FF;
+}
+.ixt-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #B24DFF; box-shadow: 0 0 0 3px rgba(178, 77, 255, .3); animation: ixt-dot 1.4s ease-in-out infinite; }
+@keyframes ixt-dot { 50% { box-shadow: 0 0 0 6px rgba(178, 77, 255, 0); } }
+.ixt-text { margin: 0; min-height: 1.45em; font-size: clamp(1.25rem, .95vw, 1.45rem); font-weight: 500; line-height: 1.45; color: #FFF; }
+.ixb-team .ixp-team > li.ixt-typing .ixt-text::after { /* the caret while it talks */
+  content: ''; display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; vertical-align: -2px; background: #C77DFF;
+  animation: ixt-caret .8s steps(1) infinite;
+}
+@keyframes ixt-caret { 50% { opacity: 0; } }
+.ixt-sound {
+  display: none; margin-top: 8px; padding: 6px 11px 5px; border: 0; border-radius: 999px; background: #9700FF; color: #FFF; cursor: pointer;
+  font: 700 1rem/1 var(--font-body, sans-serif); letter-spacing: .08em; text-transform: uppercase;
+}
+.ixb-team .ixp-team > li.ixt-muted .ixt-sound { display: inline-block; }
+.ixt-sound:focus-visible { outline: 2px solid #FFF; outline-offset: 2px; }
+
+/* phones: a smaller lift (cards sit two to a row) */
+@media all and (max-width: 600px) {
+  .ixb-team .ixp-team > li.ixt-live figure { transform: translateY(-6px) scale(1.04); }
+  .ixb-team .ixp-team > li.ixt-live .ixp-team-photo { transform: translateY(-14px) translateZ(40px) scale(1.05); }
+  .ixt-pop { top: 5px; left: 5px; right: 5px; }
+  .ixb-team .ixp-team > li.ixt-live .ixt-pop { transform: translateY(-14px) translateZ(40px) scale(1.05); }
+  .ixt-intro { left: 5px; right: 5px; bottom: 5px; padding: 8px 9px 9px; border-radius: 10px; }
+  .ixt-tag { margin-bottom: 4px; font-size: .85rem; }
+  .ixt-text { font-size: 1.1rem; line-height: 1.38; }
+}
+
+/* reduced motion: no tilt, lift or drift; the introduction simply appears */
+@media (prefers-reduced-motion: reduce) {
+  .ixb-team .ixp-team > li.ixt-live figure, .ixb-team .ixp-team > li.ixt-live .ixp-team-photo { transform: none; }
+  .ixb-team .ixp-team > li.ixt-live .ixp-team-photo img, .ixb-team .ixp-team > li.ixt-live .ixp-team-mono::before,
+  .ixb-team .ixp-team > li.ixt-live .ixt-light, .ixt-tag::before { animation: none; }
+  .ixt-intro, .ixb-team .ixp-team > li.ixt-live .ixt-intro { transform: none; transition: opacity .2s ease; }
+  .ixt-pop { display: none; }
+  .ixb-team .ixp-team > li.ixt-live .ixp-team-photo img { scale: 1; translate: none; animation: none; }
+}
+
+/* a lighter brand wash over the live portrait, so the photo stays natural */
+.ixb-team .ixp-team > li.ixt-live .ixp-team-photo:not(.ixp-team-mono)::after { opacity: 1; background: linear-gradient(180deg, transparent 65%, rgba(151, 0, 255, .16)); }

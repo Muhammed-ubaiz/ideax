@@ -442,64 +442,151 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
   .ixb-svc-list .ixb-svc:hover, .ixb-svc-list .ixb-svc:hover .ixb-svc-img { transform: none; }
 }
 
-/* ---------- team: v3 layout (a photo for everyone) ----------
-   Five equal portrait cards. Each photo fills its card, with the name and role on a glass label at the
-   bottom. A member without a photo yet shows their initials in the same frame. To add a photo, put
+/* ---------- team: v4 (editorial cards) ----------
+   Eight light cards, four to a row on desktop (three on tablet, two on phone). Each card: a portrait frame,
+   then a running number, the name and the role under a hairline that draws in on hover. A member without a
+   photo yet shows soft lavender with their initials outlined. To add a photo, put
    <img src="../Assets/Grx/site/team/NAME.webp" alt="NAME" loading="lazy" decoding="async"> inside the card's
    .ixp-team-photo div and remove the "ixp-team-mono" class, aria-hidden and the <span> of initials.
-   Portrait photos (4:5, at least 600x750) work best. */
-.ixb-team .ixp-team { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
-.ixb-team .ixp-team > li { flex: 1 1 0; min-width: 0; margin-top: 0 !important; }
+   Portrait photos (5:7 or 4:5, at least 500x700) work best. */
+.ixb-team .ixp-team {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(28px, 2.4vw, 40px) clamp(16px, 1.6vw, 24px);
+  counter-reset: ixteam;
+}
+.ixb-team .ixp-team > li { min-width: 0; margin-top: 0 !important; counter-increment: ixteam; }
 .ixb-team .ixp-team figure {
-  position: relative; overflow: hidden; border-radius: 24px; background: #170A28;
-  box-shadow: 0 1px 2px rgba(23, 10, 40, .05), 0 16px 38px rgba(23, 10, 40, .08);
-  transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease;
+  position: relative; margin: 0; padding: 10px; border-radius: 26px; background: #FFF; border: 1px solid #EEE7F6;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 18px 40px -22px rgba(76, 18, 140, .22);
+  transition: transform .5s cubic-bezier(.16, 1, .3, 1), box-shadow .5s cubic-bezier(.16, 1, .3, 1), border-color .4s ease;
 }
-.ixb-team .ixp-team .ixp-team-photo { aspect-ratio: 4 / 5; border-radius: 0; }
+/* the portrait */
+.ixb-team .ixp-team .ixp-team-photo {
+  position: relative; overflow: hidden; aspect-ratio: 5 / 6; border-radius: 18px; background: #F4ECFF;
+}
 .ixb-team .ixp-team .ixp-team-photo img {
-  position: absolute; inset: 0; filter: none; object-position: 50% 15%; transition: transform .8s cubic-bezier(.16, 1, .3, 1);
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; filter: none;
+  transition: transform .9s cubic-bezier(.16, 1, .3, 1);
 }
-.ixb-team .ixp-team .ixp-team-photo::after { /* shade under the label */
-  opacity: 1; background: linear-gradient(180deg, transparent 45%, rgba(23, 10, 40, .82));
+.ixb-team .ixp-team .ixp-team-photo::after { /* a faint brand wash from the bottom, stronger on hover */
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background: linear-gradient(180deg, transparent 60%, rgba(151, 0, 255, .28)); transition: opacity .5s ease;
 }
-/* initials stand in until a photo is added */
-.ixb-team .ixp-team .ixp-team-mono { background: radial-gradient(120% 90% at 20% 0%, #B24DFF 0%, #7A00D1 45%, #2A0B4D 100%); }
-.ixb-team .ixp-team .ixp-team-mono span {
-  margin-top: -18%; font-size: clamp(5rem, 5vw, 7.6rem); color: rgba(255, 255, 255, .92); letter-spacing: -.04em;
+/* no photo yet: lavender, a fine dot grid and the initials outlined in the brand purple */
+.ixb-team .ixp-team .ixp-team-mono {
+  display: grid; place-items: center;
+  background:
+    radial-gradient(rgba(151, 0, 255, .13) 1px, transparent 1.4px) 0 0 / 16px 16px,
+    radial-gradient(110% 80% at 80% 0%, #EBDCFF 0%, #F6F0FF 55%, #FBF8FF 100%);
 }
+.ixb-team .ixp-team .ixp-team-mono::after { display: none; }
+.ixb-team .ixp-team .ixp-team-mono > span:first-child {
+  margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(5.6rem, 6vw, 9rem); line-height: 1; letter-spacing: -.05em;
+  color: transparent; -webkit-text-stroke: 2px #9700FF; transition: transform .6s cubic-bezier(.16, 1, .3, 1), color .4s ease;
+}
+/* the caption: number, name, role */
 .ixb-team .ixp-team figcaption {
-  position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; padding: 14px 16px 15px; border-radius: 16px; color: #FFF;
-  background: rgba(23, 10, 40, .4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2);
+  position: relative; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2px 12px; margin: 0; padding: 18px 10px 10px;
+  background: none; box-shadow: none; border-radius: 0; color: var(--text); -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.ixb-team .ixp-team figcaption b { color: #FFF; font-size: clamp(1.8rem, 1.4vw, 2.2rem); line-height: 1.1; letter-spacing: -.02em; }
-.ixb-team .ixp-team figcaption span { margin-top: 5px; font-size: 1.25rem; color: rgba(255, 255, 255, .75); }
-/* the founder's label carries a small accent mark */
-.ixb-team .ixp-team > li:first-child figcaption span { color: #D9A8FF; font-weight: 600; }
+.ixb-team .ixp-team figcaption::before { /* hairline, drawn in on hover */
+  content: ''; position: absolute; left: 10px; right: 10px; top: 8px; height: 2px; border-radius: 2px; background: #9700FF;
+  transform: scaleX(0); transform-origin: 0 50%; transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-team .ixp-team figcaption::after { /* 01, 02 … */
+  content: counter(ixteam, decimal-leading-zero); grid-column: 2; grid-row: 1; align-self: start;
+  font-size: 1.15rem; font-weight: 700; letter-spacing: .08em; color: rgba(26, 26, 26, .32); transition: color .3s ease;
+}
+.ixb-team .ixp-team figcaption b {
+  grid-column: 1; grid-row: 1; display: block; font-family: var(--font-display); font-weight: 600; color: var(--text);
+  font-size: clamp(1.9rem, 1.45vw, 2.3rem); line-height: 1.1; letter-spacing: -.025em;
+}
+.ixb-team .ixp-team figcaption span {
+  grid-column: 1 / -1; display: block; margin-top: 6px; font-size: 1.15rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26, 26, 26, .5); line-height: 1.35;
+}
+.ixb-team .ixp-team > li:first-child figcaption span { color: #9700FF; } /* the founder */
 
 @media (hover: hover) {
-  .ixb-team .ixp-team li:hover figure { transform: translateY(-6px); box-shadow: 0 2px 4px rgba(23, 10, 40, .06), 0 28px 60px rgba(151, 0, 255, .18); }
-  .ixb-team .ixp-team li:hover img { filter: none; transform: scale(1.05); }
-  .ixb-team .ixp-team li:hover .ixp-team-mono span { transform: scale(1.06) rotate(-4deg); }
+  .ixb-team .ixp-team li:hover figure {
+    transform: translateY(-6px); border-color: #DCC8F7;
+    box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 34px 60px -26px rgba(120, 30, 210, .4);
+  }
+  .ixb-team .ixp-team li:hover img { transform: scale(1.05); }
+  .ixb-team .ixp-team li:hover .ixp-team-photo::after { opacity: 1; }
+  .ixb-team .ixp-team li:hover .ixp-team-mono > span:first-child { transform: scale(1.06) rotate(-4deg); color: rgba(151, 0, 255, .12); }
+  .ixb-team .ixp-team li:hover figcaption::before { transform: scaleX(1); }
+  .ixb-team .ixp-team li:hover figcaption::after { color: #9700FF; }
 }
-.ixb-team .ixp-team li:focus-within figure { outline: 3px solid var(--accent); outline-offset: 3px; }
+.ixb-team .ixp-team li:focus-within figure { outline: none; } /* keyboard focus: ideaxcorp-team.css (focus-visible) */
 
 @media all and (max-width: 1000.5px) {
-  .ixb-team .ixp-team > li { flex: 0 0 calc((100% - 36px) / 3); }
+  .ixb-team .ixp-team { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media all and (max-width: 600px) {
-  .ixb-team .ixp-team { gap: 12px; }
-  .ixb-team .ixp-team > li { flex: 0 0 calc((100% - 12px) / 2); }
-  .ixb-team .ixp-team figure { border-radius: 18px; }
-  .ixb-team .ixp-team figcaption { left: 8px; right: 8px; bottom: 8px; padding: 10px 11px 11px; border-radius: 12px; }
+  .ixb-team .ixp-team { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; }
+  .ixb-team .ixp-team figure { padding: 6px; border-radius: 18px; }
+  .ixb-team .ixp-team .ixp-team-photo { border-radius: 13px; }
+  .ixb-team .ixp-team figcaption { padding: 14px 6px 6px; }
+  .ixb-team .ixp-team figcaption::before { left: 6px; right: 6px; top: 6px; }
   .ixb-team .ixp-team figcaption b { font-size: 1.6rem; }
-  .ixb-team .ixp-team figcaption span { font-size: 1.1rem; line-height: 1.3; }
-  .ixb-team .ixp-team .ixp-team-mono span { font-size: 4.4rem; }
+  .ixb-team .ixp-team figcaption span { font-size: 1rem; letter-spacing: .08em; }
+  .ixb-team .ixp-team figcaption::after { font-size: 1rem; }
+  .ixb-team .ixp-team .ixp-team-mono > span:first-child { font-size: 4.6rem; -webkit-text-stroke-width: 1.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ixb-team .ixp-team figure, .ixb-team .ixp-team img { transition: none; }
+  .ixb-team .ixp-team figure, .ixb-team .ixp-team img, .ixb-team .ixp-team figcaption::before { transition: none; }
   .ixb-team .ixp-team li:hover figure, .ixb-team .ixp-team li:hover img { transform: none; }
 }
+
+/* team: compact - a narrower grid, square portraits and tighter captions */
+.ixb-team .ixp-team { max-width: 1040px; margin-left: auto; margin-right: auto; gap: 22px 16px; }
+.ixb-team .ixp-team figure { padding: 8px; border-radius: 22px; }
+.ixb-team .ixp-team .ixp-team-photo { aspect-ratio: 1 / 1; border-radius: 15px; }
+.ixb-team .ixp-team .ixp-team-mono > span:first-child { font-size: clamp(4.4rem, 4.2vw, 6.4rem); }
+.ixb-team .ixp-team figcaption { padding: 14px 8px 6px; }
+.ixb-team .ixp-team figcaption::before { left: 8px; right: 8px; top: 6px; }
+.ixb-team .ixp-team figcaption b { font-size: clamp(1.6rem, 1.2vw, 1.9rem); }
+.ixb-team .ixp-team figcaption span { margin-top: 4px; font-size: 1.05rem; }
+@media all and (max-width: 1000.5px) { .ixb-team .ixp-team { max-width: 720px; } }
+@media all and (max-width: 600px) {
+  .ixb-team .ixp-team { gap: 12px 10px; }
+  .ixb-team .ixp-team figure { padding: 5px; border-radius: 16px; }
+  .ixb-team .ixp-team .ixp-team-photo { border-radius: 12px; }
+  .ixb-team .ixp-team figcaption { padding: 12px 5px 5px; }
+  .ixb-team .ixp-team figcaption b { font-size: 1.45rem; }
+  .ixb-team .ixp-team figcaption span { font-size: .95rem; }
+  .ixb-team .ixp-team .ixp-team-mono > span:first-child { font-size: 3.8rem; }
+}
+
+/* team: polish - a centred head over the centred grid, a soft glow behind the cards, and the initials filled
+   with the brand gradient on a tint that shifts a little from card to card */
+.ixb-team { position: relative; isolation: isolate; }
+.ixb-team::before {
+  content: ''; position: absolute; left: 50%; top: 52%; z-index: -1; width: min(1100px, 92vw); height: 70%; translate: -50% -50%;
+  pointer-events: none; border-radius: 50%; background: radial-gradient(closest-side, rgba(151, 0, 255, .09), rgba(151, 0, 255, 0));
+}
+.ixb-team .ixp-head { display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 760px; margin: 0 auto clamp(40px, 4vw, 60px); text-align: center; }
+.ixb-team .ixp-head .ixp-h2 { text-wrap: balance; }
+.ixb-team .ixp-head .ixp-lead { max-width: 46ch; margin: 0; text-wrap: balance; }
+.ixb-team .ixp-team .ixp-team-mono > span:first-child {
+  color: transparent; -webkit-text-stroke: 0; background: linear-gradient(160deg, #B24DFF 10%, #7A00D1 90%);
+  -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 10px 18px rgba(151, 0, 255, .22));
+}
+.ixb-team .ixp-team .ixp-team-mono::before { /* a soft blob behind the initials */
+  content: ''; position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%; background: rgba(255, 255, 255, .75);
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, .35); transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+}
+.ixb-team .ixp-team .ixp-team-mono > span:first-child { position: relative; }
+.ixb-team .ixp-team > li:nth-child(3n+2) .ixp-team-mono { background-color: #F3EAFF; background-image: radial-gradient(rgba(151, 0, 255, .12) 1px, transparent 1.4px), radial-gradient(110% 80% at 15% 0%, #E6D3FF 0%, #F4ECFF 55%, #FBF8FF 100%); }
+.ixb-team .ixp-team > li:nth-child(3n) .ixp-team-mono { background-image: radial-gradient(rgba(151, 0, 255, .12) 1px, transparent 1.4px), radial-gradient(110% 90% at 50% 100%, #E9D9FF 0%, #F5EEFF 55%, #FCFAFF 100%); }
+.ixb-team .ixp-team > li:nth-child(3n+2) .ixp-team-mono, .ixb-team .ixp-team > li:nth-child(3n) .ixp-team-mono { background-size: 16px 16px, auto; }
+@media (hover: hover) {
+  .ixb-team .ixp-team li:hover .ixp-team-mono > span:first-child { color: transparent; }
+  .ixb-team .ixp-team li:hover .ixp-team-mono::before { transform: scale(1.12); }
+}
+/* the photo cards: a gentle shade at the foot of the picture */
+.ixb-team .ixp-team .ixp-team-photo:not(.ixp-team-mono)::after { opacity: .7; background: linear-gradient(180deg, transparent 62%, rgba(23, 10, 40, .35)); }
+@media (hover: hover) { .ixb-team .ixp-team li:hover .ixp-team-photo:not(.ixp-team-mono)::after { opacity: 1; background: linear-gradient(180deg, transparent 50%, rgba(151, 0, 255, .35)); } }
 
 /* ---------- expertise: compact ----------
    Smaller cards: four to a row, shorter images, tighter type. The seventh card spans two columns. */
@@ -543,8 +630,6 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
 /* the new service images are on white: the wide seventh card shows its whole image (no crop of its title text) */
 .ixb-svc-list > li:last-child .ixb-svc-img { object-fit: contain; background: #FFF; }
 @media (hover: hover) { .ixb-svc-list > li:last-child .ixb-svc:hover .ixb-svc-img { transform: scale(1.02); } }
-/* team of eight: four to a row on desktop (two rows), three on tablet, two on phone */
-@media all and (min-width: 1000.5px) { .ixb-team .ixp-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* CTA ("Let's create what's next", About and Home): the intro and the buttons centred under the title */
 .m.ixp.ixb-cta .ixp-lead { margin-left: auto; margin-right: auto; text-wrap: balance; }
