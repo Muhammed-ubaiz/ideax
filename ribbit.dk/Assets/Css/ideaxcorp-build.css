@@ -65,3 +65,8 @@
 @media (prefers-reduced-motion: reduce) {
   .ixs-blob, .ixs-d, .ixs-word.ixs-waiting { animation: none; }
 }
+
+/* slower: a longer scroll for the same scene (the push plays over more scrolling) */
+.m.ixs { height: 700vh; height: 700svh; }
+@media all and (max-width: 767.5px) { .m.ixs { height: 600vh; height: 600svh; } }
+.m.ixs.ixs-static { height: 100vh; height: 100svh; }

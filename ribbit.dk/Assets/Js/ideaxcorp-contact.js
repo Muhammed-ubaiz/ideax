@@ -118,6 +118,17 @@
   officeStatus()
   setInterval(officeStatus, 60000)
 
+  // footer clocks beside the site's own Dubai time: India time (any element with .ix-time and data-tz), HH:MM
+  function clocks() {
+    Array.prototype.forEach.call(document.querySelectorAll('.ix-time[data-tz]'), function (el) {
+      try { el.textContent = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()) }
+      catch (e) { el.textContent = '' }
+    })
+  }
+  clocks()
+  setInterval(clocks, 30000)
+  window.addEventListener('ix:pageadded', clocks)
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
   else init()
   setInterval(init, 1000) // pages are swapped in without a full reload

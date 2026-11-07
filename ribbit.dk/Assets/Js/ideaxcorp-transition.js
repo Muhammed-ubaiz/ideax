@@ -46,9 +46,10 @@
   function addCurtain() { if (!curtain.parentNode) document.body.appendChild(curtain) }
   if (document.body) addCurtain(); else document.addEventListener('DOMContentLoaded', addCurtain)
 
-  // on while the router has a page laid over another (it adds .masked to the new page for the whole swap)
+  // on while the router has a page laid over another (it adds .masked to the new page for the whole swap);
+  // watched through class changes on the pages, so nothing runs between transitions
   var on = false
-  function frame() {
+  function check() {
     var masked = document.querySelector('main .page.masked')
     if ((masked !== null) !== on) {
       on = !on
@@ -56,7 +57,7 @@
       if (on) void curtain.offsetWidth // restart the curtain's animation from its first frame
       document.body.classList.toggle('ix-transitioning', on)
     }
-    requestAnimationFrame(frame)
   }
-  requestAnimationFrame(frame)
+  if (main && window.MutationObserver) new MutationObserver(check).observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
+  check()
 })()

@@ -28,42 +28,46 @@
     })
   }
 
-  var last = -1
+  // parallax: worked out only while the page scrolls (one pass per frame), idle otherwise
+  var last = -1, queued = false
   function frame() {
+    queued = false
     var y = window.scrollY
-    if (y !== last) {
-      last = y
-      var vh = window.innerHeight
-      for (var i = 0; i < items.length; i++) {
-        var it = items[i], r = it.el.getBoundingClientRect()
-        if (r.bottom < -200 || r.top > vh + 200) continue
-        // -1 when the element's centre is at the bottom of the screen, +1 at the top
-        var p = Math.max(-1, Math.min(1, 1 - (r.top + r.height / 2) / (vh / 2)))
-        it.el.style.translate = '0 ' + (-p * it.k).toFixed(1) + 'px'
-      }
+    if (y === last) return
+    last = y
+    var vh = window.innerHeight
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i], r = it.el.getBoundingClientRect()
+      if (r.bottom < -200 || r.top > vh + 200) continue
+      // -1 when the element's centre is at the bottom of the screen, +1 at the top
+      var p = Math.max(-1, Math.min(1, 1 - (r.top + r.height / 2) / (vh / 2)))
+      it.el.style.translate = '0 ' + (-p * it.k).toFixed(1) + 'px'
     }
-    requestAnimationFrame(frame)
   }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(frame) } }
+  window.addEventListener('scroll', queue, { passive: true })
+  window.addEventListener('resize', function () { last = -1; queue() })
 
-  // Slower scrolling through the "Curious / Full-service / Marketing Agency" section: the wheel step
-  // eases from 0.5 (normal) down to 0.28 while the section fills the screen, then back up.
-  var NORMAL = 0.5, SLOW = 0.28
-  function wheelSpeed() {
-    var s = document.querySelector('.m.push-titles')
-    if (!s) { window._ixWheel = NORMAL; return }
-    var r = s.getBoundingClientRect(), vh = window.innerHeight
-    // how much of the screen the section covers (0..1), eased so the change is gradual
-    var cover = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0)) / vh
-    var t = Math.min(1, cover / 0.6)
-    t = t * t * (3 - 2 * t)
-    window._ixWheel = NORMAL + (SLOW - NORMAL) * t
+  // looping CSS animations (marquees, outlined text bands, bobbing mascots, scroll cues) pause while their
+  // section is off screen: running, each one makes the browser recalculate styles on every frame of scrolling.
+  // They start again a little before the section scrolls back in (300px margin).
+  var offIO = window.IntersectionObserver ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { e.target.classList.toggle('ix-off', !e.isIntersecting) })
+  }, { rootMargin: '300px 0px' }) : null
+  function watchSections() {
+    if (!offIO) return
+    Array.prototype.forEach.call(document.querySelectorAll('main .page > *, footer'), function (el) {
+      if (el.dataset.ixOff) return
+      el.dataset.ixOff = '1'; offIO.observe(el)
+    })
   }
-  ;(function loop() { wheelSpeed(); requestAnimationFrame(loop) })()
+  watchSections()
+  window.addEventListener('ix:pageadded', function () { setTimeout(watchSections, 0) })
 
   collect()
-  setInterval(collect, 1500) // pages are swapped in without a reload
-  window.addEventListener('ix:pageadded', collect)
-  requestAnimationFrame(frame)
+  setInterval(function () { collect(); watchSections() }, 1500) // pages are swapped in without a reload
+  window.addEventListener('ix:pageadded', function () { collect(); last = -1; queue() })
+  queue()
 })()
 
 // "Marketing Agency": open a gap between the two words as wide as the small figure (outlaw) and

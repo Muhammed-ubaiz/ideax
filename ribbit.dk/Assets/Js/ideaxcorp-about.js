@@ -98,14 +98,17 @@
     if (!page) return
     var vh = window.innerHeight
     if (story && track && travel) {
+      // all reads first, then the one write (no forced layout in between)
       var r = story.getBoundingClientRect()
       var p = Math.max(0, Math.min(1, -r.top / (r.height - vh)))
-      track.style.transform = 'translate3d(' + (-p * travel).toFixed(1) + 'px,0,0)'
-      // images inside the moving track: open them once they slide into view
+      // images inside the moving track: open them once they slide into view (measured before this frame's move)
+      var w = window.innerWidth, open = []
       Array.prototype.forEach.call(track.querySelectorAll('.ixb-mask:not(.is-in)'), function (m) {
         var b = m.getBoundingClientRect()
-        if (b.left < window.innerWidth * .85 && b.right > 0 && b.top < vh && b.bottom > 0) m.classList.add('is-in')
+        if (b.left < w * .85 && b.right > 0 && b.top < vh && b.bottom > 0) open.push(m)
       })
+      track.style.transform = 'translate3d(' + (-p * travel).toFixed(1) + 'px,0,0)'
+      open.forEach(function (m) { m.classList.add('is-in') })
     }
     moveGuide()
   }
@@ -124,6 +127,9 @@
   }
   function moveGuide() {
     if (!guide || !page) return
+    // the site-wide guide (ideaxcorp-journey.js, html.ix-journey) walks the page instead and this one is hidden:
+    // nothing to move (and no layout reads on every scroll)
+    if (document.documentElement.classList.contains('ix-journey')) return
     var y = window.scrollY, max = document.documentElement.scrollHeight - window.innerHeight
     var hero = page.querySelector('.ixb-hero')
     var past = hero && y > hero.offsetHeight * .5

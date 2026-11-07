@@ -32,7 +32,7 @@
     guide = document.createElement('div'); guide.className = 'ixj-guide'; guide.setAttribute('aria-hidden', 'true')
     guide.innerHTML = '<span class="ixj-say"></span><img src="' + src(0) + '" alt="" width="345" height="390">'
     document.body.appendChild(guide)
-    img = guide.querySelector('img'); say = guide.querySelector('.ixj-say')
+    img = guide.querySelector('img'); img.decoding = 'async'; say = guide.querySelector('.ixj-say')
     say.addEventListener('click', function () { if (guide.classList.contains('next')) leave(guide.classList.contains('back') ? -1 : 1) }) // the bubble takes you on (or back)
     // fetched once the page has loaded, so they don't hold up the load event (and the site's intro with it)
     var fetchAll = function () {
@@ -246,8 +246,12 @@
     guide.classList.toggle('talk', !!speech)
     if (ctaSec) ctaSec.classList.toggle('ixj-arrived', speech !== '' && speech === (ctaSec.getAttribute('data-say') || ''))
 
-    if (ss !== sy || shown || enterT0 || exitT0 || arriveEnd || arriveCheck) wake() // keeps scrubbing, and the resting loop plays while it is shown
+    // keeps scrubbing every frame while anything moves; standing still, its resting loop (20 frames a second)
+    // only needs a look every 50ms
+    if (ss !== sy || enterT0 || exitT0 || arriveEnd || arriveCheck) wake()
+    else if (shown && !restT) restT = setTimeout(function () { restT = 0; wake() }, 50)
   }
+  var restT = 0
   function wake() { if (!running) { running = true; requestAnimationFrame(frame) } }
 
   // services rows on the home page: the image floats beside the cursor (the About page does its own)

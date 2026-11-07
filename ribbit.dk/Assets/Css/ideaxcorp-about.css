@@ -545,3 +545,11 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
 @media (hover: hover) { .ixb-svc-list > li:last-child .ixb-svc:hover .ixb-svc-img { transform: scale(1.02); } }
 /* team of eight: four to a row on desktop (two rows), three on tablet, two on phone */
 @media all and (min-width: 1000.5px) { .ixb-team .ixp-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* CTA ("Let's create what's next", About and Home): the intro and the buttons centred under the title */
+.m.ixp.ixb-cta .ixp-lead { margin-left: auto; margin-right: auto; text-wrap: balance; }
+.m.ixp.ixb-cta .ixp-btns { justify-content: center; }
+@media all and (max-width: 480px) {
+  .m.ixp.ixb-cta .ixp-btns { flex-direction: column; align-items: stretch; max-width: 320px; margin-left: auto; margin-right: auto; }
+  .m.ixp.ixb-cta .ixp-btns .ixp-btn { justify-content: center; }
+}

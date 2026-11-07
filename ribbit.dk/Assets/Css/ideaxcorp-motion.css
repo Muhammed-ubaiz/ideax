@@ -22,3 +22,12 @@
   .ix-pf-head.ix-pf-head.armed .ix-pf-title, .ix-clients.ix-clients.armed .ix-clients-title, .ix-contact.ix-contact.armed .ix-contact-title { clip-path: none; transform: none; }
   .ix-work.armed .ix-work-media img { scale: 1; }
 }
+
+/* looping animations wait while their section is off screen (ideaxcorp-motion.js sets .ix-off). Listed one by one:
+   a catch-all (.ix-off *) would make every style recalculation walk up the tree and cost more than it saves */
+.ix-off .ixp-marquee-track, .ix-off .ixb-kin, .ix-off .ixp-cta-chars img, .ix-off .ixp-hero-char,
+.ix-off .ixb-orbit, .ix-off .ixb-rig-logo, .ix-off .ixb-hint span, .ix-off .ixb-scrollcue span::after,
+.ix-off .ix-office-status::before, .ix-off .ix-logo, .ix-off .ixs-d, .ix-off .ixs-word.ixs-waiting,
+.ix-off .ixs-blob-1, .ix-off .ixs-blob-2, .ix-off .ixs-blob-3, .ix-off .ixj-cta-btns .ixp-btn {
+  animation-play-state: paused !important;
+}

@@ -46,7 +46,7 @@
   // when the scroll goes back; when it stops they hold, so its legs never jerk with the scroll.
   var lastTick = 0
   function tick() {
-    if (!sec) return
+    if (!sec || sec.classList.contains('ix-off')) return // scrolled past (or not yet at) the hero: nothing to draw (ideaxcorp-motion.js sets .ix-off)
     var now = performance.now(), dt = Math.min(80, now - (lastTick || now)); lastTick = now
     NAMES.forEach(function (n, k) {
       var c = CAST[n]; if (!c.img) return
@@ -61,7 +61,7 @@
       var pulling = holding && c.back && c.pull
       var set = pulling ? c.pull : holding ? c.walk : going && c.go ? c.go : c.idle, list = frames[set[0]], count = set[1]
       var stepping = holding || going && c.go
-      if (stepping && moving) c.fa = (c.fa || 0) + (c.back && !pulling ? -1 : 1) * dt * .024 // a pull plays forwards
+      if (stepping && moving) c.fa = (c.fa || 0) + (c.back && !pulling ? -1 : 1) * dt * .018 // 18fps steps (a pull plays forwards)
       var i = stepping ? ((Math.floor(c.fa || 0) % count) + count) % count : Math.floor(now / 50 + k * 11) % count
       // it always faces the way it walks in (towards its word); scrolling back, its walk plays in reverse (a rewind),
       // rather than turning round as well, which made it walk backwards
@@ -204,13 +204,13 @@
       if (reduced) { sec.classList.add('ixs-static'); tl.progress(S6 / END); return }
       var onScroll = function () {
         var r = sec.getBoundingClientRect(), span = sec.offsetHeight - window.innerHeight
-        gsap.to(tl, { progress: span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0, duration: 1, ease: 'power3.out', overwrite: true })
+        gsap.to(tl, { progress: span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0, duration: 2, ease: 'power3.out', overwrite: true })
       }
       window.addEventListener('scroll', onScroll, { passive: true }); onScroll()
       st = { plain: true, kill: function () { window.removeEventListener('scroll', onScroll); gsap.killTweensOf(tl) } }
       return
     }
-    st = ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 1, animation: tl })
+    st = ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 2, animation: tl }) // (2s catch-up: the scene glides after the scroll)
   }
 
   // the effect elements: dust puffs (six per word), the swoosh under "Curious", the progress row (a dot per word)
@@ -242,7 +242,7 @@
     if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger)
     NAMES.forEach(function (n, k) {
       var c = CAST[n]
-      c.el = sec.querySelector('[data-ixs-char="' + n + '"]'); c.float = c.el.querySelector('.ixs-float'); c.img = c.el.querySelector('img')
+      c.el = sec.querySelector('[data-ixs-char="' + n + '"]'); c.float = c.el.querySelector('.ixs-float'); c.img = c.el.querySelector('img'); c.img.decoding = 'async' // (frame swaps decode off the main thread; the last frame stays until the next is ready)
       c.key = ''; c.movedAt = 0; c.p = c.p || { w: 0 }
       load(c.walk); load(c.idle); if (c.go) load(c.go); if (c.pull) load(c.pull)
       // a gentle float, apart from the scroll scene
