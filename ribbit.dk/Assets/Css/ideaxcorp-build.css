@@ -68,5 +68,13 @@
 
 /* slower: a longer scroll for the same scene (the push plays over more scrolling) */
 .m.ixs { height: 700vh; height: 700svh; }
-@media all and (max-width: 767.5px) { .m.ixs { height: 600vh; height: 600svh; } }
+/* phones: a longer scroll, as a finger flick travels much further than a mouse wheel's notch */
+@media all and (max-width: 767.5px) {
+  .m.ixs { height: 1800vh; height: 1800svh; }
+  /* lighter to draw on a phone, so the scene glides without dropped frames: a tighter shadow under the words,
+     the background light without its extra blur (its gradient is already soft) */
+  .ixs-word { text-shadow: 0 6px 14px rgba(23, 10, 40, .08); }
+  .ixs-w-full, .ixs-w-agency { text-shadow: 0 6px 14px rgba(151, 0, 255, .16); }
+  .ixs-blob { filter: none; }
+}
 .m.ixs.ixs-static { height: 100vh; height: 100svh; }

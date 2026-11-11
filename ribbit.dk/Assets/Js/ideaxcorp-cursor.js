@@ -30,7 +30,9 @@
     if (!t || !t.closest) return
     var text = !!t.closest(TEXT)
     root.classList.toggle('ix-cur-text', text)
-    root.classList.toggle('ix-cur-hover', !text && !!t.closest(HOVER))
+    var h = t.closest(HOVER)
+    if (h && h.matches('.ixp-team > li')) h = null // a team card opens in place (it's no link): the plain dot
+    root.classList.toggle('ix-cur-hover', !text && !!h)
   }
   function onOut(e) { if (!e.relatedTarget) root.classList.remove('ix-cur-in') } // left the window, or into an iframe
   function onBlur() { root.classList.remove('ix-cur-in') }

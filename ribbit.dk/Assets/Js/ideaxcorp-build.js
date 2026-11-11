@@ -20,12 +20,14 @@
   // goScale: how much larger that walk is drawn to match its standing size;
   // side: the side of its word it pushes from: "Curious" and "Marketing" come in from the left, "Full-service" and
   // "Agency" from the right; end: the side it finishes on; size: height relative to the others;
-  // hand / handH: its hands' distance from its centre and their height above its feet, in character heights
+  // hand / handH: its hands' distance from its centre and their height above its feet, in character heights, measured
+  // from its push frames as it leans in, less a little so the hands press onto the letter;
+  // pullDx: how much nearer its pull frames stand to reach the word
   var CAST = {
-    creator: { word: 'curious', side: -1, end: -1, walk: ['creator_push', 40], pull: ['creator_pull', 40], idle: ['creator_idle', 51], go: null, hops: 3, face: 1, size: 1, hand: .56, handH: .62 },
-    jester: { word: 'full', side: 1, end: 1, walk: ['jester_push_2', 58], idle: ['jester_idle_2', 51], go: ['jester_push_2', 58], goFace: -1, face: -1, size: .92, hand: .56, handH: .42 },
-    explorer: { word: 'marketing', side: -1, end: -1, walk: ['explorer_push', 40], pull: ['explorer_pull', 40], idle: ['explorer_idle', 40], go: ['explorer_push', 40], goFace: 1, face: 1, size: .86, hand: .5, handH: .56 },
-    outlaw: { word: 'agency', side: 1, end: 1, walk: ['outlaw_push', 24], idle: ['outlaw_idle', 25], go: ['outlaw_pull', 26], goFace: 1, goScale: 1.25, face: 1, size: .8, hand: .52, handH: .55 }
+    creator: { word: 'curious', side: -1, end: -1, walk: ['creator_push', 40], pull: ['creator_pull', 40], idle: ['creator_idle', 51], go: null, hops: 3, face: 1, size: 1, hand: .6, handH: .6, pullDx: .05 },
+    jester: { word: 'full', side: 1, end: 1, walk: ['jester_push_2', 58], idle: ['jester_idle_2', 51], go: ['jester_push_2', 58], goFace: -1, face: -1, size: .92, hand: .44, handH: .29 },
+    explorer: { word: 'marketing', side: -1, end: -1, walk: ['explorer_push', 40], idle: ['explorer_idle', 40], go: ['explorer_push', 40], goFace: 1, face: 1, size: .86, hand: .5, handH: .74 },
+    outlaw: { word: 'agency', side: 1, end: 1, walk: ['outlaw_push', 24], idle: ['outlaw_idle', 25], go: ['outlaw_pull', 26], goFace: 1, goScale: 1.25, face: 1, size: .8, hand: .44, handH: .67 }
   }
   var NAMES = ['creator', 'jester', 'explorer', 'outlaw']
   var frames = {} // folder -> [Image]
@@ -70,10 +72,22 @@
       c.img.style.bottom = sway ? (Math.abs(Math.sin(ph)) * c.el.offsetHeight * .07).toFixed(1) + 'px' : ''
       c.img.style.rotate = sway ? (Math.sin(ph) * 5).toFixed(2) + 'deg' : ''
       c.img.style.height = going && c.go && c.goScale ? c.goScale * 100 + '%' : ''
+      c.img.style.marginLeft = pulling && c.pullDx ? (-c.side * c.pullDx * c.el.offsetHeight).toFixed(1) + 'px' : ''
       if (c.wordEl) c.wordEl.classList.toggle('ixs-waiting', !reduced && t < c.waitTo) // its word floats until it starts to glide
       var key = set[0] + i + (flip ? 'f' : '')
       if (key !== c.key && list[i] && list[i].complete) { c.img.src = list[i].src; c.img.classList.toggle('ixs-flip', flip); c.key = key }
     })
+  }
+
+  // how far a word's letters stand in from its box on each side (the box includes the letters' side bearings and the
+  // tracking), so the hands land on the letter itself; "y" leans away at the height of the hands
+  var inkCtx = document.createElement('canvas').getContext('2d')
+  function ink(w, size, k) {
+    var cs = getComputedStyle(w.el), t = w.el.textContent.trim(), last = t.charAt(t.length - 1)
+    inkCtx.font = cs.fontWeight + ' ' + size + 'px ' + cs.fontFamily
+    var a = inkCtx.measureText(t.charAt(0)), b = inkCtx.measureText(last)
+    w.inL = -a.actualBoundingBoxLeft || 0
+    w.inR = (b.width - b.actualBoundingBoxRight || 0) + parseFloat(cs.letterSpacing || 0) + (k === 'agency' ? size * .07 : 0)
   }
 
   // ---------- layout: everything in pixels for this screen ----------
@@ -85,16 +99,19 @@
     Object.keys(fs).forEach(function (k) {
       var el = sec.querySelector('.ixs-w-' + k); el.style.fontSize = fs[k].toFixed(1) + 'px'
       wd[k] = { el: el, w: el.offsetWidth, h: el.offsetHeight }
+      ink(wd[k], fs[k], k)
     })
     // the finished headline, centred: three rows, "Marketing" and "Agency" side by side
     var g = (mob ? .45 : .22) * fs.full
     var T = wd.curious.h + wd.full.h + wd.marketing.h + 2 * g, top = (H - T) / 2 + H * .02
     var y1 = top + wd.curious.h / 2, y2 = top + wd.curious.h + g + wd.full.h / 2, y3 = top + wd.curious.h + g + wd.full.h + g + wd.marketing.h / 2
-    var gap3 = fs.marketing * (mob ? .3 : .45), pairW = wd.marketing.w + gap3 + wd.agency.w, mLeft = W / 2 - pairW / 2
+    var gap3 = fs.marketing * (mob ? .42 : .45), pairW = wd.marketing.w + gap3 + wd.agency.w, mLeft = W / 2 - pairW / 2
     var fin = { curious: [W / 2, y1], full: [W / 2, y2], marketing: [mLeft + wd.marketing.w / 2, y3], agency: [mLeft + wd.marketing.w + gap3 + wd.agency.w / 2, y3] }
     // the first screen: oversized and upright in a zig-zag, each word against its own side of the screen
     // (word: [side it is set against, y as a share of the height, scale]); kept inside the screen
-    var ini = mob ? { curious: [-1, .2, 1.18], full: [1, .4, 1.25], marketing: [-1, .6, 1.4], agency: [1, .78, 1.6] }
+    // (phones: "Curious" alone at the top, the other three below the finished headline's "Curious" row, so no word
+    // crosses another on its way: each only rises or falls into its own row)
+    var ini = mob ? { curious: [-1, .2, 1.18], full: [1, .5, 1.25], marketing: [-1, .66, 1.4], agency: [1, .8, 1.6] }
       : { curious: [-1, .2, 1.55], full: [1, .45, 1.35], marketing: [-1, .66, 1.4], agency: [1, .86, 1.55] }
     var base = mob ? W * .15 : Math.min(H * .2, W * .108)
     // each word stands in from its edge by the room its character needs beside it (the frames are drawn wider than
@@ -122,11 +139,12 @@
       c.wordEl = wordEl; wordEl.style.setProperty('--lift', 0)
       var ch = L.base * c.size; el.style.setProperty('--h', ch.toFixed(1) + 'px')
       c.p = c.p || { w: 0 }; c.p.w = 0; c.lastW = null
-      var feet = function (cy, s) { return cy + wd.h * s * .38 } // a word's baseline, from its centre and scale
+      var feet = function (cy) { return cy + c.handH * ch } // where its feet go for its hands to be level with the middle of the letters
+      var edge = function (s) { return s * (wd.w / 2 - (side < 0 ? wd.inL : wd.inR)) } // the letter's outer edge, from the word's centre
       var fx = L.fin[c.word][0], fy = L.fin[c.word][1], iv = L.ini[c.word], s0 = iv[2]
       // 1. the word on the first screen; its character just off its edge
       gsap.set(wordEl, { xPercent: -50, yPercent: -50, x: iv.x, y: iv.y, scale: s0, rotation: 0, opacity: 1 })
-      var grabX = iv.x + side * (s0 * wd.w / 2 + c.hand * ch), grabY = feet(iv.y, s0)
+      var grabX = iv.x + side * (edge(s0) + c.hand * ch), grabY = feet(iv.y)
       var x0 = side < 0 ? -ch : W + ch
       gsap.set(el, { xPercent: -50, yPercent: -100, x: x0, y: grabY, rotation: 0, opacity: 1 })
       // 2. walks in to its word
@@ -154,13 +172,13 @@
       tl.to(push, { t: 1, duration: d4, ease: 'power2.inOut', onUpdate: function () {
         var e = push.t, sc = s0 + (1 - s0) * e, cx = iv.x + (fx - iv.x) * e, cy = iv.y + (fy - iv.y) * e
         gsap.set(wordEl, { x: cx, y: cy, scale: sc, rotation: -side * 2 * Math.sin(Math.PI * e) })
-        gsap.set(el, { x: cx + side * (sc * wd.w / 2 + c.hand * ch), y: feet(cy, sc) })
+        gsap.set(el, { x: cx + side * (edge(sc) + c.hand * ch), y: feet(cy) })
       } }, t4)
       tl.to(c.float, { keyframes: { scaleY: [.92, 1.03, .94, 1.03, .95, 1], scaleX: [1.05, .98, 1.04, .98, 1.03, 1], easeEach: 'sine.inOut' }, duration: d4 }, t4)
       tl.to(el, { keyframes: { rotation: [7, 10, 6, 9, 5].map(function (r) { return -side * r }), easeEach: 'sine.inOut' }, duration: d4 }, t4)
       tl.to(c.p, { w: '+=' + (Math.hypot(fx - iv.x, fy - iv.y) / 3 + 30), duration: d4, ease: 'power2.inOut' }, t4)
       // 4. the word settles with a little give, the character straightens and steps back; a puff of dust, its dot fills
-      var t5 = t4 + d4, standX = fx + side * (wd.w / 2 + c.hand * ch + ch * .12), ffeet = feet(fy, 1)
+      var t5 = t4 + d4, standX = fx + side * (edge(1) + c.hand * ch + ch * .12), ffeet = feet(fy)
       tl.to(wordEl, { keyframes: { scaleX: [1, 1.05, .98, 1], scaleY: [1, .95, 1.02, 1], easeEach: 'sine.out' }, duration: .6 }, t5)
       tl.to(el, { x: standX, rotation: 0, duration: .5, ease: 'power2.out' }, t5)
       tl.to(c.p, { w: '+=' + (ch * .12 / 3), duration: .5, ease: 'power2.out' }, t5)
@@ -204,13 +222,13 @@
       if (reduced) { sec.classList.add('ixs-static'); tl.progress(S6 / END); return }
       var onScroll = function () {
         var r = sec.getBoundingClientRect(), span = sec.offsetHeight - window.innerHeight
-        gsap.to(tl, { progress: span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0, duration: 2, ease: 'power3.out', overwrite: true })
+        gsap.to(tl, { progress: span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0, duration: L.mob ? 3 : 2, ease: 'power3.out', overwrite: true })
       }
       window.addEventListener('scroll', onScroll, { passive: true }); onScroll()
       st = { plain: true, kill: function () { window.removeEventListener('scroll', onScroll); gsap.killTweensOf(tl) } }
       return
     }
-    st = ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 2, animation: tl }) // (2s catch-up: the scene glides after the scroll)
+    st = ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: L.mob ? 3 : 2, animation: tl }) // (2s catch-up, 3s on phones: the scene glides after the scroll, so a flick doesn't jump it)
   }
 
   // the effect elements: dust puffs (six per word), the swoosh under "Curious", the progress row (a dot per word)
@@ -239,7 +257,7 @@
     if (sec) { kill(); floats.forEach(function (f) { f.kill() }); floats = [] }
     sec = s
     if (!sec) return
-    if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger)
+    if (window.ScrollTrigger) { gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ ignoreMobileResize: true }) }
     NAMES.forEach(function (n, k) {
       var c = CAST[n]
       c.el = sec.querySelector('[data-ixs-char="' + n + '"]'); c.float = c.el.querySelector('.ixs-float'); c.img = c.el.querySelector('img'); c.img.decoding = 'async' // (frame swaps decode off the main thread; the last frame stays until the next is ready)
@@ -261,7 +279,14 @@
     go()
   }
 
-  window.addEventListener('resize', function () { clearTimeout(resizeT); if (sec) resizeT = setTimeout(function () { build(); if (window.ScrollTrigger) ScrollTrigger.refresh() }, 200) })
+  // only a real width change lays the scene out again: a phone's address bar showing or hiding during a scroll also
+  // fires resize (height only), and rebuilding then made the scene jump
+  var lastW = window.innerWidth
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === lastW) return
+    lastW = window.innerWidth
+    clearTimeout(resizeT); if (sec) resizeT = setTimeout(function () { build(); if (window.ScrollTrigger) ScrollTrigger.refresh() }, 200)
+  })
   window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup)
   else setup()
