@@ -31,3 +31,9 @@
 .ix-off .ixs-blob-1, .ix-off .ixs-blob-2, .ix-off .ixs-blob-3, .ix-off .ixj-cta-btns .ixp-btn {
   animation-play-state: paused !important;
 }
+
+/* low-powered devices (.ix-lite, set by ideaxcorp-motion.js): the same page, without the costliest decoration */
+.ix-lite .ixs-blob, .ix-lite .ixs-d, .ix-lite .ixp-marquee-track { animation-play-state: paused; }
+.ix-lite .ixs-char img, .ix-lite .ixj-guide img, .ix-lite .ixb-guide img { filter: none; }
+.ix-lite .ixs-word { text-shadow: none; }
+.ix-lite body.ix-transitioning main .page.removing { filter: none; }

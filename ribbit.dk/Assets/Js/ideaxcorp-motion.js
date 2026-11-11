@@ -3,6 +3,8 @@
 // Reads positions once per frame from the scroll the site already drives, so it never fights it.
 ;(function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // low-powered devices get the same page with the costliest decoration off (ideaxcorp-motion.css)
+  if ((navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2)) document.documentElement.classList.add('ix-lite')
   if (reduced) {
     // no eased scrolling either: jump straight to where the visitor scrolls
     var stop = setInterval(function () { if (window._smoothScroller) { window._smoothScroller._speed = 1; clearInterval(stop) } }, 200)

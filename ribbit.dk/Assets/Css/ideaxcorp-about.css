@@ -70,7 +70,7 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
 }
 .ixb-scrollcue span { position: relative; width: 2px; height: 34px; background: rgba(23, 10, 40, .12); overflow: hidden; }
 .ixb-scrollcue span::after { content: ''; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: var(--accent); animation: ixb-drip 1.8s cubic-bezier(.65, 0, .35, 1) infinite; }
-@keyframes ixb-drip { to { top: 100%; } }
+@keyframes ixb-drip { to { transform: translateY(350%); } } /* (its own height is 40% of the line: from just above it to just below) */
 
 /* ---------- 2. story: pinned, scrolls sideways (ideaxcorp-about.js sets the section height) ---------- */
 .m.ixp.ixb-story { padding: 0; }

@@ -25,7 +25,7 @@
   var running = false, lastT = 0
   document.documentElement.classList.add('ix-journey') // (the About page's own guide stands down: this one walks every page)
 
-  function src(i, set) { return '/Assets/Grx/explorer_' + (set || 'idle') + '/' + String(i).padStart(3, '0') + '.webp?v=2' } // lossless WebP copies of the frames
+  function src(i, set) { return '/Assets/Grx/explorer_' + (set || 'idle') + '/' + String(i).padStart(3, '0') + '.webp?v=3' } // lossless WebP copies of the frames
 
   function build() {
     if (guide) return

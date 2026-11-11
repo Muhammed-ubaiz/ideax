@@ -33,7 +33,7 @@
   var frames = {} // folder -> [Image]
   var sec = null, tl = null, st = null, floats = [], ticking = false, resizeT = 0
 
-  function src(dir, i) { return '/Assets/Grx/' + dir + '/' + String(i).padStart(3, '0') + '.webp?v=2' } // lossless WebP copies of the frames: identical to the PNGs, smaller
+  function src(dir, i) { return '/Assets/Grx/' + dir + '/' + String(i).padStart(3, '0') + '.webp?v=3' } // lossless WebP copies of the frames: identical to the PNGs, smaller
   // the frames are fetched only once the page has loaded: requested earlier they would hold up the load event, and
   // with it the site's intro screen (until then each character shows the frame in its own <img>)
   function load(set) {
@@ -46,9 +46,11 @@
   // ---------- frames: walking while its walk value changes, otherwise standing ----------
   // While it moves, its frames run on a steady clock (24 a second, as the site's own figures play), backwards
   // when the scroll goes back; when it stops they hold, so its legs never jerk with the scroll.
-  var lastTick = 0
+  var lastTick = 0, floatsOff = false
   function tick() {
-    if (!sec || sec.classList.contains('ix-off')) return // scrolled past (or not yet at) the hero: nothing to draw (ideaxcorp-motion.js sets .ix-off)
+    var off = !sec || sec.classList.contains('ix-off') // scrolled past (or not yet at) the hero: nothing to draw (ideaxcorp-motion.js sets .ix-off)
+    if (off !== floatsOff) { floatsOff = off; floats.forEach(function (f) { f.paused(off) }) } // its float tweens rest too: they restyled the page every frame
+    if (off) return
     var now = performance.now(), dt = Math.min(80, now - (lastTick || now)); lastTick = now
     NAMES.forEach(function (n, k) {
       var c = CAST[n]; if (!c.img) return
@@ -255,6 +257,7 @@
     var s = document.querySelector('.m.ixs')
     if (s === sec) return
     if (sec) { kill(); floats.forEach(function (f) { f.kill() }); floats = [] }
+    floatsOff = false
     sec = s
     if (!sec) return
     if (window.ScrollTrigger) { gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ ignoreMobileResize: true }) }

@@ -118,10 +118,10 @@
   function buildGuide() {
     if (!guide) {
       guide = document.createElement('div'); guide.className = 'ixb-guide'; guide.setAttribute('aria-hidden', 'true')
-      guide.innerHTML = '<span class="ixb-guide-say"></span><img src="/Assets/Grx/explorer_push/000.png" alt="" width="360" height="360">'
+      guide.innerHTML = '<span class="ixb-guide-say"></span><img src="/Assets/Grx/explorer_push/000.webp?v=3" alt="" width="360" height="360">'
       document.body.appendChild(guide)
       guideImg = guide.querySelector('img'); guideSay = guide.querySelector('.ixb-guide-say')
-      for (var i = 0; i < FRAMES; i++) { var im = new Image(); im.src = '/Assets/Grx/explorer_push/' + String(i).padStart(3, '0') + '.png'; frames.push(im) }
+      for (var i = 0; i < FRAMES; i++) { var im = new Image(); im.src = '/Assets/Grx/explorer_push/' + String(i).padStart(3, '0') + '.webp?v=3'; frames.push(im) }
     }
     lastY = window.scrollY; current = ''
   }
