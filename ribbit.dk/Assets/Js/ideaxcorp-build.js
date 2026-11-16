@@ -85,7 +85,9 @@
   // tracking), so the hands land on the letter itself; "y" leans away at the height of the hands
   var inkCtx = document.createElement('canvas').getContext('2d')
   function ink(w, size, k) {
-    var cs = getComputedStyle(w.el), t = w.el.textContent.trim(), last = t.charAt(t.length - 1)
+    var cs = getComputedStyle(w.el), t = w.el.textContent.trim()
+    if (cs.textTransform === 'uppercase') t = t.toUpperCase()
+    var last = t.charAt(t.length - 1)
     inkCtx.font = cs.fontWeight + ' ' + size + 'px ' + cs.fontFamily
     var a = inkCtx.measureText(t.charAt(0)), b = inkCtx.measureText(last)
     w.inL = -a.actualBoundingBoxLeft || 0
@@ -98,23 +100,30 @@
     var fs = mob ? { curious: W * .155, full: W * .098, marketing: W * .074, agency: W * .074 } // phones: room for the characters beside the words
       : { curious: Math.min(W * .125, H * .21), full: Math.min(W * .092, H * .155), marketing: Math.min(W * .078, H * .135), agency: Math.min(W * .078, H * .135) }
     var wd = {}
-    Object.keys(fs).forEach(function (k) {
-      var el = sec.querySelector('.ixs-w-' + k); el.style.fontSize = fs[k].toFixed(1) + 'px'
-      wd[k] = { el: el, w: el.offsetWidth, h: el.offsetHeight }
-      ink(wd[k], fs[k], k)
-    })
+    function measure() {
+      Object.keys(fs).forEach(function (k) {
+        var el = sec.querySelector('.ixs-w-' + k); el.style.fontSize = fs[k].toFixed(1) + 'px'
+        wd[k] = { el: el, w: el.offsetWidth, h: el.offsetHeight }
+        ink(wd[k], fs[k], k)
+      })
+    }
+    measure()
+    // the finished rows must fit the screen (uppercase runs wide): if one would not, all four shrink together
+    var widest = Math.max(wd.curious.w, wd.full.w, wd.marketing.w + fs.marketing * (mob ? .55 : .75) + wd.agency.w)
+    var room = W * (mob ? .9 : .86)
+    if (widest > room) { var k0 = room / widest; Object.keys(fs).forEach(function (k) { fs[k] *= k0 }); measure() }
     // the finished headline, centred: three rows, "Marketing" and "Agency" side by side
     var g = (mob ? .45 : .22) * fs.full
     var T = wd.curious.h + wd.full.h + wd.marketing.h + 2 * g, top = (H - T) / 2 + H * .02
     var y1 = top + wd.curious.h / 2, y2 = top + wd.curious.h + g + wd.full.h / 2, y3 = top + wd.curious.h + g + wd.full.h + g + wd.marketing.h / 2
-    var gap3 = fs.marketing * (mob ? .42 : .45), pairW = wd.marketing.w + gap3 + wd.agency.w, mLeft = W / 2 - pairW / 2
+    var gap3 = fs.marketing * (mob ? .55 : .75), pairW = wd.marketing.w + gap3 + wd.agency.w, mLeft = W / 2 - pairW / 2
     var fin = { curious: [W / 2, y1], full: [W / 2, y2], marketing: [mLeft + wd.marketing.w / 2, y3], agency: [mLeft + wd.marketing.w + gap3 + wd.agency.w / 2, y3] }
     // the first screen: oversized and upright in a zig-zag, each word against its own side of the screen
     // (word: [side it is set against, y as a share of the height, scale]); kept inside the screen
     // (phones: "Curious" alone at the top, the other three below the finished headline's "Curious" row, so no word
     // crosses another on its way: each only rises or falls into its own row)
     var ini = mob ? { curious: [-1, .2, 1.18], full: [1, .5, 1.25], marketing: [-1, .66, 1.4], agency: [1, .8, 1.6] }
-      : { curious: [-1, .2, 1.55], full: [1, .45, 1.35], marketing: [-1, .66, 1.4], agency: [1, .86, 1.55] }
+      : { curious: [-1, .2, 1.55], full: [1, .5, 1.3], marketing: [-1, .66, 1.2], agency: [1, .9, 1.1] } // (wide uppercase: "Marketing" and "Agency" start less oversized so they don't sweep over each other)
     var base = mob ? W * .15 : Math.min(H * .2, W * .108)
     // each word stands in from its edge by the room its character needs beside it (the frames are drawn wider than
     // the box), and is never wider than what is left
