@@ -125,3 +125,139 @@
 .ix-work .ix-pf-meta { border-top-color: #ECE6F4; }
 .ix-work .ix-pf-intro { color: #666; }
 .ix-work .ix-pf-count { color: var(--accent); }
+
+/* ---------- portfolio hero (.ixw-hero) ----------
+   Type only and centred, like the About hero: the eyebrow, the headline in two lines (uppercase, the last word in
+   the italic accent), the lead and the two figures, on a soft violet glow, with a scroll cue at the foot. The words
+   rise in with the site's own heading reveal (data-split, ideaxcorp-pages.js). */
+.m.ixp.ixw-hero { position: relative; overflow: hidden; padding-top: 0; padding-bottom: 0; }
+.ixw-hero-glow {
+  position: absolute; left: 50%; top: 50%; width: 70vw; height: 80vh; translate: -50% -50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(151, 0, 255, .14), rgba(201, 162, 255, .08) 45%, rgba(255, 255, 255, 0) 75%);
+}
+.ixw-hero-inner {
+  position: relative; box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 110px 0 104px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+.ixp-hero .ixw-title {
+  max-width: none; margin-top: clamp(22px, 2.2vw, 34px); text-transform: uppercase; color: var(--ink);
+  font-size: clamp(5.2rem, 8.4vw, 14.4rem); line-height: .86; letter-spacing: -.045em; word-spacing: 0;
+}
+.ixw-line { display: block; white-space: nowrap; }
+.ixw-title em { text-transform: none; font-size: .98em; letter-spacing: -.02em; }
+.ixw-hero-sub { max-width: 46ch; margin: clamp(36px, 3.4vw, 54px) auto 0; font-size: clamp(1.8rem, 1.4vw, 2.2rem); line-height: 1.5; color: var(--text); text-wrap: balance; }
+.ixw-hero-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px clamp(32px, 4vw, 64px); margin: clamp(30px, 3vw, 42px) 0 0; }
+.ixw-hero-facts div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ixw-hero-facts dt { font-family: var(--font-display); font-size: clamp(2rem, 1.7vw, 2.6rem); font-weight: 600; letter-spacing: -.02em; line-height: 1.1; color: var(--text); }
+.ixw-hero-facts dd { margin: 0; font-size: 1.3rem; line-height: 1.4; color: var(--muted); }
+
+@media all and (max-width: 1000.5px) {
+  .ixw-hero-glow { width: 110vw; }
+}
+@media all and (max-width: 600px) {
+  .ixw-hero-inner { padding: 120px 0 72px; }
+  .ixp-hero .ixw-title { font-size: clamp(4.2rem, 12.2vw, 6.4rem); line-height: .9; }
+  .ixw-line + .ixw-line { white-space: normal; }
+  .ixw-hero-sub { font-size: 1.7rem; }
+}
+/* ---------- portfolio: Featured work, compact ----------
+   The three featured projects as three small posters in one row (on phones: the first across, two below),
+   instead of one tall poster beside two stacked ones. */
+#featured.m.ixp { padding-top: clamp(64px, 6vw, 104px); padding-bottom: clamp(64px, 6vw, 104px); }
+#featured .ixp-head { margin-bottom: clamp(28px, 2.6vw, 44px); }
+#featured .ixp-feature { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.6vw, 28px); align-items: start; }
+#featured .ixp-feature-main { grid-column: auto; }
+#featured .ixp-feature-side { display: contents; }
+#featured .ixp-feature .ixp-card-media { aspect-ratio: 4 / 3; height: auto; min-height: 0; border-radius: 18px; }
+#featured .ixp-feature-main .ixp-card-title { font-size: var(--type-card); }
+#featured .ixp-feature-main .ixp-card-text { -webkit-line-clamp: 2; font-size: 1.4rem; line-height: 1.5; }
+#featured .ixp-card-body { gap: 6px; padding-top: 14px; }
+#featured .ixp-card-media::after { width: 96px; height: 96px; font-size: 1.1rem; }
+@media all and (max-width: 600px) {
+  #featured .ixp-feature { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+  #featured .ixp-feature-main { grid-column: 1 / -1; }
+  #featured .ixp-feature-main .ixp-card-media { aspect-ratio: 16 / 9; }
+  #featured .ixp-feature-side .ixp-card-media { aspect-ratio: 1; border-radius: 14px; }
+  #featured .ixp-feature-side .ixp-card-title { font-size: 1.6rem; }
+  #featured .ixp-card-media .ixp-card-tag { transform: scale(.85); transform-origin: 0 100%; }
+}
+/* the whole poster in its box: fitted, not cropped, on its own background colour */
+#featured .ixp-feature .ixp-card-media { background: var(--pbg, var(--ink)); }
+#featured .ixp-feature .ixp-card-media img { box-sizing: border-box; padding: 14px 0; object-fit: contain; object-position: center; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .28)); }
+@media all and (max-width: 600px) { #featured .ixp-feature .ixp-card-media img { padding: 10px 0; } }
+/* ---------- portfolio: All projects, compact ----------
+   Four posters to a row (three on tablets, two on phones), each poster whole on its own colour; the client logos
+   as a row of small tiles under them. The filters sit in one white bar with a purple pill that slides to the chosen
+   one (ideaxcorp-work.js). Cards lift on hover and come back in turn when the filter changes. */
+#all-work.m.ixp { padding-top: clamp(64px, 6vw, 104px); padding-bottom: clamp(64px, 6vw, 104px); }
+#all-work .ixp-head { margin-bottom: clamp(24px, 2.4vw, 36px); }
+
+/* the filter bar and its sliding pill */
+#all-work .ixp-filters {
+  position: relative; display: inline-flex; flex-wrap: nowrap; gap: 4px; max-width: 100%; margin-bottom: clamp(28px, 3vw, 44px); padding: 6px;
+  border: 1px solid #EEE7F6; border-radius: 999px; background: #FFF; box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 14px 34px -18px rgba(76, 18, 140, .3);
+  overflow-x: auto; scrollbar-width: none;
+}
+#all-work .ixp-filters::-webkit-scrollbar { display: none; }
+#all-work .ixp-filter { position: relative; z-index: 1; flex: none; border-color: transparent; background: transparent; transition: color .35s ease, background .25s ease; }
+#all-work .ixp-filter[aria-pressed="true"] { background: var(--accent); color: #FFF; }
+#all-work .ixw-pill-on .ixp-filter[aria-pressed="true"] { background: transparent; }
+.ixw-pill {
+  position: absolute; left: 0; top: 0; z-index: 0; width: 0; height: 0; border-radius: 999px; background: var(--accent);
+  box-shadow: 0 10px 22px -8px rgba(151, 0, 255, .6); pointer-events: none;
+  transition: transform .55s var(--ease), width .55s var(--ease), height .55s var(--ease);
+}
+@media (hover: hover) { #all-work .ixw-pill-on .ixp-filter:not([aria-pressed="true"]):hover { color: var(--accent); background: rgba(151, 0, 255, .07); } }
+
+/* the grid */
+#all-work .ixp-work { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(28px, 2.6vw, 40px) clamp(14px, 1.4vw, 24px); }
+#all-work .ixp-work > li, #all-work .ixp-work > li.is-wide, #all-work .ixp-work > li.is-tall { grid-column: span 3; margin-top: 0; }
+#all-work .ixp-work { grid-auto-flow: row; }
+#all-work .ixp-work > li.is-logo { grid-column: span 2; }
+#all-work .ixp-work > li:not(.is-logo) + li.is-logo { grid-column: 1 / span 2; } /* the logos start their own row (keeping their width) */
+@media all and (max-width: 1000.5px) { #all-work .ixp-work > li:not(.is-logo) + li.is-logo { grid-column: 1 / span 3; } }
+@media all and (max-width: 600px) { #all-work .ixp-work > li:not(.is-logo) + li.is-logo { grid-column: 1 / span 4; } }
+#all-work .ixp-card-media { aspect-ratio: 4 / 5; border-radius: 18px; transition: transform .55s var(--ease), box-shadow .55s var(--ease); }
+#all-work .ixw-poster { background: var(--pbg); }
+#all-work .ixw-poster img { box-sizing: border-box; padding: 14px; object-fit: contain; object-position: center; filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .26)); }
+#all-work .ixp-card-body { gap: 4px; padding-top: 14px; }
+#all-work .ixp-card-meta { font-size: 1.05rem; }
+#all-work .ixp-card-title, #all-work .is-wide .ixp-card-title { display: inline-flex; align-items: center; gap: 8px; font-size: clamp(1.7rem, 1.3vw, 2rem); }
+#all-work .ixp-card-title::after { content: '\2192'; color: var(--accent); opacity: 0; translate: -8px 0; transition: opacity .3s ease, translate .45s var(--ease); }
+#all-work .ixp-card-text { display: none; }
+#all-work .ixp-card-media::after { width: 92px; height: 92px; font-size: 1.05rem; }
+
+/* client logos: small tiles */
+#all-work .ixp-logo-card .ixp-card-media { aspect-ratio: 2 / 1; border-radius: 12px; }
+#all-work .ixp-logo-card .ixp-card-media img { width: 70%; height: 58%; }
+#all-work .ixp-logo-card .ixp-card-meta { display: none; }
+#all-work .ixp-logo-card .ixp-card-body { padding-top: 8px; }
+#all-work .ixp-logo-card .ixp-card-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 1.2rem; font-weight: 500; line-height: 1.35; color: var(--muted); }
+#all-work .ixp-logo-card .ixp-card-title::after { content: none; }
+
+@media (hover: hover) {
+  #all-work .ixp-card-link:hover .ixp-card-media, #all-work .ixp-logo-card:hover .ixp-card-media {
+    transform: translateY(-6px); box-shadow: 0 0 0 1px rgba(151, 0, 255, .18), 0 26px 50px -22px rgba(76, 18, 140, .5);
+  }
+  #all-work .ixp-card-link:hover .ixp-card-title::after { opacity: 1; translate: 0 0; }
+  #all-work .ixw-poster img { transition: transform 1.1s var(--ease); }
+  #all-work .ixp-card-link:hover .ixw-poster img { transform: scale(1.05); }
+}
+
+@media all and (max-width: 1000.5px) {
+  #all-work .ixp-work > li, #all-work .ixp-work > li.is-wide, #all-work .ixp-work > li.is-tall { grid-column: span 4; }
+  #all-work .ixp-work > li.is-logo { grid-column: span 3; }
+}
+@media all and (max-width: 600px) {
+  #all-work .ixp-work { gap: 22px 12px; }
+  #all-work .ixp-work > li, #all-work .ixp-work > li.is-wide, #all-work .ixp-work > li.is-tall { grid-column: span 6; }
+  #all-work .ixp-work > li.is-logo { grid-column: span 4; }
+  #all-work .ixp-card-media { border-radius: 14px; }
+  #all-work .ixw-poster img { padding: 10px; }
+  #all-work .ixp-card-title, #all-work .is-wide .ixp-card-title { font-size: 1.5rem; }
+  #all-work .ixp-card-media .ixp-card-tag { transform: scale(.82); transform-origin: 0 100%; }
+  #all-work .ixp-logo-card .ixp-card-title { font-size: 1.15rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixw-pill, #all-work .ixp-card-media { transition: none; }
+}

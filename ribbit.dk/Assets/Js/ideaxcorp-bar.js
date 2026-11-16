@@ -23,12 +23,12 @@
       setOpen(b, open)
     } else if (e.target.closest('.ix-bar-panel a') || !b.contains(e.target)) setOpen(b, false)
   })
-  // home and About pages: no bar over the hero. An IntersectionObserver watches the hero's scroll space
+  // home, About and portfolio pages: no bar over the hero. An IntersectionObserver watches the hero's scroll space
   // (.m.showreelspace); once less of it than the top half of the screen is left, the bar is past the hero
   // and slides in (.ix-bar-past). CSS keeps it hidden on the home page until then, so it never flashes on load.
   var watched = null, io = null
   function watchHero() {
-    var hero = document.querySelector('.m.showreelspace, .ixa-hero') // home's mascot hero, or the About hero
+    var hero = document.querySelector('.m.showreelspace, .ixa-hero, .ixw-hero') // home's mascot hero, the About hero or the portfolio hero
     if (hero === watched) return
     if (io) io.disconnect()
     watched = hero

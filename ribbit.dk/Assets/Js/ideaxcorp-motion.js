@@ -110,3 +110,86 @@
   place()
   setInterval(place, 1000) // pages are swapped in without a reload
 })()
+// "Scroll to explore" on every page: a small cue (the line drips down) in the empty space at the foot of the first
+// section, or of the first screen when that section runs on below it; gone as soon as the visitor scrolls. Added
+// to each page as it arrives (pages are swapped in without a reload); over a dark section it turns light.
+// Styles in ideaxcorp-motion.css.
+;(function () {
+  var queued = false
+  function current() { var pages = document.querySelectorAll('main .page'); return pages[pages.length - 1] }
+  function setup() {
+    var page = current()
+    if (!page || page.querySelector('.ix-scrollcue')) return
+    var c = document.createElement('p')
+    c.className = 'ix-scrollcue'; c.setAttribute('aria-hidden', 'true')
+    c.innerHTML = '<span></span>Scroll to explore'
+    if (page.querySelector('.m.ixs')) c.classList.add('ix-scrollcue--home') // home: in the corner, clear of the headline words
+    page.appendChild(c)
+    place(c); update()
+    ;[600, 1500, 3000].forEach(function (ms) { setTimeout(function () { place(c) }, ms) }) // as fonts, images and reveals settle
+  }
+  // the foot of the first section, or of the first screen if that comes first
+  function place(c) {
+    var page = c.closest('.page')
+    if (!page || !document.body.contains(c)) return
+    var first = page.firstElementChild
+    while (first && (first === c || /^(SCRIPT|STYLE|LINK)$/.test(first.tagName) || !first.offsetHeight)) first = first.nextElementSibling
+    var h = c.offsetHeight || 34, screen = window.innerHeight - h - 28
+    var end = first ? first.offsetTop + first.offsetHeight - h - 28 : screen
+    c.style.top = Math.max(0, Math.round(Math.min(screen, end))) + 'px'
+    // centred if that spot is clear; else (wider screens) the left or right third; if all are taken, not shown here
+    var spots = c.classList.contains('ix-scrollcue--home') ? [''] : window.innerWidth >= 768 ? ['50%', '27%', '73%'] : ['50%'], ok = false
+    c.style.visibility = ''
+    for (var i = 0; i < spots.length && !ok; i++) { c.style.left = spots[i]; ok = clear(c) }
+    if (!ok) c.style.visibility = 'hidden'
+    tone(c)
+  }
+  // nothing to read or press under it: no text, image, field or button (wrappers and backgrounds are fine)
+  function clear(c) {
+    var r = c.getBoundingClientRect(), page = c.closest('.page')
+    if (r.bottom < 0 || r.top > window.innerHeight) return true
+    var xs = [r.left + 4, r.left + r.width / 2, r.right - 4], ys = [r.top + 4, r.top + r.height / 2, r.bottom - 4]
+    for (var i = 0; i < xs.length; i++) for (var j = 0; j < ys.length; j++) {
+      var els = document.elementsFromPoint(xs[i], ys[j])
+      for (var k = 0; k < els.length; k++) {
+        var e = els[k]
+        if (e === c || c.contains(e) || !page.contains(e) || !shown(e)) continue
+        if (/^(IMG|SVG|VIDEO|CANVAS|PICTURE|INPUT|TEXTAREA|SELECT|BUTTON|A|LABEL|IFRAME)$/i.test(e.tagName) || e.closest('svg')) return false
+        for (var n = e.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.textContent.trim()) return false
+      }
+    }
+    return true
+  }
+  // light text when what lies behind it is dark (anything still hidden, waiting to reveal, doesn't count)
+  function shown(e) {
+    for (; e && e.nodeType === 1; e = e.parentElement) { var s = getComputedStyle(e); if (+s.opacity < .5 || s.visibility === 'hidden') return false }
+    return true
+  }
+  function tone(c) {
+    var r = c.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2
+    if (y < 0 || y > window.innerHeight) return
+    var els = document.elementsFromPoint(x, y), page = c.closest('.page')
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i]
+      if (e === c || c.contains(e) || !page.contains(e) || !shown(e)) continue
+      for (; e && e !== page.parentNode; e = e.parentElement) {
+        var m = getComputedStyle(e).backgroundColor.match(/[\d.]+/g)
+        if (m && (m.length < 4 || +m[3] > .5)) { c.classList.toggle('is-light', (.2126 * m[0] + .7152 * m[1] + .0722 * m[2]) / 255 < .45); return }
+      }
+      c.classList.remove('is-light'); return
+    }
+  }
+  function update() {
+    queued = false
+    var gone = window.scrollY > 40
+    Array.prototype.forEach.call(document.querySelectorAll('.ix-scrollcue'), function (c) {
+      if (!gone && c.classList.contains('is-gone')) place(c) // back at the top: check its spot and colour again
+      c.classList.toggle('is-gone', gone)
+    })
+  }
+  window.addEventListener('scroll', function () { if (!queued) { queued = true; requestAnimationFrame(update) } }, { passive: true })
+  window.addEventListener('resize', function () { var c = current(); c = c && c.querySelector('.ix-scrollcue'); if (c) place(c) })
+  window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup()
+  window.addEventListener('load', function () { var c = current(); c = c && c.querySelector('.ix-scrollcue'); if (c) place(c) })
+})()

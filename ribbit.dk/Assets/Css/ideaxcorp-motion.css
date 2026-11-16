@@ -37,3 +37,28 @@
 .ix-lite .ixs-char img, .ix-lite .ixj-guide img, .ix-lite .ixb-guide img { filter: none; }
 .ix-lite .ixs-word { text-shadow: none; }
 .ix-lite body.ix-transitioning main .page.removing { filter: none; }
+
+/* "Scroll to explore" (ideaxcorp-motion.js adds it to every page): centred near the foot of the first screen */
+.page { position: relative; }
+.ix-scrollcue {
+  position: absolute; left: 50%; top: calc(100vh - 62px); top: calc(100svh - 62px); z-index: 5; translate: -50% 0; /* top: set by the script */
+  display: flex; align-items: center; gap: 12px; margin: 0; pointer-events: none;
+  font-family: var(--font-body, sans-serif); font-size: 1.15rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(26, 26, 26, .64);
+  transition: opacity .5s ease, translate .6s cubic-bezier(.16, 1, .3, 1);
+}
+.ix-scrollcue--home { left: var(--gutter, 24px); translate: 0 0; }
+.ix-scrollcue--home.is-gone { translate: 0 12px; }
+.ix-scrollcue span { position: relative; width: 2px; height: 34px; background: rgba(23, 10, 40, .12); overflow: hidden; }
+.ix-scrollcue span::after { content: ''; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: #9700FF; animation: ixb-drip 1.8s cubic-bezier(.65, 0, .35, 1) infinite; }
+.ix-scrollcue.is-light { color: rgba(255, 255, 255, .72); }
+.ix-scrollcue.is-light span { background: rgba(255, 255, 255, .2); }
+.ix-scrollcue.is-light span::after { background: #C9A2FF; }
+.ix-scrollcue.is-gone { opacity: 0; translate: -50% 12px; }
+.page.removing .ix-scrollcue { opacity: 0; } /* the page going out takes its cue with it */
+@media all and (max-width: 600px) {
+  .ix-scrollcue { font-size: 1rem; gap: 10px; }
+  .ix-scrollcue--home { left: 50%; translate: -50% -48px; } /* phones: centred, above the progress dots */
+  .ix-scrollcue--home.is-gone { translate: -50% -36px; }
+  .ix-scrollcue span { height: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .ix-scrollcue span::after { animation: none; } }
