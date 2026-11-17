@@ -56,6 +56,8 @@
     }, { rootMargin: '0px 0px -10% 0px' })
     Array.prototype.forEach.call(page.querySelectorAll('.ixb-mask, [data-ixb-count]'), function (el) {
       if (reduced) { el.classList.add('is-in'); return }
+      // a figure waits at 0 until it counts up (the page itself carries the real value, for search and without scripts)
+      if (el.hasAttribute('data-ixb-count')) el.textContent = (0).toFixed(+(el.getAttribute('data-ixb-dec') || 0))
       // story images sit off to the side until the track brings them in: watch them horizontally too
       io.observe(el)
     })
@@ -108,6 +110,9 @@
         if (b.left < w * .85 && b.right > 0 && b.top < vh && b.bottom > 0) open.push(m)
       })
       track.style.transform = 'translate3d(' + (-p * travel).toFixed(1) + 'px,0,0)'
+      story.style.setProperty('--p', p.toFixed(4)) // the progress rail (ideaxcorp-about.css)
+      var step = Math.min(3, Math.floor(p * 4 + .12))
+      if (story._step !== step) { story._step = step; Array.prototype.forEach.call(story.querySelectorAll('.ixb-rail li'), function (li, i) { li.classList.toggle('on', i <= step); li.classList.toggle('now', i === step) }) }
       open.forEach(function (m) { m.classList.add('is-in') })
     }
     moveGuide()
@@ -156,20 +161,16 @@
     }
   }
 
-  // ---------- mouse: hero tile, expertise images, magnetic buttons ----------
+  // ---------- mouse: hero tile, magnetic buttons ----------
   function onMove(e) {
-    if (!page || !fine || reduced) return
-    var tile = page.querySelector('[data-ixb-tilt]')
+    if (!fine || reduced) return
+    var tile = page && page.querySelector('[data-ixb-tilt]')
     if (tile) {
       var cx = e.clientX / window.innerWidth - .5, cy = e.clientY / window.innerHeight - .5
       tile.style.setProperty('--ry', (-18 + cx * 30).toFixed(1) + 'deg'); tile.style.setProperty('--rx', (12 - cy * 24).toFixed(1) + 'deg')
     }
-    var row = e.target.closest && e.target.closest('.ixb-svc')
-    if (row) {
-      var img = row.querySelector('.ixb-svc-img'), rr = row.getBoundingClientRect()
-      img.style.translate = (e.clientX - rr.left + 28).toFixed(0) + 'px ' + (e.clientY - rr.top - img.offsetHeight / 2).toFixed(0) + 'px'
-    }
-    Array.prototype.forEach.call(page.querySelectorAll('.ixb-magnetic'), function (b) {
+    // the closing "Let's create what's next" buttons, on every page
+    Array.prototype.forEach.call(document.querySelectorAll('main .ixb-magnetic'), function (b) {
       var r = b.getBoundingClientRect(), mx = e.clientX - (r.left + r.width / 2), my = e.clientY - (r.top + r.height / 2)
       var near = Math.abs(mx) < r.width * .9 && Math.abs(my) < r.height * 1.6
       b.style.translate = near ? (mx * .25).toFixed(1) + 'px ' + (my * .35).toFixed(1) + 'px' : ''
@@ -183,4 +184,181 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
   else init()
   setInterval(function () { init(); measure() }, 1500) // late fonts/images change the story's width
+})()
+// About, "Our creative philosophy" (styles: "philosophy: orbit" in ideaxcorp-about.css): the orbit opens once as it
+// arrives (.is-in: the photo, then the lines, then the cards in turn). Pages are swapped in without a reload.
+;(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var el = null
+  function setup() {
+    var o = document.querySelector('.ixb-or[data-or]')
+    if (o === el) return
+    el = o
+    if (!el || el.classList.contains('is-in')) return
+    if (reduced || !window.IntersectionObserver) { el.classList.add('is-in'); return }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { es[0].target.classList.add('is-in'); io.disconnect() }
+    }, { rootMargin: '0px 0px -18% 0px' })
+    io.observe(el)
+  }
+  window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup()
+  setInterval(setup, 1000)
+})()
+// About, "Our expertise" (styles: "expertise: stacking cards" in ideaxcorp-about.css): each card reveals once as it
+// arrives (.is-in); on wide screens, as the next card slides over a pinned one, the one beneath eases back and dims
+// (--cover, 0 to 1), and each picture drifts with the scroll (--py, -1 to 1). Reads first, then writes, once a frame.
+;(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var list = null, lis = [], cards = [], queued = false, io = null
+  function setup() {
+    var l = document.querySelector('#expertise .ixb-svc-list')
+    if (l === list) return
+    list = l; lis = []; cards = []
+    if (io) { io.disconnect(); io = null }
+    if (!list) return
+    lis = Array.prototype.slice.call(list.children)
+    cards = lis.map(function (li) { return li.querySelector('.ixb-svc') })
+    if (reduced || !window.IntersectionObserver) { lis.forEach(function (li) { li.classList.add('is-in') }); return }
+    io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target) } })
+    }, { rootMargin: '0px 0px -15% 0px' })
+    lis.forEach(function (li) { io.observe(li) })
+    update()
+  }
+  function update() {
+    queued = false
+    if (!list || reduced || !document.body.contains(list)) return
+    var wide = window.innerWidth > 1000, vh = window.innerHeight
+    var r = lis.map(function (li) { return li.getBoundingClientRect() })
+    var out = r.map(function (b, k) {
+      var cover = 0
+      if (wide && k < r.length - 1) cover = Math.max(0, Math.min(1, (b.bottom - r[k + 1].top) / b.height))
+      var py = Math.max(-1, Math.min(1, ((b.top + b.height / 2) - vh / 2) / vh))
+      return [cover, wide ? py : 0]
+    })
+    cards.forEach(function (c, k) {
+      c.style.setProperty('--cover', out[k][0].toFixed(3))
+      c.style.setProperty('--py', out[k][1].toFixed(3))
+    })
+  }
+  window.addEventListener('scroll', function () { if (!queued) { queued = true; requestAnimationFrame(update) } }, { passive: true })
+  window.addEventListener('resize', function () { if (!queued) { queued = true; requestAnimationFrame(update) } })
+  window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup()
+  setInterval(setup, 1000)
+})()
+// About, "Our approach" (styles: "approach: the path" in ideaxcorp-about.css): the path draws with the scroll
+// (--p from when the section's top reaches 70% of the screen until its foot passes 45%), the dot rides its tip,
+// and each stop lights up (.on) once the path reaches it; the step pictures drift (--py). Reads, then writes.
+;(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var box = null, fill = null, dot = null, steps = [], nodes = [], len = 0, queued = false
+  var AT = [.17, .5, .83] // where the stops sit along the path's height
+  function setup() {
+    var b = document.querySelector('.ixb-ap[data-ap]')
+    if (b === box) return
+    box = b
+    if (!box) return
+    fill = box.querySelector('.ixb-ap-fill'); dot = box.querySelector('.ixb-ap-dot')
+    steps = Array.prototype.slice.call(box.querySelectorAll('.ixb-ap-step'))
+    nodes = Array.prototype.slice.call(box.querySelectorAll('.ixb-ap-node'))
+    len = fill && fill.getTotalLength ? fill.getTotalLength() : 0
+    if (reduced) { steps.concat(nodes).forEach(function (e) { e.classList.add('on') }); box.style.setProperty('--p', 1); return }
+    update()
+  }
+  function update() {
+    queued = false
+    if (!box || reduced || !document.body.contains(box)) return
+    var r = box.getBoundingClientRect(), vh = window.innerHeight, wide = window.innerWidth > 1000
+    var p = Math.max(0, Math.min(1, (vh * .7 - r.top) / (r.height - vh * .25)))
+    var pt = null
+    if (wide && len && dot) {
+      // the tip of the drawn path: the point at that share of its length, in the box's pixels (the drawing is stretched to fit)
+      pt = fill.getPointAtLength(p * len)
+    }
+    var py = steps.map(function (s) { var b = s.getBoundingClientRect(); return Math.max(-1, Math.min(1, ((b.top + b.height / 2) - vh / 2) / vh)) })
+    box.style.setProperty('--p', p.toFixed(4))
+    if (pt) dot.style.transform = 'translate(' + (pt.x / 1000 * r.width).toFixed(1) + 'px,' + (pt.y / 1000 * r.height).toFixed(1) + 'px)'
+    steps.forEach(function (s, k) {
+      // on wide screens the path's height share; on phones the step's own place in the column
+      var on = wide ? p >= AT[k] - .02 : (s.getBoundingClientRect().top < vh * .62 || p >= .97) // (the last one at the latest when the line is full)
+      s.classList.toggle('on', on); if (nodes[k]) nodes[k].classList.toggle('on', on)
+      s.style.setProperty('--py', py[k].toFixed(3))
+    })
+  }
+  window.addEventListener('scroll', function () { if (!queued) { queued = true; requestAnimationFrame(update) } }, { passive: true })
+  window.addEventListener('resize', function () { if (!queued) { queued = true; requestAnimationFrame(update) } })
+  window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup()
+  setInterval(setup, 1000)
+})()
+// About, "The team" (styles: "team: the wall" in ideaxcorp-about.css): the wall opens once as it arrives (.is-in);
+// on wide screens each picture leans towards the pointer, more the nearer it is (--mx/--my), and drifts with the
+// scroll (--py), and the big words behind slide with it (--p). A credit and its picture light up together (.on).
+// Reads first, then writes, once a frame.
+;(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  var box = null, ms = [], cr = [], px = -1e4, py = -1e4, queued = false, io = null
+  function wide() { return window.innerWidth > 1000 }
+  function setup() {
+    var b = document.querySelector('.ixb-tw[data-tw]')
+    if (b === box) return
+    box = b
+    if (io) { io.disconnect(); io = null }
+    if (!box) return
+    ms = Array.prototype.slice.call(box.querySelectorAll('.ixb-tw-m'))
+    // the name tape: a second copy of the list (hidden from screen readers) makes the loop seamless
+    var tape = box.querySelector('.ixb-tw-credits')
+    if (tape && !tape.dataset.doubled) {
+      tape.dataset.doubled = '1'
+      Array.prototype.slice.call(tape.children).forEach(function (li) { var c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); tape.appendChild(c) })
+    }
+    cr = []
+    Array.prototype.forEach.call(box.querySelectorAll('.ixb-tw-credits li'), function (li) { var k = +li.getAttribute('data-k'); (cr[k] = cr[k] || []).push(li) })
+    function names(k, on) { (cr[k] || []).forEach(function (li) { li.classList.toggle('on', on) }) }
+    function link(k, on) { if (ms[k]) ms[k].classList.toggle('on', on); names(k, on) }
+    ms.forEach(function (m, k) {
+      m.addEventListener('mouseenter', function () { names(k, true) })
+      m.addEventListener('mouseleave', function () { names(k, false) })
+      m.addEventListener('focus', function () { names(k, true) })
+      m.addEventListener('blur', function () { names(k, false) })
+    })
+    cr.forEach(function (list, k) {
+      list.forEach(function (c) {
+        c.addEventListener('mouseenter', function () { link(k, true) })
+        c.addEventListener('mouseleave', function () { link(k, false) })
+      })
+    })
+    if (fine && !reduced) {
+      box.addEventListener('pointermove', function (e) { px = e.clientX; py = e.clientY; queue() })
+      box.addEventListener('pointerleave', function () { px = py = -1e4; queue() })
+    }
+    if (reduced || !window.IntersectionObserver) { box.classList.add('is-in'); return }
+    io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { box.classList.add('is-in'); io.disconnect() } }, { rootMargin: '0px 0px -18% 0px' })
+    io.observe(box)
+    queue()
+  }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(update) } }
+  function update() {
+    queued = false
+    if (!box || reduced || !document.body.contains(box) || !wide()) return
+    var vh = window.innerHeight, br = box.getBoundingClientRect()
+    var rs = ms.map(function (m) { return m.getBoundingClientRect() })
+    var p = Math.max(0, Math.min(1, (vh - br.top) / (br.height + vh)))
+    box.style.setProperty('--p', p.toFixed(3))
+    ms.forEach(function (m, k) {
+      var r = rs[k], cx = r.left + r.width / 2, cy = r.top + r.height / 2
+      var dx = px - cx, dy = py - cy, d = Math.sqrt(dx * dx + dy * dy), f = Math.max(0, 1 - d / 520)
+      var mx = Math.max(-1, Math.min(1, dx / 260)) * f, my = Math.max(-1, Math.min(1, dy / 260)) * f
+      m.style.setProperty('--mx', mx.toFixed(3)); m.style.setProperty('--my', my.toFixed(3))
+      m.style.setProperty('--py', Math.max(-1, Math.min(1, (cy - vh / 2) / vh)).toFixed(3))
+    })
+  }
+  window.addEventListener('scroll', queue, { passive: true })
+  window.addEventListener('resize', queue)
+  window.addEventListener('ix:pageadded', function () { setTimeout(setup, 0) })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup()
+  setInterval(setup, 1000)
 })()

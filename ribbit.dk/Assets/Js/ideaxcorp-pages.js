@@ -103,6 +103,7 @@ document.documentElement.classList.add('ixp-js')
     if (typeof d.showModal === 'function') { if (!d.open) d.showModal() } else d.setAttribute('open', '')
     document.documentElement.classList.add('ixp-locked')
     history.replaceState(history.state, '', location.pathname + location.search + '#project-' + id)
+    hashDone = '#project-' + id // so the next scan doesn't build this popup a second time
     var scroller = d.querySelector('.ixp-dialog-body'); if (scroller) scroller.scrollTop = 0
     d.querySelector('.ixp-dialog-close').focus() // the site's own script would otherwise keep focus on the page
     return true
@@ -125,6 +126,8 @@ document.documentElement.classList.add('ixp-js')
   window.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href^="#"]')
     if (!a || a.getAttribute('href').length < 2) return
+    // Services "Our expertise": a panel that is still closed opens on this tap instead (ideaxcorp-work.js)
+    var panel = a.closest('.ixsv-p'); if (panel && !panel.classList.contains('on')) return
     var target = document.getElementById(a.getAttribute('href').slice(1))
     if (!target) return
     e.preventDefault(); e.stopPropagation()

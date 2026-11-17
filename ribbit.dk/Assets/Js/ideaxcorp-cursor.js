@@ -20,7 +20,18 @@
 
   var x = 0, y = 0, queued = false
   function paint() { queued = false; cur.style.translate = x + 'px ' + y + 'px' }
+  // A modal <dialog> (the portfolio's project details) sits in the browser's top layer, above every z-index, so a
+  // cursor left in <body> would be drawn behind it, and with the normal cursor hidden the pointer would vanish.
+  // While one is open the cursor lives inside it; afterwards it goes back to <body>. (The dialog's content is
+  // replaced on every opening, so this is checked on each move.)
+  function home() {
+    var d = document.querySelector('dialog[open]')
+    if (d) { try { if (!d.matches(':modal')) d = null } catch (err) {} }
+    var h = d || document.body
+    if (cur.parentNode !== h) h.appendChild(cur)
+  }
   function onMove(e) {
+    home()
     x = e.clientX; y = e.clientY
     if (!queued) { queued = true; requestAnimationFrame(paint) }
     if (!root.classList.contains('ix-cur-in')) root.classList.add('ix-cur-in')
@@ -40,6 +51,9 @@
   document.addEventListener('mousemove', onMove, { passive: true })
   document.addEventListener('mouseover', onOver, { passive: true })
   document.addEventListener('mouseout', onOut, { passive: true })
+  // a click can open or close a dialog without the pointer moving: re-home the cursor right after it
+  document.addEventListener('click', function () { setTimeout(home, 0); setTimeout(home, 320) }, true)
+  document.addEventListener('close', function () { setTimeout(home, 0) }, true)
   window.addEventListener('blur', onBlur)
 
   // a device that stops reporting a fine pointer (e.g. a tablet unplugged from its keyboard) gets the default cursor back

@@ -17,7 +17,7 @@
   var live = null, enterT = 0
 
   function setup() {
-    Array.prototype.forEach.call(document.querySelectorAll('.ixb-team .ixp-team > li'), function (li) {
+    Array.prototype.forEach.call(document.querySelectorAll('.ixb-team .ixb-crew > li'), function (li) {
       if (li._ixt) return
       var frame = li.querySelector('.ixp-team-photo'), figure = li.querySelector('figure')
       if (!frame || !figure) return
@@ -123,7 +123,7 @@
   }
 
   // ---------- input ----------
-  function cardOf(t) { return t && t.closest && t.closest('.ixb-team .ixp-team > li') }
+  function cardOf(t) { return t && t.closest && t.closest('.ixb-team .ixb-crew > li') }
   if (hover) {
     document.addEventListener('mouseover', function (e) {
       var li = cardOf(e.target)
