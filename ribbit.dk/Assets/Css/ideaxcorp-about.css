@@ -280,7 +280,7 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
 .ixb-rail-bar { position: relative; display: block; height: 3px; border-radius: 3px; background: rgba(151, 0, 255, .12); overflow: hidden; }
 .ixb-rail-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, #9700FF, #C9A2FF); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
 .ixb-rail ol { display: grid; grid-template-columns: repeat(4, 1fr); margin: 12px 0 0; padding: 0; list-style: none; }
-.ixb-rail li { font-size: 1.05rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(26, 26, 26, .38); transition: color .4s ease; }
+.ixb-rail li { font-size: 1.1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(26, 26, 26, .38); transition: color .4s ease; }
 .ixb-rail li:nth-child(2) { text-align: center; translate: -12% 0; }
 .ixb-rail li:nth-child(3) { text-align: center; translate: 12% 0; }
 .ixb-rail li:last-child { text-align: right; }
@@ -742,7 +742,7 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
   transition: color .35s ease, -webkit-text-stroke-color .35s ease;
 }
 .ixb-tw-credits li:nth-child(even) strong { color: transparent; -webkit-text-stroke: 1.5px rgba(23, 10, 40, .45); }
-.ixb-tw-credits span { align-self: flex-start; margin-top: .4em; padding: 5px 9px 4px; border-radius: 999px; background: #F3EAFF; font-size: 1.05rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.ixb-tw-credits span { align-self: flex-start; margin-top: .4em; padding: 5px 9px 4px; border-radius: 999px; background: #F3EAFF; font-size: 1.1rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .ixb-tw-credits i { align-self: center; margin-left: clamp(8px, 1vw, 16px); font-style: normal; font-size: clamp(2rem, 2vw, 3rem); color: #9700FF; }
 .ixb-tw-credits li:is(:hover, .on) strong { color: #9700FF; -webkit-text-stroke-color: transparent; }
 .ixb-tw-credits li:is(:hover, .on) span { background: #9700FF; color: #FFF; }
@@ -772,7 +772,7 @@ body:has(.ixb-hero) .page > .m.ixp + .m.ixp { border-top: 1px solid #F1ECF6; }
   .ixb-tw-m.m1 { grid-column: 1 / -1; grid-row: auto; }
   .ixb-tw-m.m1 .ixb-tw-pic { aspect-ratio: 1; }
   .ixb-tw-name { font-size: 1.7rem; }
-  .ixb-tw-role { font-size: 1rem; letter-spacing: .1em; }
+  .ixb-tw-role { font-size: 1.1rem; letter-spacing: .1em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ixb-tw-m, .ixb-tw-pic, .ixb-tw-pic img, .ixb-tw-type span, .ixb-tw-label > span > span { transition: none; }

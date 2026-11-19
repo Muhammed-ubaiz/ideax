@@ -375,3 +375,6 @@
 .ix-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .ix-opt { font-weight: 500; color: var(--muted); }
 .ix-contact-send:disabled { opacity: .6; cursor: progress; }
+
+/* phones: the office phone and email links get a bigger tap area, the same layout */
+@media all and (max-width: 640px) { .ix-contact .ix-office-list dd a { display: inline-block; padding: 9px 0; margin: -9px 0; } }

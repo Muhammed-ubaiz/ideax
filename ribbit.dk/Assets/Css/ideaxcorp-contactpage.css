@@ -1,0 +1,340 @@
+/* Contact page (/contact/): hero, the opening, the three ways in, the message form, the offices and maps. Every rule
+   uses the ixct- prefix (or sits under one), so nothing here reaches another page; the home page's contact section
+   (ideaxcorp-contact.css) is untouched. Script: ideaxcorp-contactpage.js (reveals, the office tabs, the card light);
+   the form itself is still ideaxcorp-contact.js. The closing CTA is the shared one (ideaxcorp-about.css .ixb-cta). */
+.ixct-hero, .ixct-intro, .ixct-cards, .ixct-msg, .ixct-find {
+  --ink: #170A28; --accent: #9700FF; --blue: #3D5BFF; --lav: #C9A2FF; --line: #ECE6F5; --muted: rgba(23, 10, 40, .64);
+  --grad: linear-gradient(120deg, #3D5BFF 0%, #7B2BFF 55%, #9700FF 100%);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+.m.ixp.ixct-hero, .m.ixp.ixct-intro, .m.ixp.ixct-cards, .m.ixp.ixct-msg, .m.ixp.ixct-find { background: #FFF; color: var(--ink); }
+.ixct-intro *, .ixct-cards *, .ixct-msg *, .ixct-find * { box-sizing: border-box; }
+
+/* ---------- hero ----------
+   The same hero as the Services, Portfolio and Blog pages (ideaxcorp-blog.css .ixbl-hero): a full first screen,
+   everything centred, the pill label, the oversized uppercase title with its last word on a second line in the
+   purple italic, the intro under it, on the same soft centred glow. */
+.m.ixp.ixct-hero { position: relative; isolation: isolate; overflow: hidden; padding-top: 0; padding-bottom: 0; }
+.ixct-hero::before {
+  content: ''; position: absolute; left: 50%; top: 50%; z-index: -1; width: 80vw; height: 85vh; translate: -50% -50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(151, 0, 255, .14), rgba(201, 162, 255, .08) 45%, rgba(255, 255, 255, 0) 75%);
+}
+.ixct-hero .ixp-wrap {
+  box-sizing: border-box; min-height: 100vh; min-height: 100svh; padding: 110px 0 72px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+.ixct-hero .ixp-eyebrow { margin-left: auto; margin-right: auto; }
+.ixct-hero .ixp-h1 {
+  max-width: none; margin: 0; font-weight: 600; text-transform: uppercase;
+  font-size: clamp(5.4rem, 9vw, 15rem); line-height: .88; letter-spacing: -.045em; color: var(--ink);
+}
+.ixct-hero .ixp-h1 em { display: block; text-transform: none; font-size: .98em; letter-spacing: -.02em; }
+.ixct-hero .ixp-hero-meta {
+  display: flex; flex-direction: column; align-items: center; gap: clamp(24px, 2.6vw, 36px);
+  margin-top: clamp(28px, 3vw, 48px); padding-top: 0; border-top: 0;
+}
+.ixct-hero .ixp-hero-meta .ixp-lead {
+  max-width: 46ch; margin: 0 auto; font-size: clamp(1.7rem, 1.3vw, 2.1rem); line-height: 1.5; color: rgba(26, 26, 26, .78);
+}
+@media all and (max-width: 767.5px) {
+  .ixct-hero .ixp-wrap { padding: 100px 0 56px; min-height: 92svh; }
+  .ixct-hero .ixp-h1 { font-size: clamp(4.4rem, 13vw, 6.4rem); }
+}
+
+/* ---------- shared pieces ---------- */
+.ixct-kicker { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 18px; font-size: 1.15rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ink); }
+.ixct-kicker--light { color: #FFF; }
+.ixct-star { display: inline-block; color: var(--blue); font-size: 1.6rem; animation: ixct-spin 9s linear infinite; }
+.ixct-kicker--light .ixct-star { color: var(--lav); }
+@keyframes ixct-spin { to { rotate: 360deg; } }
+.ixct-h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(4rem, 5.2vw, 8.4rem); line-height: .92; letter-spacing: -.045em; word-spacing: .1em; text-transform: uppercase; color: var(--ink); text-wrap: balance; }
+.ixct-h2 em { display: block; font-family: var(--font-accent); font-style: italic; font-weight: 400; font-size: 1.04em; letter-spacing: -.02em; text-transform: none; color: var(--accent); }
+.ixct-h2--light { color: #FFF; }
+.ixct-h2--light em { color: var(--lav); }
+.ixct-pulse { position: relative; display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: #18B26B; }
+.ixct-pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: ixct-ping 2.2s var(--ease) infinite; }
+@keyframes ixct-ping { 0% { transform: scale(1); opacity: .6; } 80%, 100% { transform: scale(3.2); opacity: 0; } }
+.ixct-intro a:focus-visible, .ixct-cards a:focus-visible, .ixct-msg a:focus-visible, .ixct-find a:focus-visible, .ixct-find button:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; border-radius: 10px; }
+
+/* ---------- the opening: the invitation and the quickest ways in ---------- */
+.m.ixp.ixct-intro { padding-top: clamp(72px, 8vw, 130px); padding-bottom: clamp(40px, 4vw, 64px); overflow: hidden; }
+.ixct-intro-grid { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px var(--gutter); align-items: end; }
+.ixct-intro-l { grid-column: 1 / span 6; }
+.ixct-intro-r { grid-column: 7 / span 4; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding-bottom: .6em; }
+.ixct-intro-text { margin: 0; max-width: 40ch; font-size: clamp(1.7rem, 1.3vw, 2rem); line-height: 1.55; color: var(--muted); }
+.ixct-promise {
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 12px; margin: 0; padding: 6px 22px 6px 6px; border-radius: 999px;
+  border: 1px solid transparent; background: linear-gradient(#FFF, #FFF) padding-box, var(--grad) border-box;
+  box-shadow: 0 14px 30px -18px rgba(123, 43, 255, .6); color: var(--ink); font-size: 1.4rem; font-weight: 600; line-height: 1;
+}
+.ixct-promise::after { /* a slow shine across */
+  content: ''; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(201, 162, 255, .35), transparent); transform: skewX(-18deg); animation: ixct-shine 5s var(--ease) infinite 1.2s;
+}
+@keyframes ixct-shine { 0% { left: -40%; } 45%, 100% { left: 130%; } }
+.ixct-promise-i { display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--grad); color: #FFF; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3); }
+.ixct-promise-i svg { width: 20px; height: 20px; }
+.ixct-promise-i path { transform-box: view-box; transform-origin: 12px 12px; }
+.ixct-hand-m { animation: ixct-spin 4s linear infinite; }
+.ixct-hand-h { animation: ixct-spin 48s linear infinite; }
+.ixct-promise-t em { font-family: var(--font-accent); font-style: italic; font-weight: 400; font-size: 1.3em; letter-spacing: -.01em; color: var(--accent); }
+.ixct-quick { display: flex; flex-wrap: wrap; gap: 10px; }
+.ixct-chip {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 1px solid #DCCFEC; background: #FFF;
+  color: var(--ink); font-size: 1.3rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
+  transition: transform .35s var(--ease), background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .35s var(--ease);
+}
+.ixct-chip svg { width: 16px; height: 12px; transition: transform .35s var(--ease); }
+.ixct-chip .ixct-chip-i { width: 18px; height: 18px; color: #18B26B; }
+.ixct-chip--fill { border-color: transparent; background: var(--grad); color: #FFF; box-shadow: 0 12px 26px -12px rgba(123, 43, 255, .7); }
+@media (hover: hover) {
+  .ixct-chip:hover { transform: translateY(-2px); border-color: var(--ink); }
+  .ixct-chip--fill:hover { border-color: transparent; box-shadow: 0 16px 32px -12px rgba(123, 43, 255, .8); }
+  .ixct-chip:hover svg { transform: translateX(3px); }
+  .ixct-chip:hover .ixct-chip-i { transform: none; }
+}
+/* the heading here is set softer than the other headings: sentence case in the display face, and "a conversation."
+   in the serif italic, filled with the brand gradient and led in by a short gradient line */
+.ixct-intro .ixct-h2 { font-weight: 500; font-size: clamp(4.4rem, 5.4vw, 8.8rem); line-height: 1; letter-spacing: -.035em; word-spacing: 0; text-transform: none; }
+.ixct-intro .ixct-h2 em {
+  display: flex; align-items: center; gap: .22em; width: fit-content; margin-top: .04em; padding: 0 .06em .1em 0; font-size: 1.08em; line-height: 1.05; letter-spacing: -.015em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.ixct-intro .ixct-h2 em::before { content: ''; flex: none; width: .8em; height: .045em; min-height: 2px; margin-top: .1em; border-radius: 2px; background: var(--grad); }
+/* the turning badge: points down to the form */
+.ixct-badge { grid-column: 11 / span 2; justify-self: end; align-self: end; position: relative; display: grid; place-items: center; width: 124px; height: 124px; color: var(--ink); text-decoration: none; }
+.ixct-badge-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: ixct-spin 16s linear infinite; }
+.ixct-badge-ring text { font: 700 9px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; fill: currentColor; }
+.ixct-badge-core { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: var(--ink); color: #FFF; transition: background .4s ease, transform .5s var(--ease); }
+.ixct-badge-core svg { width: 12px; height: 16px; }
+@media (hover: hover) { .ixct-badge:hover .ixct-badge-core { background: var(--grad); transform: translateY(4px); } }
+
+/* ---------- the three ways in ---------- */
+.m.ixp.ixct-cards { padding-top: clamp(24px, 3vw, 48px); padding-bottom: clamp(64px, 7vw, 110px); }
+.ixct-card-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 24px); margin: 0; padding: 0; list-style: none; }
+.ixct-card {
+  --mx: 50%; --my: 0%;
+  position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; min-width: 0; padding: clamp(24px, 2.2vw, 34px);
+  border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(170deg, #FFF 55%, #F6F3FF 100%);
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .03), 0 18px 40px -30px rgba(40, 30, 120, .35);
+  transition: transform .6s var(--ease), box-shadow .6s var(--ease), border-color .4s ease;
+}
+/* the light that follows the pointer */
+.ixct-card::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .5s ease;
+  background: radial-gradient(360px circle at var(--mx) var(--my), rgba(123, 43, 255, .1), rgba(61, 91, 255, .05) 40%, transparent 70%);
+}
+.ixct-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: clamp(30px, 3.4vw, 54px); }
+.ixct-card-i { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: #F2EEFF; color: var(--blue); transition: background .45s ease, color .45s ease, transform .6s var(--ease); }
+.ixct-card-i svg { width: 26px; height: 26px; }
+.ixct-card-no { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; letter-spacing: .08em; color: #B9AED0; }
+.ixct-card-h { margin: 0 0 6px; font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 2vw, 3rem); line-height: 1.05; letter-spacing: -.03em; }
+.ixct-card-note { margin: 0 0 22px; font-size: 1.4rem; line-height: 1.45; color: var(--muted); }
+.ixct-card-vals { display: flex; flex-direction: column; gap: 12px; margin: 0 0 28px; padding: 18px 0 0; list-style: none; border-top: 1px solid var(--line); }
+.ixct-card-vals li { display: flex; flex-direction: column; gap: 3px; font-size: 1.45rem; line-height: 1.45; color: var(--ink); }
+.ixct-card-vals span { font-size: 1.1rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); }
+.ixct-card-vals a { width: fit-content; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.8rem, 1.45vw, 2.2rem); letter-spacing: -.02em; color: inherit; text-decoration: none; overflow-wrap: anywhere;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease), color .3s ease; }
+.ixct-card-go {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; margin-top: auto; padding: 8px 8px 8px 20px; border-radius: 999px;
+  border: 1px solid #DCCFEC; color: var(--ink); font-size: 1.25rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+}
+.ixct-go-i { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: #FFF; transition: transform .5s var(--ease), background .35s ease; }
+.ixct-go-i svg { width: 15px; height: 11px; }
+/* the dark middle card */
+.ixct-card--dark { border-color: transparent; background: radial-gradient(120% 90% at 100% 0%, #3A1B78 0%, #1F0D40 45%, #170A28 100%); color: #FFF; box-shadow: 0 30px 60px -34px rgba(40, 10, 90, .9); }
+.ixct-card--dark::before { background: radial-gradient(360px circle at var(--mx) var(--my), rgba(201, 162, 255, .22), transparent 65%); }
+.ixct-card--dark::after { content: ''; position: absolute; right: -70px; bottom: -70px; z-index: -1; width: 220px; height: 220px; border-radius: 50%; background: var(--grad); filter: blur(60px); opacity: .55; pointer-events: none; }
+.ixct-card--dark .ixct-card-i { background: rgba(255, 255, 255, .1); color: #FFF; }
+.ixct-card--dark .ixct-card-no { color: rgba(255, 255, 255, .4); }
+.ixct-card--dark .ixct-card-note { color: rgba(255, 255, 255, .7); }
+.ixct-card--dark .ixct-card-vals { border-top-color: rgba(255, 255, 255, .14); }
+.ixct-card--dark .ixct-card-vals li { color: #FFF; }
+.ixct-card--dark .ixct-card-vals span { color: var(--lav); }
+.ixct-card--dark .ixct-card-go { border-color: rgba(255, 255, 255, .22); color: #FFF; }
+.ixct-card--dark .ixct-go-i { background: #FFF; color: var(--ink); }
+.ixct-card-vals--addr li { font-size: 1.5rem; font-weight: 500; }
+@media (hover: hover) {
+  .ixct-card:hover { transform: translateY(-6px); border-color: #D8C8F2; box-shadow: 0 2px 4px rgba(23, 10, 40, .04), 0 34px 60px -32px rgba(40, 30, 120, .55); }
+  .ixct-card--dark:hover { border-color: transparent; box-shadow: 0 40px 70px -34px rgba(40, 10, 90, 1); }
+  .ixct-card:hover::before { opacity: 1; }
+  .ixct-card:hover .ixct-card-i { background: var(--grad); color: #FFF; transform: rotate(-8deg) scale(1.04); }
+  .ixct-card-vals a:hover { background-size: 100% 1px; }
+  .ixct-card-go:hover { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .ixct-card-go:hover .ixct-go-i { background: var(--grad); color: #FFF; transform: translateX(-2px) rotate(-45deg); }
+  .ixct-card--dark .ixct-card-go:hover { background: #FFF; border-color: #FFF; color: var(--ink); }
+}
+
+/* ---------- the message form ---------- */
+.m.ixp.ixct-msg { padding-top: clamp(40px, 4vw, 64px); padding-bottom: clamp(80px, 8vw, 130px); }
+.ixct-msg-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(14px, 1.6vw, 24px); align-items: stretch; }
+.ixct-msg-side {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; padding: clamp(30px, 3.4vw, 56px); border-radius: 26px;
+  background: #170A28; color: #FFF;
+}
+.ixct-orb { position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; filter: blur(70px); }
+.ixct-orb--a { right: -90px; top: -90px; width: 320px; height: 320px; background: #7B2BFF; opacity: .55; animation: ixct-drift 14s ease-in-out infinite alternate; }
+.ixct-orb--b { left: -110px; bottom: -120px; width: 300px; height: 300px; background: #3D5BFF; opacity: .45; animation: ixct-drift 17s ease-in-out infinite alternate-reverse; }
+@keyframes ixct-drift { to { transform: translate(40px, 50px) scale(1.1); } }
+.ixct-msg-side::after { /* a fine grid over the panel */
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+  background: linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 44px 44px, linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 44px 44px;
+  -webkit-mask-image: linear-gradient(160deg, #000 10%, transparent 70%); mask-image: linear-gradient(160deg, #000 10%, transparent 70%);
+}
+.ixct-msg-side .ixct-h2 { font-size: clamp(3.6rem, 4vw, 6.4rem); }
+.ixct-msg-text { margin: 24px 0 0; max-width: 36ch; font-size: clamp(1.55rem, 1.15vw, 1.75rem); line-height: 1.55; color: rgba(255, 255, 255, .74); }
+.ixct-msg-list { display: flex; flex-direction: column; gap: 10px; margin: auto 0 0; padding: 40px 0 0; list-style: none; }
+.ixct-msg-list li { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, .12); background: rgba(255, 255, 255, .05); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background-color .35s ease, border-color .35s ease; }
+.ixct-msg-list li > span:last-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 1.35rem; color: rgba(255, 255, 255, .7); }
+.ixct-msg-list b { font-size: 1.45rem; font-weight: 700; color: #FFF; }
+.ixct-msg-list a { color: rgba(255, 255, 255, .86); text-decoration: none; overflow-wrap: anywhere; }
+.ixct-msg-i { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 12px; background: rgba(255, 255, 255, .1); color: var(--lav); }
+.ixct-msg-i svg { width: 20px; height: 20px; }
+@media (hover: hover) {
+  .ixct-msg-list li:hover { background: rgba(255, 255, 255, .09); border-color: rgba(255, 255, 255, .22); }
+  .ixct-msg-list a:hover { color: #FFF; text-decoration: underline; text-underline-offset: 3px; }
+}
+/* the form card (the .ix-contact wrapper is only there for ideaxcorp-contact.js; its section styles are undone) */
+.ixct-msg .ix-contact.ixct-formbox { padding: 0; background: none; font-size: 1.5rem; line-height: 1.5; color: var(--ink); }
+.ixct-formbox .ix-contact-form {
+  height: 100%; gap: 20px 16px; padding: clamp(24px, 3vw, 48px); border-radius: 26px; border: 1px solid var(--line); background: #FFF;
+  box-shadow: 0 1px 2px rgba(23, 10, 40, .04), 0 30px 70px -40px rgba(40, 30, 120, .4); align-content: start;
+}
+.ixct-formbox .ix-field { gap: 8px; }
+.ixct-formbox .ix-field label { font-size: 1.15rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); transition: color .3s ease; }
+.ixct-formbox .ix-field:focus-within label { color: var(--accent); }
+.ixct-formbox .ix-field input, .ixct-formbox .ix-field select, .ixct-formbox .ix-field textarea {
+  min-height: 54px; padding: 15px 18px; border-radius: 14px; border: 1px solid transparent; background-color: #F7F5FC; font-size: 1.55rem;
+  transition: border-color .3s ease, box-shadow .4s var(--ease), background-color .3s ease;
+}
+.ixct-formbox .ix-field select { padding-right: 44px; background-position: right 18px center; }
+.ixct-formbox .ix-field textarea { min-height: 150px; }
+.ixct-formbox .ix-field input:hover, .ixct-formbox .ix-field select:hover, .ixct-formbox .ix-field textarea:hover { border-color: #DCCFEC; }
+.ixct-formbox .ix-field input:focus, .ixct-formbox .ix-field select:focus, .ixct-formbox .ix-field textarea:focus { border-color: var(--accent); background-color: #FFF; box-shadow: 0 0 0 5px rgba(151, 0, 255, .1), 0 12px 24px -16px rgba(123, 43, 255, .5); }
+.ixct-formbox .ix-field.invalid input, .ixct-formbox .ix-field.invalid textarea { border-color: #C62828; background-color: #FFF; box-shadow: 0 0 0 4px rgba(198, 40, 40, .1); }
+.ixct-formbox .ix-contact-actions { margin-top: 8px; }
+.ixct-formbox .ix-contact-send { position: relative; overflow: hidden; height: 58px; padding: 0 9px 0 30px; background: var(--grad); box-shadow: 0 16px 32px -14px rgba(123, 43, 255, .75); }
+.ixct-formbox .ix-contact-send::before { /* a shine that sweeps across on hover */
+  content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .38), transparent); transform: skewX(-18deg); transition: left .8s var(--ease);
+}
+.ixct-formbox .ix-contact-send > span { position: relative; }
+.ixct-formbox .ix-contact-send:disabled { opacity: .7; cursor: progress; }
+@media (hover: hover) {
+  .ixct-formbox .ix-contact-send:hover { background: var(--grad); box-shadow: 0 22px 40px -14px rgba(123, 43, 255, .85); }
+  .ixct-formbox .ix-contact-send:hover::before { left: 120%; }
+}
+
+/* ---------- the offices and maps ---------- */
+.m.ixp.ixct-find { padding-top: clamp(40px, 4vw, 64px); padding-bottom: clamp(90px, 9vw, 150px); }
+.ixct-find-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px var(--gutter); margin-bottom: clamp(28px, 3vw, 46px); }
+.ixct-tabs { position: relative; display: inline-flex; padding: 5px; border-radius: 999px; background: #F4F1FA; border: 1px solid var(--line); }
+.ixct-tab-ind { position: absolute; left: 5px; top: 5px; bottom: 5px; width: 0; border-radius: 999px; background: var(--ink); box-shadow: 0 8px 18px -10px rgba(23, 10, 40, .7); transition: transform .55s var(--ease), width .55s var(--ease); }
+.ixct-tab { position: relative; z-index: 1; min-height: 46px; padding: 0 22px; border: 0; border-radius: 999px; background: none; cursor: pointer; font: 700 1.25rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); transition: color .35s ease; }
+.ixct-tab[aria-selected="true"] { color: #FFF; }
+html:not(.ixct-on) .ixct-tabs { display: none; }
+@media (hover: hover) { .ixct-tab[aria-selected="false"]:hover { color: var(--ink); } }
+.ixct-find-panels { display: grid; gap: clamp(14px, 1.6vw, 24px); }
+.ixct-office { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(14px, 1.6vw, 24px); min-width: 0; }
+.ixct-office[hidden] { display: none; }
+.ixct-office.is-shown .ixct-office-info, .ixct-office.is-shown .ixct-map { animation: ixct-swap .7s var(--ease) both; }
+.ixct-office.is-shown .ixct-map { animation-delay: .06s; }
+@keyframes ixct-swap { from { opacity: 0; transform: translateY(14px); } }
+.ixct-office-info {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; padding: clamp(26px, 2.6vw, 40px); border-radius: 26px;
+  border: 1px solid var(--line); background: linear-gradient(165deg, #FFF 50%, #F3F0FF 100%);
+}
+.ixct-office-info::before { /* AE / IN, large and outlined */
+  content: attr(data-code); position: absolute; right: -.04em; bottom: -.2em; z-index: -1; pointer-events: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(12rem, 13vw, 19rem); line-height: 1; letter-spacing: -.05em; color: transparent; -webkit-text-stroke: 1.2px rgba(61, 91, 255, .16);
+}
+.ixct-office-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.ixct-office-h { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(2.6rem, 2.2vw, 3.4rem); line-height: 1; letter-spacing: -.03em; }
+.ixct-status { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 6px; border-radius: 999px; background: #F4F1FA; color: var(--muted); font-size: 1.1rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.ixct-status:empty { display: none; }
+.ixct-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #B9AED0; }
+.ixct-status.open { background: #EAF8F1; color: #12734A; }
+.ixct-status.open::before { background: #18B26B; box-shadow: 0 0 0 4px rgba(24, 178, 107, .18); }
+.ixct-office-local { margin: 10px 0 0; font-size: 1.3rem; color: var(--muted); }
+.ixct-office-local .ix-time { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ixct-office-list { display: flex; flex-direction: column; margin: 26px 0 30px; }
+.ixct-office-list > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); }
+.ixct-office-list dt { padding-top: 3px; font-size: 1.1rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); }
+.ixct-office-list dd { margin: 0; font-size: 1.5rem; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.ixct-office-list dd a { color: inherit; font-weight: 600; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease), color .3s ease; }
+.ixct-dir {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: fit-content; min-height: 52px; margin-top: auto; padding: 0 26px; border-radius: 999px;
+  background: var(--ink); color: #FFF; font-size: 1.3rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+  box-shadow: 0 14px 28px -16px rgba(23, 10, 40, .8); transition: transform .4s var(--ease), background .35s ease, box-shadow .4s var(--ease);
+}
+.ixct-dir svg { width: 18px; height: 18px; transition: transform .5s var(--ease); }
+.ixct-map { position: relative; overflow: hidden; min-height: clamp(380px, 36vw, 540px); border-radius: 26px; border: 1px solid var(--line); background: #EEF0FF; }
+.ixct-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(.85) contrast(1.02); }
+.ixct-map-tag {
+  position: absolute; right: 16px; top: 16px; display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px 9px 14px; border-radius: 999px; pointer-events: none;
+  background: rgba(255, 255, 255, .94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 12px 26px -14px rgba(23, 10, 40, .55);
+  font-size: 1.25rem; font-weight: 700; color: var(--ink);
+}
+.ixct-map-tag .ixct-pulse { background: var(--accent); }
+@media (hover: hover) {
+  .ixct-office-list dd a:hover { color: var(--accent); background-size: 100% 1px; }
+  .ixct-dir:hover { transform: translateY(-2px); background: var(--grad); box-shadow: 0 20px 34px -16px rgba(123, 43, 255, .8); }
+  .ixct-dir:hover svg { transform: rotate(45deg); }
+}
+
+/* the display face sets words tight: a little air between them */
+.ixct-card-h, .ixct-card-vals a, .ixct-office-h { word-spacing: .14em; }
+
+/* ---------- arriving: pieces rise in, in turn (only once the script is running) ---------- */
+html.ixct-on [data-ixct]:not(.is-in) { opacity: 0; transform: translateY(34px); }
+html.ixct-on [data-ixct] { transition: opacity .9s var(--ease) var(--d, 0s), transform 1s var(--ease) var(--d, 0s); }
+html.ixct-on .ixct-card[data-ixct].is-in { transition: opacity .9s var(--ease) var(--d, 0s), transform .6s var(--ease), box-shadow .6s var(--ease), border-color .4s ease; }
+.ix-off .ixct-promise::after, .ix-off .ixct-promise-i path, .ix-off .ixct-star, .ix-off .ixct-badge-ring, .ix-off .ixct-orb, .ix-off .ixct-pulse::after { animation-play-state: paused; }
+
+/* ---------- tablets ---------- */
+@media all and (max-width: 1000.5px) {
+  .ixct-intro-l, .ixct-intro-r { grid-column: 1 / -1; }
+  .ixct-badge { position: absolute; right: 0; top: 0; }
+  .ixct-intro-l { padding-right: 140px; }
+  .ixct-card-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ixct-card:last-child { grid-column: 1 / -1; }
+  .ixct-msg-grid { grid-template-columns: minmax(0, 1fr); }
+  .ixct-msg-list { margin-top: 0; }
+  .ixct-office { grid-template-columns: minmax(0, 1fr); }
+  .ixct-office-info::before { font-size: 14rem; }
+}
+/* ---------- phones ---------- */
+@media all and (max-width: 640px) { /* the phone and email links: a bigger tap area, the same layout */
+  .ixct-card-vals a, .ixct-office-list dd a, .ixct-msg-list a { display: inline-block; padding: 9px 0; margin: -9px 0; }
+}
+@media all and (max-width: 640px) {
+  .m.ixp.ixct-intro { padding-top: 64px; }
+  .ixct-intro-l { padding-right: 0; }
+  .ixct-h2 { font-size: clamp(3.4rem, 10.4vw, 4.6rem); }
+  .ixct-intro .ixct-h2 { font-size: clamp(3.8rem, 11.6vw, 5rem); }
+  .ixct-intro .ixct-h2 em::before { width: .5em; }
+  .ixct-msg-side .ixct-h2 { font-size: clamp(3.2rem, 9.6vw, 4.2rem); }
+  .ixct-badge { display: none; }
+  .ixct-quick, .ixct-quick .ixct-chip { width: 100%; }
+  .ixct-quick .ixct-chip { justify-content: center; min-height: 52px; }
+  .ixct-card-list { grid-template-columns: minmax(0, 1fr); }
+  .ixct-card:last-child { grid-column: auto; }
+  .ixct-card-top { margin-bottom: 26px; }
+  .ixct-msg-side, .ixct-formbox .ix-contact-form, .ixct-office-info, .ixct-map { border-radius: 20px; }
+  .ixct-formbox .ix-contact-form { grid-template-columns: minmax(0, 1fr); padding: 22px 18px; }
+  .ixct-formbox .ix-field { grid-column: 1 / -1; }
+  .ixct-formbox .ix-contact-send { width: 100%; justify-content: space-between; }
+  .ixct-find-head { align-items: flex-start; }
+  .ixct-tabs { width: 100%; }
+  .ixct-tab { flex: 1; padding: 0 10px; font-size: 1.15rem; }
+  .ixct-office-list > div { grid-template-columns: 1fr; gap: 4px; }
+  .ixct-dir { width: 100%; }
+  .ixct-map { min-height: 340px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixct-star, .ixct-badge-ring, .ixct-orb, .ixct-pulse::after, .ixct-promise::after, .ixct-promise-i path { animation: none; }
+  .ixct-office.is-shown .ixct-office-info, .ixct-office.is-shown .ixct-map { animation: none; }
+  html.ixct-on [data-ixct]:not(.is-in) { opacity: 1; transform: none; }
+  .ixct-intro *, .ixct-cards *, .ixct-msg *, .ixct-find *, .ixct-card, .ixct-card::before { transition: none !important; }
+}

@@ -261,10 +261,6 @@
   background: var(--accent); color: #FFF; font-size: 1.3rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; text-align: center;
   transform: translate(-50%, -50%) scale(0); transition: transform .5s var(--ease);
 }
-.ixp-card-media .ixp-card-tag {
-  position: absolute; left: 16px; bottom: 16px; z-index: 2; padding: 7px 13px; border-radius: 999px; background: rgba(255, 255, 255, .92); color: var(--ink);
-  font-size: 1.15rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; backdrop-filter: blur(6px);
-}
 .ixp-card-body { display: flex; flex-direction: column; gap: 8px; padding: 20px 4px 0; }
 .ixp-card-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 1.2rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .ixp-dark .ixp-card-meta { color: var(--lav); }
@@ -319,24 +315,9 @@
 .ixp-dialog .ixp-btn--ghost:hover { color: #FFF; }
 html.ixp-locked, html.ixp-locked body { overflow: hidden; }
 
-/* ---------- blog ---------- */
-.ixp-post-feature .ixp-card-link { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); align-items: center; }
-.ixp-post-feature .ixp-card-media { grid-column: 1 / span 7; aspect-ratio: 16 / 10; }
-.ixp-post-feature .ixp-card-body { grid-column: 8 / span 5; padding: 0; gap: 14px; }
-.ixp-post-feature .ixp-card-title { font-size: clamp(3.2rem, 3.2vw, 5rem); line-height: 1; letter-spacing: -.03em; }
-.ixp-post-feature .ixp-card-text { -webkit-line-clamp: 4; }
-.ixp-posts .ixp-card-media { aspect-ratio: 4 / 3; }
-.ixp-posts .ixp-card-media img { object-position: center; }
 .ixp-card-media::after { content: 'Read'; }
 .ixp-work .ixp-card-media::after, .ixp-feature .ixp-card-media::after { content: 'View project'; }
 .ixp-card-link[target="_blank"] .ixp-card-more::after { content: ' \2197'; }
-/* typographic cover for articles without an image */
-.ixp-cover { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(22px, 2.4vw, 40px); color: #FFF; background: radial-gradient(120% 90% at 85% 0%, #9700FF 0%, #4B0E8C 40%, #170A28 100%); }
-.ixp-cover b { font-family: var(--font-display); font-size: clamp(2.4rem, 2.4vw, 4rem); font-weight: 600; line-height: 1; letter-spacing: -.03em; max-width: 14ch; }
-.ixp-post-feature .ixp-cover b { font-size: clamp(3.6rem, 4.4vw, 7rem); }
-.ixp-cover + .ixp-card-tag { display: none; }
-.ixp-cover span { font-size: 1.15rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--lav); }
-.ixp-cover::after { content: 'ideaxcorp.'; position: absolute; right: -2%; bottom: -12%; font-family: var(--font-display); font-weight: 700; font-size: clamp(8rem, 10vw, 16rem); letter-spacing: -.06em; color: rgba(255, 255, 255, .06); pointer-events: none; }
 
 /* ---------- closing call to action ---------- */
 .ixp-cta { overflow: hidden; text-align: center; }
@@ -392,7 +373,6 @@ header nav .btns a.primary.selected::after {
   .ixp-work > li.is-wide { grid-column: span 12; }
   .ixp-work > li.is-logo { grid-column: span 4; }
   .ixp-work > li.is-drop { margin-top: 0; }
-  .ixp-post-feature .ixp-card-media, .ixp-post-feature .ixp-card-body { grid-column: 1 / -1; }
   .ixp-dialog-grid { grid-template-columns: 1fr; overflow-y: auto; }
   .ixp-dialog-media, .ixp-dialog-body { overflow: visible; }
   .ixp-dialog-media img + img { display: none; }
@@ -539,7 +519,7 @@ body .m .ix-pf-eyebrow::before, body .m .ix-clients-eyebrow::before, body .m .ix
 /* category as a small lavender pill beside the date (moved off the image) */
 .ix-blog-tag {
   display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px;
-  background: #F4ECFF; color: #7A00D1; font-size: 1.05rem; font-weight: 700; letter-spacing: .08em;
+  background: #F4ECFF; color: #7A00D1; font-size: 1.1rem; font-weight: 700; letter-spacing: .08em;
 }
 .ix-blog-home .ixp-card-title {
   font-size: clamp(1.9rem, 1.45vw, 2.3rem); line-height: 1.2;

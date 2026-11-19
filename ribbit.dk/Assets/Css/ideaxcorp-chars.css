@@ -1,0 +1,67 @@
+/* Character guides (ideaxcorp-chars.js places them): the five 3D characters peek up from behind the top edge of a
+   host on each page (the hero's label, a form, a list). Built from three layers so each motion stays its own:
+   .ixch-body rises and ducks (a springy transition), .ixch-tilt turns in 3D towards the pointer (set every frame by
+   the script), the img breathes and hops (keyframes). The ledge clips only the bottom, so the character seems to
+   stand behind the edge. Decorative only (aria-hidden); with reduced motion they simply stand there. */
+.ixch-host { position: relative; }
+.ixch-anchor { position: relative; height: 0; }
+.ixch-anchor > .ixch { bottom: 0; }
+@media all and (max-width: 1000.5px) {
+  .ixch-room:not(.ixch-anchor) { margin-top: var(--ixch-room); }
+  .ixch-anchor.ixch-room { height: var(--ixch-room); }
+}
+.ixch {
+  --w: 100px; --ar: 1; --peek: .5; --x: 5%; --cw: var(--w);
+  position: absolute; bottom: 100%; z-index: 3; display: block; width: var(--cw); cursor: pointer; -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; user-select: none;
+}
+.ixch--c { left: 50%; margin-left: calc(var(--cw) / -2); }
+.ixch--r { right: var(--x); }
+.ixch--l { left: var(--x); }
+.ixch-ledge { position: relative; display: block; height: calc(var(--cw) * var(--ar) * var(--peek)); clip-path: inset(-200% -60% 0 -60%); perspective: 640px; }
+.ixch-body { display: block; transform: translateY(106%); transition: transform .5s cubic-bezier(.5, 0, .75, 0); }
+.ixch.is-up .ixch-body { transform: translateY(0); transition: transform .95s cubic-bezier(.34, 1.56, .64, 1); }
+.ixch.is-up.is-duck .ixch-body { transform: translateY(72%); transition: transform .28s cubic-bezier(.5, 0, .75, 0); }
+.ixch-tilt { display: block; transform-origin: 50% 100%; transform-style: preserve-3d; will-change: transform; }
+.ixch img {
+  display: block; width: 100%; height: auto; transform-origin: 50% 100%; pointer-events: none;
+  filter: drop-shadow(0 12px 16px rgba(40, 20, 90, .2)); animation: ixch-breathe 3.6s ease-in-out infinite;
+}
+@keyframes ixch-breathe { 50% { scale: 1.012 1.03; } }
+.ixch.is-hop img { animation: ixch-hop .75s cubic-bezier(.3, 1.4, .5, 1), ixch-breathe 3.6s ease-in-out infinite .75s; }
+@keyframes ixch-hop {
+  0% { transform: none; } 22% { transform: translateY(4%) scale(1.06, .92); } 50% { transform: translateY(-16%) scale(.96, 1.05) rotate(-4deg); }
+  78% { transform: translateY(2%) scale(1.03, .97) rotate(2deg); } 100% { transform: none; }
+}
+/* the shadow where it meets the edge */
+.ixch::after {
+  content: ''; position: absolute; left: 12%; right: 12%; bottom: -4px; height: 9px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(40, 20, 90, .26), rgba(40, 20, 90, 0)); opacity: 0; transition: opacity .5s ease;
+}
+.ixch.is-up::after { opacity: 1; }
+.ixch.is-duck::after { opacity: .4; }
+/* the speech bubble */
+.ixch-say {
+  position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 2; padding: 8px 13px 7px; border-radius: 12px 12px 12px 4px; pointer-events: none; white-space: nowrap;
+  background: #FFF; border: 1px solid #E4DCF2; box-shadow: 0 12px 26px -14px rgba(40, 20, 90, .55);
+  font: 700 1.2rem/1.1 var(--font-body, sans-serif); letter-spacing: .02em; color: #170A28;
+  opacity: 0; transform: translate(-10%, 8px) scale(.85); transform-origin: 0 100%; transition: opacity .3s ease, transform .45s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ixch--r .ixch-say { left: auto; right: 50%; border-radius: 12px 12px 4px 12px; transform: translate(10%, 8px) scale(.85); transform-origin: 100% 100%; }
+.ixch.is-say .ixch-say { opacity: 1; transform: translate(-10%, 0) scale(1); }
+.ixch--r.is-say .ixch-say { transform: translate(10%, 0) scale(1); }
+/* on a dark host the bubble stays light; on dark sections the shadow softens */
+.ixch--dark::after { background: radial-gradient(closest-side, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0)); }
+.ix-off .ixch img { animation-play-state: paused; }
+.ixch:focus-visible { outline: 3px solid #C9A2FF; outline-offset: 4px; border-radius: 12px; }
+
+@media all and (max-width: 640px) {
+  .ixch { --cw: var(--wm, var(--w)); }
+  .ixch-say { font-size: 1.1rem; padding: 7px 11px 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixch-body, .ixch.is-up .ixch-body, .ixch.is-up.is-duck .ixch-body { transform: none; transition: none; }
+  .ixch img, .ixch.is-hop img { animation: none; }
+  .ixch::after { opacity: 1; }
+  .ixch-say { transition: none; }
+}

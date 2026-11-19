@@ -56,20 +56,20 @@
       var v = function (n) { var el = form.elements[n]; return el ? el.value.trim() : '' }
       var bot = form.elements.botcheck
       if (bot && bot.checked) { done(); return } // a bot ticked the hidden box: quietly drop it
-      var extra = [['Website', v('website')], ['Goal', v('goal')], ['Timeline', v('timeline')]].filter(function (p) { return p[1] })
+      var extra = [['Topic', v('topic')], ['Website', v('website')], ['Goal', v('goal')], ['Timeline', v('timeline')]].filter(function (p) { return p[1] })
       var key = (form.dataset.key || '').trim()
       if (!key) { // no Web3Forms key yet: the visitor's email app, as before
         var NL = String.fromCharCode(10)
         var body = 'Name: ' + v('name') + NL + 'Phone: ' + v('phone') + NL + 'Email: ' + v('email') + NL + 'Subject: ' + v('subject') +
           extra.map(function (p) { return NL + p[0] + ': ' + p[1] }).join('') + NL + NL + v('message')
-        window.location.href = 'mailto:' + form.dataset.email + '?subject=' + encodeURIComponent('[Website] ' + v('subject') + ' – ' + v('name')) + '&body=' + encodeURIComponent(body)
+        window.location.href = 'mailto:' + form.dataset.email + '?subject=' + encodeURIComponent('[Website] ' + (v('topic') || v('subject')) + ' – ' + v('name')) + '&body=' + encodeURIComponent(body)
         status.textContent = 'Your email app should now open with your message ready to send. If it doesn’t, email us at ' + form.dataset.email + '.'
         status.classList.add('ok')
         return
       }
       var btn = form.querySelector('[type="submit"]'); btn.disabled = true
       status.textContent = 'Sending…'
-      var data = { access_key: key, subject: '[Website] ' + v('subject') + ' – ' + v('name'), from_name: 'Ideaxcorp website',
+      var data = { access_key: key, subject: '[Website] ' + (v('topic') || v('subject')) + ' – ' + v('name'), from_name: 'Ideaxcorp website',
         name: v('name'), email: v('email'), phone: v('phone'), service: v('subject'), message: v('message'), page: location.pathname }
       extra.forEach(function (p) { data[p[0].toLowerCase()] = p[1] })
       fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) })
