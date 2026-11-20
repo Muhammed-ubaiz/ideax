@@ -78,3 +78,16 @@
   .ixs-blob { filter: none; }
 }
 .m.ixs.ixs-static { height: 100vh; height: 100svh; }
+
+/* ======================================================================================================
+   White and bold (Nov 2026 design): the same scene (the characters still walk in and push the words; the script
+   places everything) on white with soft violet light: "Curious" and "Marketing" in brand purple, "Full-service"
+   and "Agency" in near-black ink; purple sparks, rings, dust, swoosh and progress dots.
+   ====================================================================================================== */
+.m.ixs, .ixs-pin { background: #FFF; }
+.ixs-word { color: #9700FF; text-shadow: 0 calc(10px + var(--lift) * 22px) calc(30px + var(--lift) * 24px) rgba(151, 0, 255, calc(.18 + var(--lift) * .08)); }
+.ixs-w-full, .ixs-w-agency { color: #12051F; text-shadow: 0 calc(10px + var(--lift) * 22px) calc(30px + var(--lift) * 24px) rgba(23, 10, 40, calc(.1 + var(--lift) * .06)); }
+@media all and (max-width: 767.5px) {
+  .ixs-word { text-shadow: 0 6px 14px rgba(151, 0, 255, .16); }
+  .ixs-w-full, .ixs-w-agency { text-shadow: 0 6px 14px rgba(23, 10, 40, .08); }
+}
