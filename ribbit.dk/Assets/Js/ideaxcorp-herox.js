@@ -85,10 +85,15 @@
         if (PUSHER[c.name]) { // stands on the baseline beside its word, its hands on the word's first or last letter
           c.pu = PUSHER[c.name]; c.y = base + fs * .015
           var row = letters[c.line], f0 = row[0].el.getBoundingClientRect(), f1 = row[row.length - 1].el.getBoundingClientRect()
-          c.wL = f0.left - slid[c.line] - S.left + fs * (+(c.el.dataset.inkL || .06)) // the first letter itself, not its line's box
-          c.wR = f1.right - slid[c.line] - S.left - fs * (+(c.el.dataset.inkR || .02)) // the last
-          var room = fs * (+(c.el.dataset.room || .45)) // the margin it keeps from the screen's edge
-          c.max = Math.max(0, Math.min(fs * 1.4, c.pu.side < 0 ? stageW - c.wR - room : c.wL - room))
+          // the first and last letters' ink at the height of its hands (or dome): measured from the glyph itself, in the
+          // face, size, weight and slant in use, so the grip is right whatever the font
+          var hy = c.h * (HANDY[c.name] || .55), lf = (f0.right - f0.left), lr = (f1.right - f1.left)
+          c.wL = f0.left - slid[c.line] - S.left + ink(row[0].el, hy, 'l', lf) + fs * .01
+          c.wR = f1.left - slid[c.line] - S.left + ink(row[row.length - 1].el, hy, 'r', lr) - fs * .01
+          var room = fs * (innerWidth < 641 ? .45 : +(c.el.dataset.room || .45)) // the margin it keeps from the screen's edge (phones: always a safe one)
+          var ext = row.map(function (Lt) { return Lt.el.getBoundingClientRect() }) // the word's widest row (it may break onto two)
+          var extL = Math.min.apply(null, ext.map(function (r) { return r.left })) - slid[c.line] - S.left, extR = Math.max.apply(null, ext.map(function (r) { return r.right })) - slid[c.line] - S.left
+          c.max = Math.max(0, Math.min(fs * 1.4, c.pu.side < 0 ? stageW - extR - room : extL - room))
           c.el.classList.toggle('ixhx-away', c.pu.side < 0 ? c.wL - c.h * .47 - c.w / 2 < 2 : c.wR + c.h * .47 + c.w / 2 > stageW - 2) // no room beside its word
           if (!c.placed) { c.x = c.pu.side < 0 ? c.wL - c.h * .6 : c.wR + c.h * .5; c.placed = true; c.pm = 'fwd' }
           return
@@ -96,7 +101,8 @@
         else if (c.name === 'jester') { c.y = base; c.home = L + c.w * .2; c.lo = c.home; c.hi = c.home + fs * .9 }
         else if (c.name === 'outlaw') { // stands on the tops of the short small letters only (never sunk into a tall one)
           c.y = top + fs * .01
-          c.spots = letters[c.line].filter(function (Lt) { return /[aceimnorsuvwxz]/.test(Lt.el.textContent) }).map(function (Lt) { return Lt.cx })
+          var row0 = letters[c.line][0].el.getBoundingClientRect().top // (only the line's first row, if it breaks onto two)
+          c.spots = letters[c.line].filter(function (Lt) { return /[aceimnorsuvwxz]/.test(Lt.el.textContent) && Math.abs(Lt.el.getBoundingClientRect().top - row0) < fs * .3 }).map(function (Lt) { return Lt.cx })
           c.lo = Math.min.apply(null, c.spots); c.hi = Math.max.apply(null, c.spots); c.home = c.spots[c.spots.length - 1]
         }
         else { // the Sage: on the baseline just before "Marketing", cheering; away if there is no room for it there
@@ -108,6 +114,26 @@
       })
     }
     var xh = 0, slidY = 0
+    // how high above the floor each pusher's hands (or dome) meet its word, as a share of its height (from the frames)
+    var HANDY = { creator: .6, jester: .3, explorer: .7 }
+    // where a letter's ink starts ('l') or ends ('r') at a height above the baseline, from the left of its box
+    var inkCv = document.createElement('canvas'), inkCx = inkCv.getContext('2d', { willReadFrequently: true })
+    function ink(el, up, side, boxW) {
+      try {
+        var cs = getComputedStyle(el), size = parseFloat(cs.fontSize), pad = Math.ceil(size * .6), W = Math.ceil(boxW + pad * 2), H = Math.ceil(size * 1.6)
+        inkCv.width = W; inkCv.height = H
+        inkCx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + size + 'px ' + cs.fontFamily
+        inkCx.textBaseline = 'alphabetic'; inkCx.fillStyle = '#000'
+        var base = Math.round(size * 1.2); inkCx.fillText(el.textContent, pad, base)
+        var y = Math.max(0, Math.min(H - 3, Math.round(base - up))), d = inkCx.getImageData(0, y - 2, W, 5).data, hit = -1
+        for (var x = side === 'l' ? 0 : W - 1; side === 'l' ? x < W : x >= 0; x += side === 'l' ? 1 : -1) {
+          var a = 0; for (var r = 0; r < 5; r++) a = Math.max(a, d[(r * W + x) * 4 + 3])
+          if (a > 90) { hit = x; break }
+        }
+        if (hit < 0) return side === 'l' ? 0 : boxW // (no ink at that height: the box edge)
+        return hit - pad + (side === 'r' ? 1 : 0)
+      } catch (e) { return side === 'l' ? 0 : boxW }
+    }
     function metrics(line, S) { // where the line's baseline is, in the stage
       var m = line.querySelector('.ixhx-base')
       if (!m) { m = document.createElement('span'); m.className = 'ixhx-base'; m.setAttribute('aria-hidden', 'true'); line.querySelector('.ixhx-word').appendChild(m) }
@@ -132,6 +158,13 @@
     // a pusher's round, as in the original hero: it pushes its word away from its side, rests, brings it back (the
     // Creator pulls it, walking backwards in front of it, leaning back with her hands on the "C"; the Jester is pushed
     // back by the word, braced against it), and rests again
+    // holding its word without moving it: the first frame of its push (or pull), its hands (or dome) on the letter
+    function hold(c, mode) {
+      var list = mode === 'back' && c.frames.pull ? c.frames.pull : c.frames.walk
+      var reach = (mode === 'back' ? c.pu.back : c.pu.fwd)(0)
+      c.x = c.pu.side < 0 ? c.wL - c.h * reach : c.wR + c.h * reach
+      setFrame(c, list, 0)
+    }
     function pushStep(c, dt, now) {
       var f = c.frames, sp = fs * .32, li = c.line, fw = -c.pu.side // the way it pushes
       c.ft += dt
@@ -145,16 +178,17 @@
         lean[li] += (d * 2.2 - lean[li]) * .12
         setFrame(c, list, fi)
         if ((c.pm === 'fwd' && m >= c.max) || (c.pm === 'back' && m <= 0)) { c.pm = c.pm === 'fwd' ? 'restF' : 'restB'; c.until = now + 1400; c.ft = 0 }
-      } else {
+      } else { // resting: still holding its word, in the pose it pushed (or pulled) with
         lean[li] += (0 - lean[li]) * .1
-        setFrame(c, f.idle, Math.floor(c.ft * 24))
+        hold(c, c.pm === 'restB' && f.pull ? 'back' : 'fwd')
         if (now > c.until) { c.pm = c.pm === 'restF' ? 'back' : 'fwd'; c.ft = 0 }
       }
       c.el.classList.remove('is-left') // it always faces its word (the frames are drawn that way)
     }
     function step(c, dt, now) {
       if (c.pu) { // (the round starts once the headline has arrived and been measured)
-        if (live && isFinite(c.wL + c.wR + c.max) && (now > c.until || c.pm !== 'fwd' || push[c.line] !== 0)) pushStep(c, dt, now); else setFrame(c, c.frames.idle, Math.floor((c.ft += dt) * 24))
+        if (live && isFinite(c.wL + c.wR + c.max) && (now > c.until || c.pm !== 'fwd' || push[c.line] !== 0)) pushStep(c, dt, now)
+        else if (isFinite(c.wL + c.wR)) hold(c, 'fwd') // (before its first push: already holding its word)
         return
       }
       if (!c.s) { // the Sage: bounce, and now and then a jump
@@ -252,7 +286,7 @@
       p += (target() - p) * .1
       var e = p * p * (3 - 2 * p), vw = innerWidth / 100
       lines.forEach(function (l, i) {
-        slid[i] = SLIDE[i] * e * vw + mx * (i % 2 ? 6 : -6) + push[i]
+        slid[i] = SLIDE[i] * e * vw * (innerWidth < 641 ? .3 : 1) + mx * (i % 2 ? 6 : -6) + push[i] // (gentler on phones: no word slides off)
         l.style.transform = 'translate3d(' + slid[i].toFixed(1) + 'px,0,0)' + (lean[i] ? ' skewX(' + (-lean[i]).toFixed(2) + 'deg)' : '')
       })
       if (card) card.style.transform = live ? 'translate3d(' + (mx * -10 - e * 4 * vw).toFixed(1) + 'px,' + (my * -8 + e * 8 * vw / 2).toFixed(1) + 'px,0) scale(' + (1 + e * .08).toFixed(3) + ')' : ''

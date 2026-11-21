@@ -1,0 +1,14 @@
+/* One typeface for the whole site: Space Grotesk (Light 300, Regular 400, Medium 500, Bold 700), the brand's primary
+   typeface. It takes the place of Clash Display (headings), Satoshi (text) and the serif accents: every style sheet
+   sets its type through these three variables, so pointing them at Space Grotesk carries it to every heading,
+   paragraph, button, label, menu and footer, without touching a section's own sizes, colours or layout. Each
+   element keeps its own weight (the face has the full range). It has no italic: the accent words (<em>) keep
+   their slant as a gentle oblique. Loaded last on every page. */
+:root {
+  --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-accent: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+}
+body { font-family: var(--font-body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+/* the old headline styles squeezed the letters for a condensed face: a little air for this wider grotesk */
+h1:not(.ixhx-title), h2, .ixp-h1, .ixp-h2 { letter-spacing: -.03em !important; }

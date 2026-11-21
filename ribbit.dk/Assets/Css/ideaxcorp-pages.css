@@ -565,3 +565,11 @@ body .m .ix-pf-eyebrow::before, body .m .ix-clients-eyebrow::before, body .m .ix
 body .m.ixp-dark .ixp-eyebrow { background: rgba(201, 162, 255, .12); border-color: rgba(201, 162, 255, .32); color: var(--lav); box-shadow: none; }
 body .m.ixp-dark .ixp-eyebrow::before { color: var(--lav); }
 body .m.ixa-hero .ixp-eyebrow { display: flex; margin-left: auto; margin-right: auto; } /* centred: a block-level badge */
+
+/* Home, About section: on phones and tablets the "More about us" button sits centred under the text and figures */
+@media all and (max-width: 1000.5px) { .ix-about-home .ixp-btns { justify-content: center; } }
+/* Home, "Our expertise": on phones and tablets its heading block (label, title, line under it) is centred */
+@media all and (max-width: 1000.5px) {
+  .ixj-services .ixb-svc-head { text-align: center; align-items: center; justify-items: center; }
+  .ixj-services .ixb-svc-head .ixp-eyebrow, .ixj-services .ixb-svc-head .ixb-lead { margin-left: auto; margin-right: auto; }
+}

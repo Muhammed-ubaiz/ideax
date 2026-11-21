@@ -1,4 +1,4 @@
-// Page transitions: a liquid wave.
+// Page transitions: a liquid wave (and, between the pages listed in BOOK, a book's page turning).
 // The site's own router (min9eda.js) loads the next page in the background, lays it over the old one
 // (.page.masked) and, after window._ixPageT seconds, removes the old page and sets the scroll. Within that
 // time (styles in ideaxcorp-transition.css):
@@ -133,6 +133,102 @@
 
   // on while the router has a page laid over another (it adds .masked to the new page for the whole swap);
   // watched through class changes on the pages, so nothing runs between transitions
+  // ---------- the book ----------
+  // pages listed here are chapters of a book: going from one to another turns a page instead of the waves (later
+  // in the list: the current page turns away over the left, like a book's page, showing the next underneath;
+  // earlier: the page comes back over from the left onto it). Styles in ideaxcorp-transition.css (.ix-book).
+  var BOOK = window.IX_BOOK || ['/', '/about/']
+  var lastPath = location.pathname, book = ''
+  var sheet = document.createElement('div'), shade = document.createElement('div')
+  sheet.className = 'ix-book-sheet'; shade.className = 'ix-book-shade'
+  sheet.setAttribute('aria-hidden', 'true'); shade.setAttribute('aria-hidden', 'true')
+  function bookMode(from, to) {
+    var a = BOOK.indexOf(from), b = BOOK.indexOf(to)
+    if (reduced || a < 0 || b < 0 || a === b) return ''
+    return b > a ? 'fwd' : 'back'
+  }
+  // the characters carry the page: going forward, the Creator pulls the turning page's edge (walking backwards,
+  // leaning back, in her pull frames) while the Jester pushes it from the other side with its dome; going back,
+  // the Creator pushes the page back into place while the Jester braces against its edge, walking backwards. Both
+  // stand on the floor of the screen and follow the page's edge as it turns: read every frame from the turning
+  // sheet's box (it turns exactly with the page). Frames: Assets/Grx/<name>_*/NNN.webp, 24 a second.
+  var G = '/Assets/Grx/', CAST = {
+    creator: { pull: ['creator_pull', 40], push: ['creator_push', 40], reach: { pull: .535, push: .6 }, ar: 1 },
+    jester: { push: ['jester_push_2', 58], reach: { push: .47 }, ar: .889 }
+  }
+  function seq(s) { var a = []; for (var i = 0; i < s[1]; i++) a.push(G + s[0] + '/' + ('00' + i).slice(-3) + '.webp?v=3'); return a }
+  var castEl = null, castRaf = 0, castOn = false, preloaded = false
+  function preloadCast() {
+    if (preloaded || reduced) return
+    preloaded = true
+    ;[CAST.creator.pull, CAST.creator.push, CAST.jester.push].forEach(function (s) { seq(s).forEach(function (u) { var im = new Image(); im.src = u }) })
+  }
+  function castStart(mode) {
+    if (reduced) return
+    preloadCast()
+    if (!castEl) {
+      castEl = document.createElement('div'); castEl.className = 'ix-book-cast'; castEl.setAttribute('aria-hidden', 'true')
+      castEl.innerHTML = '<div class="ix-bc ix-bc-creator"><img alt=""></div><div class="ix-bc ix-bc-jester"><img alt=""></div>'
+      document.body.appendChild(castEl)
+    }
+    var H = Math.max(130, Math.min(window.innerHeight * .24, 240)), floor = window.innerHeight - 8, t0 = performance.now()
+    var cre = castEl.querySelector('.ix-bc-creator'), jes = castEl.querySelector('.ix-bc-jester')
+    var cs = seq(mode === 'fwd' ? CAST.creator.pull : CAST.creator.push), js = seq(CAST.jester.push), cImg = cre.querySelector('img'), jImg = jes.querySelector('img')
+    var cReach = mode === 'fwd' ? CAST.creator.reach.pull : CAST.creator.reach.push
+    cre.style.height = H + 'px'; jes.style.height = H * .92 + 'px'
+    castOn = true; castEl.classList.add('on')
+    function frame(now) {
+      if (!castOn) return
+      var r = sheet.getBoundingClientRect(), edge = r.width ? r.right : 0, t = (now - t0) / 1000, f = Math.floor(t * 24)
+      // the Creator: on the page's side of its edge (she holds it), the Jester on the far side (it pushes or braces)
+      var cx = edge - H * cReach, jx = edge + H * .92 * CAST.jester.reach.push
+      cre.style.transform = 'translate3d(' + (cx - H / 2).toFixed(1) + 'px,' + (floor - H).toFixed(1) + 'px,0)'
+      jes.style.transform = 'translate3d(' + (jx - H * .92 / 2).toFixed(1) + 'px,' + (floor - H * .92).toFixed(1) + 'px,0)'
+      castEl.style.opacity = Math.max(0, Math.min(1, (edge - innerWidth * .03) / (innerWidth * .1))).toFixed(3) // they go with the page into the spine (and come out of it)
+      var cu = cs[f % cs.length], ju = js[(mode === 'fwd' ? f : js.length * 9 - f) % js.length]
+      if (cImg.getAttribute('src') !== cu) cImg.src = cu
+      if (jImg.getAttribute('src') !== ju) jImg.src = ju
+      castRaf = requestAnimationFrame(frame)
+    }
+    cancelAnimationFrame(castRaf); castRaf = requestAnimationFrame(frame)
+  }
+  function castStop() { castOn = false; cancelAnimationFrame(castRaf); if (castEl) { castEl.classList.remove('on'); castEl.style.opacity = '' } }
+  // the frames are fetched quietly on the two pages that turn into each other, so they are ready for the turn
+  setTimeout(function () { if (BOOK.indexOf(location.pathname) >= 0) preloadCast() }, 4000)
+  function bookStart(mode) {
+    if (!sheet.parentNode) { document.body.appendChild(shade); document.body.appendChild(sheet) }
+    var old = document.querySelector('main .page.removing')
+    // the page turns about its left edge at the middle of the screen, wherever it was scrolled to
+    if (old) old.style.transformOrigin = '0 ' + Math.round(window.scrollY + window.innerHeight / 2) + 'px'
+    // turning back: the previous page comes back open at its end (like turning back a page in a book), and stays
+    // there, at its footer, once the turn is over
+    var nw = document.querySelector('main .page.masked')
+    if (mode === 'back' && nw) {
+      var endY = Math.max(0, nw.scrollHeight - window.innerHeight)
+      nw.style.top = -endY + 'px'; nw.style.transformOrigin = '0 ' + Math.round(endY + window.innerHeight / 2) + 'px'
+      toEnd = true
+    }
+    void sheet.offsetWidth
+    document.body.classList.add('ix-book', 'ix-book-' + mode)
+    castStart(mode)
+  }
+  var toEnd = false, userMoved = false
+  ;['wheel', 'touchstart', 'keydown'].forEach(function (t) { window.addEventListener(t, function () { userMoved = true }, { passive: true }) })
+  function scrollToEnd() {
+    var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+    if (window._smoothScroller && window._smoothScroller.scrollTo) window._smoothScroller.scrollTo(max, true); else window.scrollTo(0, max)
+  }
+  function bookEnd() {
+    castStop()
+    Array.prototype.forEach.call(document.querySelectorAll('main .page'), function (p) { p.style.top = '' })
+    if (toEnd) { // at once; and again while the page is still laying itself out (it grows), unless the visitor scrolls meanwhile
+      toEnd = false; userMoved = false; scrollToEnd()
+      ;[80, 250, 500, 800, 1200, 1600].forEach(function (t) { setTimeout(function () { if (!userMoved) scrollToEnd() }, t) })
+    }
+    document.body.classList.remove('ix-book', 'ix-book-fwd', 'ix-book-back')
+    Array.prototype.forEach.call(document.querySelectorAll('main .page'), function (p) { p.style.transformOrigin = '' })
+  }
+
   var on = false
   function check() {
     var masked = document.querySelector('main .page.masked')
@@ -140,11 +236,15 @@
       on = !on
       addFx()
       if (on) {
+        book = bookMode(lastPath, location.pathname)
+        if (book) { bookStart(book); document.body.classList.add('ix-transitioning'); return } // (no waves)
         var seg0 = location.pathname.split('/')[1] || ''
         word.textContent = NAMES[seg0] || seg0.replace(/-/g, ' ')
         void fx.offsetWidth // restart the label's animation from its first frame
         if (!reduced) { bulge = Math.min(1, window.innerWidth / window.innerHeight); t0 = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(draw) }
       } else {
+        lastPath = location.pathname
+        if (book) { book = ''; bookEnd() }
         clearTimeout(pending); pending = 0
         cancelAnimationFrame(raf); raf = 0; pa.setAttribute('d', ''); pb.setAttribute('d', '')
       }
