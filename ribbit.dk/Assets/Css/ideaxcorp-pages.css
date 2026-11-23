@@ -573,3 +573,40 @@ body .m.ixa-hero .ixp-eyebrow { display: flex; margin-left: auto; margin-right: 
   .ixj-services .ixb-svc-head { text-align: center; align-items: center; justify-items: center; }
   .ixj-services .ixb-svc-head .ixp-eyebrow, .ixj-services .ixb-svc-head .ixb-lead { margin-left: auto; margin-right: auto; }
 }
+/* Home, "Our Portfolio": its heading block (label, title, intro and count) centred */
+.ix-work .ix-pf-head { text-align: center; }
+.ix-work .ix-pf-head .ix-pf-eyebrow { width: fit-content; margin-left: auto; margin-right: auto; justify-content: center; }
+.ix-work .ix-pf-title { margin-left: auto; margin-right: auto; }
+.ix-work .ix-pf-meta { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 14px; }
+.ix-work .ix-pf-intro, .ix-work .ix-pf-count { grid-column: 1 / -1; justify-self: center; margin-left: auto; margin-right: auto; }
+/* Home, "Why Ideaxcorp": its label and heading centred (the list below as it is) */
+body .m.ixj-why .ixp-wrap > .ixp-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+.ixj-why .ixj-why-sub { margin-left: auto; margin-right: auto; text-align: center; text-wrap: balance; }
+/* Home, "Our expertise": its heading centred at every size (its line under it is gone, so one column) */
+.ixj-services .ixb-svc-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+body .m.ixj-services .ixb-svc-head .ixp-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+/* Home, "Our Clients": its label and heading centred */
+.ix-clients .ix-clients-head { text-align: center; }
+body .m.ix-clients .ix-clients-head .ix-clients-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+.ix-clients .ix-clients-head { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+.ix-clients .ix-clients-head > * { grid-column: 1 / -1; }
+/* Home, "Latest articles": its heading block centred, "View all articles" under it */
+.ix-blog-home .ix-blog-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; row-gap: 22px; }
+.ix-blog-home .ix-blog-heading, .ix-blog-home .ix-blog-intro { grid-column: 1 / -1; }
+.ix-blog-home .ix-blog-intro { justify-content: center; }
+body .m.ix-blog-home .ix-blog-heading .ixp-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+.ix-blog-home .ix-blog-heading .ixp-lead { margin-left: auto; margin-right: auto; }
+/* About, "Our creative philosophy": its label and heading centred */
+.ixb-philo .ixb-or-head { text-align: center; }
+body .m.ixb-philo .ixb-or-head .ixp-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+.ixb-philo .ixb-or-title { margin-left: auto; margin-right: auto; }
+/* About, "Our expertise": the heading and its (07) count centred */
+#expertise.ixb-services .ixb-svc-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+#expertise.ixb-services .ixb-svc-head .ixb-big { grid-column: 1 / -1; margin-left: auto; margin-right: auto; }
+#expertise.ixb-services .ixb-sx-count { left: 50%; translate: -50% 0; }
+/* About, "Why choose Ideaxcorp": the heading centred (its line under it is gone) */
+.ixa-why .ixp-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+.ixa-why .ixp-head > * { grid-column: 1 / -1; margin-left: auto; margin-right: auto; }
+/* About, "Success stories": the heading centred */
+.ixa-reviews .ixp-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+.ixa-reviews .ixp-head > * { grid-column: 1 / -1; margin-left: auto; margin-right: auto; text-wrap: balance; }

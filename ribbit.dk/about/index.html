@@ -49,7 +49,7 @@
 	<script src="../Assets/Js/ideaxcorp-contact.js?v=t6" defer></script>
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-motion.css?v=8">
 	<script src="../Assets/Js/ideaxcorp-motion.js?v=t12" defer></script>
-	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-pages.css?v=27">
+	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-pages.css?v=39">
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-blog.css?v=17r">
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-contactpage.css?v=7">
 	<script src="../Assets/Js/ideaxcorp-contactpage.js?v=1" defer></script>
@@ -73,8 +73,8 @@
 	<script src="/Assets/Js/ideaxcorp-mobile.js?v=t2" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-bar.css?v=13">
 	<script src="/Assets/Js/ideaxcorp-bar.js?v=t3" defer></script>
-	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-transition.css?v=10">
-	<script src="/Assets/Js/ideaxcorp-transition.js?v=13" defer></script>
+	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-transition.css?v=17">
+	<script src="/Assets/Js/ideaxcorp-transition.js?v=17" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-cursor.css?v=13">
 	<script src="/Assets/Js/ideaxcorp-cursor.js?v=14" defer></script>
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-journey.css?v=26">
@@ -83,6 +83,8 @@
 	<link rel="stylesheet" href="/Assets/Css/ideaxcorp-build.css?v=19">
 	<script src="/Assets/Js/ideaxcorp-build.js?v=55" defer></script>
 	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-type.css?v=5">
+	<link rel="stylesheet" href="../Assets/Css/ideaxcorp-teamlist.css?v=4">
+	<script src="../Assets/Js/ideaxcorp-teamlist.js?v=1" defer></script>
 </head>
 <body>
 <header>
@@ -208,7 +210,6 @@
 				<div class="ixp-wrap">
 					<div class="ixb-svc-head">
 						<h2 class="ixp-h1 ixb-big" id="ixb-svc-title" data-split>Our <em>expertise.</em></h2><span class="ixb-sx-count" aria-hidden="true">(07)</span>
-						<p class="ixb-lead" data-reveal>Beyond our services, we build, support and scale your digital journey.</p>
 					</div>
 					<ol class="ixb-svc-list">
 						<li><a class="ixb-svc" href="/services/"><span class="ixb-sx-text"><span class="ixb-svc-n">01</span><span class="ixb-svc-name">Creative Branding</span><span class="ixb-svc-desc">Clear, consistent and memorable brand identity design that builds trust and customer connection.</span><span class="ixb-sx-more">Explore the service <span class="ixb-svc-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></span><span class="ixb-sx-media"><img width="1264" height="848" class="ixb-svc-img" src="../Assets/Grx/site/services/branding-v3.webp" srcset="../Assets/Grx/site/services/branding-v3-480.webp 480w, ../Assets/Grx/site/services/branding-v3-720.webp 720w, ../Assets/Grx/site/services/branding-v3-1080.webp 1080w, ../Assets/Grx/site/services/branding-v3.webp 1264w" sizes="(max-width: 767px) 92vw, 48vw" alt="Illustration: a brand designer sketching a logo at a drawing easel" loading="eager" fetchpriority="low" decoding="async"></span></a></li>
@@ -224,7 +225,6 @@
 				<div class="ixp-wrap">
 					<div class="ixp-head">
 						<h2 class="ixp-h2" id="ixp-why-title" data-reveal>Why choose <em>Ideaxcorp.</em></h2>
-						<p class="ixp-lead" data-reveal>Everything a brand needs to grow, from one team that measures what it does.</p>
 					</div>
 					<div class="ixp-grid cols-4" data-stagger>
 						<article class="ixp-tile" data-reveal><span class="ixp-num">01</span><h3 class="ixp-h3">Data-focused</h3><p>Decisions come from real market behaviour and measured results, not guesswork.</p></article>
@@ -281,28 +281,31 @@
 					</div>
 				</div>
 			</section><section class="m ixp ixb-team" id="team" data-guide="The team" data-color="" aria-labelledby="ixp-team-title">
-				<div class="ixp-wrap">
-					<div class="ixb-tw-head">
+				<!-- The team, as a gallery: a centred heading; the leadership as three tall portrait cards; the crew as five
+				     smaller ones. Each card: a photo, or an initials card; the name and role on a frosted band that rises on
+				     hover (Rezwin's greeting shows there). Look: ideaxcorp-teamlist.css (prefix ixtg-). -->
+				<div class="ixp-wrap ixtg">
+					<div class="ixtg-head">
 						<p class="ixp-eyebrow" data-reveal>The team</p>
-						<h2 class="ixb-tw-title" id="ixp-team-title" data-reveal>Meet the minds <em>behind the mission.</em></h2>
-						<p class="ixp-lead" data-reveal style="--d:.1s">A team built to lead, across strategy, technology, marketing, creative and operations.</p>
+						<h2 class="ixtg-title" id="ixp-team-title" data-reveal>Meet the minds <em>behind the mission.</em></h2>
+						<p class="ixtg-lead" data-reveal style="--d:.1s">A team built to lead, across strategy, technology, marketing, creative and operations.</p>
 					</div>
-				</div>
-				<div class="ixb-tw" data-tw>
-					<p class="ixb-tw-type" aria-hidden="true"><span>Meet the</span><span>Minds.</span></p>
-					<ul class="ixb-tw-wall" aria-label="The Ideaxcorp team">
-						<li class="ixb-tw-m m1" tabindex="0" data-k="0" style="--k:0"><span class="ixb-tw-pic"><img src="../Assets/Grx/site/team/founder-jaseel-hd.webp" alt="" width="1000" height="1400" loading="lazy" decoding="async"></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Jaseel Jalal</span></span><span class="ixb-tw-role"><span>CEO &amp; Founder</span></span></span></li>
-						<li class="ixb-tw-m m2" tabindex="0" data-k="1" style="--k:1"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">SI</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Shemi Iqbal</span></span><span class="ixb-tw-role"><span>Co-Founder &amp; CTO</span></span></span></li>
-						<li class="ixb-tw-m m3" tabindex="0" data-k="2" style="--k:2"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">HH</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Hasif Hamza</span></span><span class="ixb-tw-role"><span>Chief Operations Officer</span></span></span></li>
-						<li class="ixb-tw-m m4" tabindex="0" data-k="3" style="--k:3"><span class="ixb-tw-pic"><img src="../Assets/Grx/site/team/team-rezwin.webp" alt="" width="500" height="700" loading="lazy" decoding="async"></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Rezwin</span></span><span class="ixb-tw-role"><span>BDM</span></span><span class="ixb-tw-say"><span>Hi, I’m Rezwin! I’m the Business Development Manager at Ideaxcorp. Nice to meet you!</span></span></span></li>
-						<li class="ixb-tw-m m5" tabindex="0" data-k="4" style="--k:4"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">FZ</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Farhathul Zahara</span></span><span class="ixb-tw-role"><span>Digital Marketing Head</span></span></span></li>
-						<li class="ixb-tw-m m6" tabindex="0" data-k="5" style="--k:5"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">U</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Ubaise</span></span><span class="ixb-tw-role"><span>Web Developer</span></span></span></li>
-						<li class="ixb-tw-m m7" tabindex="0" data-k="6" style="--k:6"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">S</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Sebin</span></span><span class="ixb-tw-role"><span>Content Creator</span></span></span></li>
-						<li class="ixb-tw-m m8" tabindex="0" data-k="7" style="--k:7"><span class="ixb-tw-pic is-mono"><span class="ixb-tw-ini" aria-hidden="true">R</span></span><span class="ixb-tw-label"><span class="ixb-tw-name"><span>Ramees</span></span><span class="ixb-tw-role"><span>Video Editor</span></span></span></li>
+					<p class="ixtg-group" data-reveal><span>Leadership</span><i aria-hidden="true"></i><b>03</b></p>
+					<ul class="ixtg-grid ixtg-lead-grid" aria-label="Leadership">
+						<li class="ixtg-card" tabindex="0" data-reveal style="--d:0s"><span class="ixtg-pic"><img src="../Assets/Grx/site/team/founder-jaseel-hd.webp" alt="Jaseel Jalal" width="1000" height="1400" loading="lazy" decoding="async"></span><span class="ixtg-band"><b class="ixtg-name">Jaseel Jalal</b><span class="ixtg-role">CEO &amp; Founder</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.08s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">SI</span></span><span class="ixtg-band"><b class="ixtg-name">Shemi Iqbal</b><span class="ixtg-role">Co-Founder &amp; CTO</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.16s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">HH</span></span><span class="ixtg-band"><b class="ixtg-name">Hasif Hamza</b><span class="ixtg-role">Chief Operations Officer</span></span></li>
 					</ul>
-					<div class="ixb-tw-tape"><ol class="ixb-tw-credits" aria-label="The team, by name and role"><li data-k="0"><strong>Jaseel Jalal</strong><span>CEO &amp; Founder</span><i aria-hidden="true">&#10022;</i></li><li data-k="1"><strong>Shemi Iqbal</strong><span>Co-Founder &amp; CTO</span><i aria-hidden="true">&#10022;</i></li><li data-k="2"><strong>Hasif Hamza</strong><span>Chief Operations Officer</span><i aria-hidden="true">&#10022;</i></li><li data-k="3"><strong>Rezwin</strong><span>BDM</span><i aria-hidden="true">&#10022;</i></li><li data-k="4"><strong>Farhathul Zahara</strong><span>Digital Marketing Head</span><i aria-hidden="true">&#10022;</i></li><li data-k="5"><strong>Ubaise</strong><span>Web Developer</span><i aria-hidden="true">&#10022;</i></li><li data-k="6"><strong>Sebin</strong><span>Content Creator</span><i aria-hidden="true">&#10022;</i></li><li data-k="7"><strong>Ramees</strong><span>Video Editor</span><i aria-hidden="true">&#10022;</i></li></ol></div>
+					<p class="ixtg-group" data-reveal><span>The crew</span><i aria-hidden="true"></i><b>05</b></p>
+					<ul class="ixtg-grid ixtg-crew-grid" aria-label="The crew">
+						<li class="ixtg-card" tabindex="0" data-reveal style="--d:0s"><span class="ixtg-pic"><img src="../Assets/Grx/site/team/team-rezwin.webp" alt="Rezwin" width="500" height="700" loading="lazy" decoding="async"></span><span class="ixtg-band"><b class="ixtg-name">Rezwin</b><span class="ixtg-role">BDM</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.06s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">FZ</span></span><span class="ixtg-band"><b class="ixtg-name">Farhathul Zahara</b><span class="ixtg-role">Digital Marketing Head</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.12s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">U</span></span><span class="ixtg-band"><b class="ixtg-name">Ubaise</b><span class="ixtg-role">Web Developer</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.18s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">S</span></span><span class="ixtg-band"><b class="ixtg-name">Sebin</b><span class="ixtg-role">Content Creator</span></span></li>
+						<li class="ixtg-card is-mono" tabindex="0" data-reveal style="--d:.24s"><span class="ixtg-pic" aria-hidden="true"><span class="ixtg-ini">R</span></span><span class="ixtg-band"><b class="ixtg-name">Ramees</b><span class="ixtg-role">Video Editor</span></span></li>
+					</ul>
 				</div>
-</section><section class="m ixp ixb-cta" data-color="" data-guide="Let’s talk" aria-labelledby="ixb-cta-title">
+			</section><section class="m ixp ixb-cta" data-color="" data-guide="Let’s talk" aria-labelledby="ixb-cta-title">
 				<div class="ixb-cta-bg" aria-hidden="true">
 					<p class="ixb-kin"><span>Let’s create what’s next • Let’s create what’s next • Let’s create what’s next • </span><span>Let’s create what’s next • Let’s create what’s next • Let’s create what’s next • </span></p>
 					<p class="ixb-kin ixb-kin-rev"><span>Creative minds • Technical excellence • Real results • </span><span>Creative minds • Technical excellence • Real results • </span></p>

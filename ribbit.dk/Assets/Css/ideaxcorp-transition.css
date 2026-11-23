@@ -78,73 +78,81 @@ body.ix-transitioning .ix-hs { opacity: 0 !important; transition: none; }
 }
 
 /* ======================================================================================================
-   The book (ideaxcorp-transition.js, BOOK): between the pages listed as chapters, a page turns instead of
-   the waves, within the same 1.2s swap. The spine is the screen's left edge, so a page is in view from lying
-   flat to standing just past upright: that is the turn shown, over the whole time.
-   - forward: the next page lies underneath from the start; the current page lifts from its right edge and
-     turns away over the spine (rotateY 0 to -100deg), its paper catching the light as it bends, its shadow
-     sweeping across the page below;
-   - back: the previous page comes back over the spine (-100 to 0deg) and settles onto the current one, the
-     shadow under it deepening, then gone.
+   The haul (ideaxcorp-transition.js): between any two pages, instead of the waves, over 1.9s:
+     0 – 20%  the current page shrinks into a rounded card on a dark stage (the destination's name across it);
+    20 – 78%  the card travels off the side, the next card following it in, a gap between them where the Jester
+              shoves the one and the Creator hauls the other (the script walks them along the cards' edges);
+    78 – 100% the new card grows back to the full screen.
+   Forward the cards travel left, back they travel right. The script clips each page to its part on screen.
    ====================================================================================================== */
-body.ix-book .ix-liquid { display: none !important; }
-body.ix-book main .page.masked, body.ix-book main .page.removing { animation: none !important; filter: none; opacity: 1; }
-body.ix-book main .page.removing::after { display: none; }
-.ix-book-sheet, .ix-book-shade { display: none; position: fixed; inset: 0; pointer-events: none; }
-body.ix-book .ix-book-sheet, body.ix-book .ix-book-shade { display: block; }
-/* light on the bending paper: brightest towards the free edge, a darker rim at the very edge */
-.ix-book-sheet {
-  z-index: 7; transform-origin: 0 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; opacity: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, .28) 78%, rgba(255, 255, 255, .5) 94%, rgba(23, 10, 40, .18) 100%);
+body.ix-haul { --hs: .8; --hx: 110vw; }
+@media all and (max-width: 767.5px) { body.ix-haul { --hs: .76; --hx: 126vw; } }
+body.ix-haul .ix-liquid { display: none !important; }
+body.ix-haul main .page.masked, body.ix-haul main .page.removing { filter: none; opacity: 1; will-change: transform; }
+body.ix-haul main .page.removing::after { display: none; }
+body.ix-haul main .page.removing { position: relative; z-index: 4; }
+body.ix-haul main .page.masked { z-index: 5; }
+body.ix-haul-fwd main .page.removing { animation: ix-haul-out-l 1.9s both !important; }
+body.ix-haul-fwd main .page.masked { animation: ix-haul-in-r 1.9s both !important; }
+body.ix-haul-back main .page.removing { animation: ix-haul-out-r 1.9s both !important; }
+body.ix-haul-back main .page.masked { animation: ix-haul-in-l 1.9s both !important; }
+@keyframes ix-haul-out-l {
+  0% { transform: none; animation-timing-function: cubic-bezier(.6, 0, .3, 1); }
+  20% { transform: scale(var(--hs)); animation-timing-function: cubic-bezier(.55, 0, .35, 1); }
+  78%, 100% { transform: translateX(calc(var(--hx) * -1)) scale(var(--hs)); }
 }
-/* the shadow the turning page casts on the page below, from the spine */
-.ix-book-shade { z-index: 3; background: linear-gradient(90deg, rgba(23, 10, 40, .5) 0%, rgba(23, 10, 40, .2) 35%, rgba(23, 10, 40, 0) 75%); opacity: 0; }
+@keyframes ix-haul-out-r {
+  0% { transform: none; animation-timing-function: cubic-bezier(.6, 0, .3, 1); }
+  20% { transform: scale(var(--hs)); animation-timing-function: cubic-bezier(.55, 0, .35, 1); }
+  78%, 100% { transform: translateX(var(--hx)) scale(var(--hs)); }
+}
+@keyframes ix-haul-in-r {
+  0%, 20% { transform: translateX(var(--hx)) scale(var(--hs)); animation-timing-function: cubic-bezier(.55, 0, .35, 1); }
+  78% { transform: scale(var(--hs)); animation-timing-function: cubic-bezier(.6, 0, .25, 1); }
+  100% { transform: none; }
+}
+@keyframes ix-haul-in-l {
+  0%, 20% { transform: translateX(calc(var(--hx) * -1)) scale(var(--hs)); animation-timing-function: cubic-bezier(.55, 0, .35, 1); }
+  78% { transform: scale(var(--hs)); animation-timing-function: cubic-bezier(.6, 0, .25, 1); }
+  100% { transform: none; }
+}
+/* the new page's content: its fade-up stagger, while the card travels in */
+body.ix-haul main .page.masked [data-reveal].is-in { transition-delay: calc(var(--d, 0s) + .35s); }
+body.ix-haul main .page.masked .ixp-h1[data-split].is-in .w > span { transition-delay: calc(var(--i) * 70ms + .4s); }
+/* going back it arrives at its end, already shown */
+body.ix-haul-end main .page.masked [data-reveal].is-in { transition-delay: 0s; transition-duration: 0s; }
+body.ix-haul-end main .page.masked .ix-contact.armed :is(.ix-contact-left > *, .ix-contact-list > li, .ix-contact-form, .ix-office) { opacity: 1 !important; transform: none !important; transition: none !important; }
 
-/* forward: the current page on top, turning away (its turning axis is set by the script at mid-screen) */
-body.ix-book-fwd main .page.removing {
-  position: relative; z-index: 4; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  animation: ix-book-turn 1.15s cubic-bezier(.42, .04, .3, 1) both !important;
+/* the stage: the brand's dark, a fine grid, the destination's name in outline across it */
+.ix-haul-stage {
+  display: none; position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
+  background:
+    linear-gradient(rgba(201, 162, 255, .07) 1px, transparent 1px) 50% 50% / 44px 44px,
+    linear-gradient(90deg, rgba(201, 162, 255, .07) 1px, transparent 1px) 50% 50% / 44px 44px,
+    radial-gradient(90% 70% at 50% 40%, #3A1270 0%, #1C0A36 55%, #120A1C 100%);
 }
-@keyframes ix-book-turn {
-  0% { transform: perspective(2400px) rotateY(0deg); filter: brightness(1); }
-  100% { transform: perspective(2400px) rotateY(-100deg); filter: brightness(.82); }
+body.ix-haul .ix-haul-stage { display: grid; place-items: center; grid-template-areas: 'a'; animation: ix-haul-stage 1.9s both; }
+@keyframes ix-haul-stage { 0% { opacity: 0; } 8%, 92% { opacity: 1; } 100% { opacity: 0; } }
+.ix-haul-word {
+  font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 26vw; line-height: 1; letter-spacing: -.05em;
+  color: transparent; -webkit-text-stroke: 2px rgba(201, 162, 255, .35); white-space: nowrap; grid-area: a;
 }
-body.ix-book-fwd .ix-book-sheet { animation: ix-book-turn-light 1.15s cubic-bezier(.42, .04, .3, 1) both; }
-@keyframes ix-book-turn-light {
-  0% { transform: perspective(2400px) rotateY(0deg); opacity: 0; }
-  35% { opacity: 1; }
-  100% { transform: perspective(2400px) rotateY(-100deg); opacity: .6; }
-}
-body.ix-book-fwd .ix-book-shade { animation: ix-book-shade-fwd 1.15s cubic-bezier(.42, .04, .3, 1) both; }
-@keyframes ix-book-shade-fwd { 0% { opacity: .2; } 55% { opacity: .9; } 100% { opacity: 0; } }
+body.ix-haul-fwd .ix-haul-word { animation: ix-haul-word-l 1.9s cubic-bezier(.45, 0, .3, 1) both; }
+body.ix-haul-back .ix-haul-word { animation: ix-haul-word-r 1.9s cubic-bezier(.45, 0, .3, 1) both; }
+@keyframes ix-haul-word-l { from { transform: translateX(14vw); } to { transform: translateX(-14vw); } }
+@keyframes ix-haul-word-r { from { transform: translateX(-14vw); } to { transform: translateX(14vw); } }
 
-/* back: the previous page comes back over the spine onto the current one (it is fixed to the screen, so its axis
-   is the screen's middle) */
-body.ix-book-back main .page.masked {
-  z-index: 6; transform-origin: 0 50vh; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  animation: ix-book-return 1.15s cubic-bezier(.45, 0, .2, 1) both !important;
+.ix-haul-shadow {
+  position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; will-change: transform;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .18), 0 30px 70px -10px rgba(0, 0, 0, .55), 0 0 0 1px rgba(201, 162, 255, .12);
 }
-@keyframes ix-book-return {
-  0% { transform: perspective(2400px) rotateY(-100deg); filter: brightness(.82); }
-  100% { transform: perspective(2400px) rotateY(0deg); filter: brightness(1); }
-}
-body.ix-book-back .ix-book-sheet { animation: ix-book-return-light 1.15s cubic-bezier(.45, 0, .2, 1) both; }
-@keyframes ix-book-return-light {
-  0% { transform: perspective(2400px) rotateY(-100deg); opacity: .6; }
-  70% { opacity: .9; }
-  100% { transform: perspective(2400px) rotateY(0deg); opacity: 0; }
-}
-body.ix-book-back .ix-book-shade { animation: ix-book-shade-back 1.15s cubic-bezier(.45, 0, .2, 1) both; }
-@keyframes ix-book-shade-back { 0% { opacity: 0; } 60% { opacity: .9; } 100% { opacity: 0; } }
-/* the page that stays underneath: the shade above it, the turning page above that */
-body.ix-book-back main .page.removing { position: relative; z-index: 2; }
-@media (prefers-reduced-motion: reduce) { body.ix-book .ix-book-sheet, body.ix-book .ix-book-shade { display: none; } }
+/* the characters, on the floor of the screen in the gap between the cards */
+.ix-haul-cast { position: fixed; inset: 0; z-index: 95; pointer-events: none; opacity: 0; }
+.ix-hc { position: absolute; left: 0; top: 0; aspect-ratio: 1; will-change: transform; }
+.ix-hc img { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; translate: -50% 0; filter: drop-shadow(0 14px 16px rgba(0, 0, 0, .35)); }
+.ix-hc::after { content: ''; position: absolute; left: 20%; right: 20%; bottom: -5px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .4), rgba(0, 0, 0, 0)); }
+@media (prefers-reduced-motion: reduce) { .ix-haul-cast, .ix-haul-stage { display: none !important; } }
 
-/* the characters carrying the page (ideaxcorp-transition.js): on the floor of the screen, at the turning page's
-   edge, above the page and its light; they arrive and leave with a short fade */
-.ix-book-cast { position: fixed; inset: 0; z-index: 8; pointer-events: none; opacity: 0; transition: opacity .2s ease; }
-.ix-book-cast.on { opacity: 1; }
-.ix-bc { position: absolute; left: 0; top: 0; aspect-ratio: 1; will-change: transform; }
-.ix-bc img { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; translate: -50% 0; filter: drop-shadow(0 12px 14px rgba(23, 10, 40, .25)); }
-.ix-bc::after { content: ''; position: absolute; left: 20%; right: 20%; bottom: -5px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(23, 10, 40, .25), rgba(23, 10, 40, 0)); }
-@media (prefers-reduced-motion: reduce) { .ix-book-cast { display: none; } }
+/* the home hero arriving on a card: its words come in whole (their letters would otherwise still be rising
+   behind their masks while the card slides in, showing half words) */
+body.ix-haul main .page.masked .ixhx-ch { transform: translateY(var(--dip, 0px)) !important; transition: none !important; }

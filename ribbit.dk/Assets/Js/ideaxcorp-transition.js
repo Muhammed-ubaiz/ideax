@@ -1,4 +1,4 @@
-// Page transitions: a liquid wave (and, between the pages listed in BOOK, a book's page turning).
+// Page transitions: a liquid wave (and, between Home and About, the pages hauled across a stage as cards).
 // The site's own router (min9eda.js) loads the next page in the background, lays it over the old one
 // (.page.masked) and, after window._ixPageT seconds, removes the old page and sets the scroll. Within that
 // time (styles in ideaxcorp-transition.css):
@@ -58,7 +58,7 @@
     var p = route(a, e)
     if (p === null || !window._router || !_router._useAPI) return
     if (busy()) { e.preventDefault(); e.stopImmediatePropagation(); return }
-    if (elsewhere(p)) start()
+    if (elsewhere(p)) { setPageT(p); start() }
     // the navbar, menu and footer stay outside the page, where the router doesn't bind links: route them here
     // (here, as a script on the navbar stops some clicks before they bubble)
     if (!a.closest('main .page')) {
@@ -76,7 +76,7 @@
     var p = a && route(a, e)
     if (!p || !window._router || !_router._useAPI) return // the normal link still works
     e.preventDefault()
-    if (elsewhere(p)) _router.setUrl(p)
+    if (elsewhere(p)) { setPageT(p); _router.setUrl(p) }
   })
   function start() { clearTimeout(pending); pending = setTimeout(function () { pending = 0 }, 6000) }
 
@@ -133,59 +133,88 @@
 
   // on while the router has a page laid over another (it adds .masked to the new page for the whole swap);
   // watched through class changes on the pages, so nothing runs between transitions
-  // ---------- the book ----------
-  // pages listed here are chapters of a book: going from one to another turns a page instead of the waves (later
-  // in the list: the current page turns away over the left, like a book's page, showing the next underneath;
-  // earlier: the page comes back over from the left onto it). Styles in ideaxcorp-transition.css (.ix-book).
-  var BOOK = window.IX_BOOK || ['/', '/about/']
-  var lastPath = location.pathname, book = ''
-  var sheet = document.createElement('div'), shade = document.createElement('div')
-  sheet.className = 'ix-book-sheet'; shade.className = 'ix-book-shade'
-  sheet.setAttribute('aria-hidden', 'true'); shade.setAttribute('aria-hidden', 'true')
-  function bookMode(from, to) {
-    var a = BOOK.indexOf(from), b = BOOK.indexOf(to)
-    if (reduced || a < 0 || b < 0 || a === b) return ''
-    return b > a ? 'fwd' : 'back'
+  // ---------- the haul ----------
+  // between any two pages, instead of the waves: the current page shrinks into a card
+  // on a dark stage, the Jester shoves it off the side while the Creator hauls the next page in after it (a gap
+  // between the two, where they walk), and the new card grows back to the full screen. Forward (later in the
+  // in HAUL's order, or to a page not listed) the cards travel left; back, right, and the characters are mirrored.
+  // Only About back to Home arrives at the end of the page (its footer); every other page arrives at its top. Longer than the waves (HAUL_T),
+  // so the router is told the swap time at the click (or the back button), before it starts.
+  // Styles in ideaxcorp-transition.css (.ix-haul).
+  var HAUL = window.IX_HAUL || ['/', '/about/', '/services/', '/portfolio/', '/process/', '/blog/', '/contact/', '/privacy-policy/'], HAUL_T = 1.9
+  function pathOf(p) { return (p || '').split(/[?#]/)[0] }
+  function haulMode(from, to) {
+    if (reduced || from === to) return ''
+    var a = HAUL.indexOf(from), b = HAUL.indexOf(to)
+    return a >= 0 && b >= 0 && b < a ? 'back' : 'fwd'
   }
-  // the characters carry the page: going forward, the Creator pulls the turning page's edge (walking backwards,
-  // leaning back, in her pull frames) while the Jester pushes it from the other side with its dome; going back,
-  // the Creator pushes the page back into place while the Jester braces against its edge, walking backwards. Both
-  // stand on the floor of the screen and follow the page's edge as it turns: read every frame from the turning
-  // sheet's box (it turns exactly with the page). Frames: Assets/Grx/<name>_*/NNN.webp, 24 a second.
+  function setPageT(to) { window._ixPageT = haulMode(location.pathname, pathOf(to)) ? HAUL_T : T }
+  window.addEventListener('popstate', function () { window._ixPageT = haulMode(lastPath, location.pathname) ? HAUL_T : T })
+
+  var lastPath = location.pathname, haul = ''
+  var stage = document.createElement('div')
+  stage.className = 'ix-haul-stage'; stage.setAttribute('aria-hidden', 'true')
+  stage.innerHTML = '<span class="ix-haul-word"></span><i class="ix-haul-shadow"></i><i class="ix-haul-shadow"></i>'
+  var stageWord = stage.querySelector('.ix-haul-word'), shadows = stage.querySelectorAll('.ix-haul-shadow')
+  // a soft shadow under each card, on the stage: the card's box on screen (the page's width, scaled; the screen's
+  // height, scaled about its middle)
+  function shadowTo(el, r) {
+    var s = r.width / (innerWidth || 1), h = innerHeight * s, top = (innerHeight - h) / 2
+    el.style.transform = 'translate3d(' + r.left.toFixed(1) + 'px,' + top.toFixed(1) + 'px,0)'
+    el.style.width = r.width.toFixed(1) + 'px'; el.style.height = h.toFixed(1) + 'px'; el.style.borderRadius = (32 * s).toFixed(1) + 'px'
+    el.style.opacity = Math.max(0, Math.min(1, (1 - s) / .12)).toFixed(3) // (none while a card fills the screen)
+  }
+  // the characters: the Creator pulls (her frames walk backwards, arms reaching to the right), the Jester pushes
+  // (its frames lean to the left); going back, both are mirrored. Frames: Assets/Grx/<name>/NNN.webp, 24 a second.
   var G = '/Assets/Grx/', CAST = {
-    creator: { pull: ['creator_pull', 40], push: ['creator_push', 40], reach: { pull: .535, push: .6 }, ar: 1 },
-    jester: { push: ['jester_push_2', 58], reach: { push: .47 }, ar: .889 }
+    creator: { seq: ['creator_pull', 40], reach: .535, ar: 1 },
+    jester: { seq: ['jester_push_2', 58], reach: .47, ar: .92 }
   }
   function seq(s) { var a = []; for (var i = 0; i < s[1]; i++) a.push(G + s[0] + '/' + ('00' + i).slice(-3) + '.webp?v=3'); return a }
   var castEl = null, castRaf = 0, castOn = false, preloaded = false
   function preloadCast() {
     if (preloaded || reduced) return
     preloaded = true
-    ;[CAST.creator.pull, CAST.creator.push, CAST.jester.push].forEach(function (s) { seq(s).forEach(function (u) { var im = new Image(); im.src = u }) })
+    ;[CAST.creator.seq, CAST.jester.seq].forEach(function (s) { seq(s).forEach(function (u) { var im = new Image(); im.src = u }) })
   }
-  function castStart(mode) {
-    if (reduced) return
+  setTimeout(preloadCast, 4000)
+  function castStart(mode, oldP, newP) {
     preloadCast()
     if (!castEl) {
-      castEl = document.createElement('div'); castEl.className = 'ix-book-cast'; castEl.setAttribute('aria-hidden', 'true')
-      castEl.innerHTML = '<div class="ix-bc ix-bc-creator"><img alt=""></div><div class="ix-bc ix-bc-jester"><img alt=""></div>'
+      castEl = document.createElement('div'); castEl.className = 'ix-haul-cast'; castEl.setAttribute('aria-hidden', 'true')
+      castEl.innerHTML = '<div class="ix-hc ix-hc-creator"><img alt=""></div><div class="ix-hc ix-hc-jester"><img alt=""></div>'
       document.body.appendChild(castEl)
     }
-    var H = Math.max(130, Math.min(window.innerHeight * .24, 240)), floor = window.innerHeight - 8, t0 = performance.now()
-    var cre = castEl.querySelector('.ix-bc-creator'), jes = castEl.querySelector('.ix-bc-jester')
-    var cs = seq(mode === 'fwd' ? CAST.creator.pull : CAST.creator.push), js = seq(CAST.jester.push), cImg = cre.querySelector('img'), jImg = jes.querySelector('img')
-    var cReach = mode === 'fwd' ? CAST.creator.reach.pull : CAST.creator.reach.push
-    cre.style.height = H + 'px'; jes.style.height = H * .92 + 'px'
+    // sized to fit the gap between the cards (CSS: 30vw, 50vw on phones)
+    var gap = innerWidth * (innerWidth < 768 ? .5 : .3)
+    var H = Math.max(80, Math.min(230, innerHeight * .26, gap / 1.95)), floor = innerHeight - 10, t0 = performance.now()
+    var cre = castEl.querySelector('.ix-hc-creator'), jes = castEl.querySelector('.ix-hc-jester')
+    var cs = seq(CAST.creator.seq), js = seq(CAST.jester.seq), cImg = cre.querySelector('img'), jImg = jes.querySelector('img')
+    var Hj = H * CAST.jester.ar, flip = mode === 'back' ? ' scaleX(-1)' : ''
+    cre.style.height = H + 'px'; jes.style.height = Hj + 'px'
     castOn = true; castEl.classList.add('on')
+    var last = t0, fc = 0, fj = 0, px = null, pj = null
     function frame(now) {
       if (!castOn) return
-      var r = sheet.getBoundingClientRect(), edge = r.width ? r.right : 0, t = (now - t0) / 1000, f = Math.floor(t * 24)
-      // the Creator: on the page's side of its edge (she holds it), the Jester on the far side (it pushes or braces)
-      var cx = edge - H * cReach, jx = edge + H * .92 * CAST.jester.reach.push
-      cre.style.transform = 'translate3d(' + (cx - H / 2).toFixed(1) + 'px,' + (floor - H).toFixed(1) + 'px,0)'
-      jes.style.transform = 'translate3d(' + (jx - H * .92 / 2).toFixed(1) + 'px,' + (floor - H * .92).toFixed(1) + 'px,0)'
-      castEl.style.opacity = Math.max(0, Math.min(1, (edge - innerWidth * .03) / (innerWidth * .1))).toFixed(3) // they go with the page into the spine (and come out of it)
-      var cu = cs[f % cs.length], ju = js[(mode === 'fwd' ? f : js.length * 9 - f) % js.length]
+      var t = (now - t0) / 1000, dt = Math.min(.05, (now - last) / 1000), k = t / HAUL_T
+      last = now
+      if (follow) follow()
+      var ro = oldP.getBoundingClientRect(), rn = newP.getBoundingClientRect(), cx, jx
+      shadowTo(shadows[0], ro); shadowTo(shadows[1], rn)
+      if (mode === 'fwd') { jx = ro.right + Hj * CAST.jester.reach; cx = rn.left - H * CAST.creator.reach }
+      else { jx = ro.left - Hj * CAST.jester.reach; cx = rn.right + H * CAST.creator.reach }
+      // their steps follow the ground they cover (a walk cycle about 1.3 times their height), so their feet don't
+      // slide; standing, they still shift their weight at a slow pace
+      if (px !== null) {
+        fc += Math.max(Math.abs(cx - px) / (H * 1.3) * cs.length, dt * 10)
+        fj += Math.max(Math.abs(jx - pj) / (Hj * 1.3) * js.length, dt * 10)
+      }
+      px = cx; pj = jx
+      cre.style.transform = 'translate3d(' + (cx - H / 2).toFixed(1) + 'px,' + (floor - H).toFixed(1) + 'px,0)' + flip
+      jes.style.transform = 'translate3d(' + (jx - Hj / 2).toFixed(1) + 'px,' + (floor - Hj).toFixed(1) + 'px,0)' + flip
+      // they step in as the cards start to travel, and out as the new one settles
+      castEl.style.opacity = Math.max(0, Math.min(1, (k - .14) / .1, (.86 - k) / .1)).toFixed(3)
+      var cu = cs[Math.floor(fc) % cs.length], ju = js[Math.floor(fj) % js.length]
       if (cImg.getAttribute('src') !== cu) cImg.src = cu
       if (jImg.getAttribute('src') !== ju) jImg.src = ju
       castRaf = requestAnimationFrame(frame)
@@ -193,40 +222,59 @@
     cancelAnimationFrame(castRaf); castRaf = requestAnimationFrame(frame)
   }
   function castStop() { castOn = false; cancelAnimationFrame(castRaf); if (castEl) { castEl.classList.remove('on'); castEl.style.opacity = '' } }
-  // the frames are fetched quietly on the two pages that turn into each other, so they are ready for the turn
-  setTimeout(function () { if (BOOK.indexOf(location.pathname) >= 0) preloadCast() }, 4000)
-  function bookStart(mode) {
-    if (!sheet.parentNode) { document.body.appendChild(shade); document.body.appendChild(sheet) }
-    var old = document.querySelector('main .page.removing')
-    // the page turns about its left edge at the middle of the screen, wherever it was scrolled to
-    if (old) old.style.transformOrigin = '0 ' + Math.round(window.scrollY + window.innerHeight / 2) + 'px'
-    // turning back: the previous page comes back open at its end (like turning back a page in a book), and stays
-    // there, at its footer, once the turn is over
-    var nw = document.querySelector('main .page.masked')
-    if (mode === 'back' && nw) {
-      var endY = Math.max(0, nw.scrollHeight - window.innerHeight)
-      nw.style.top = -endY + 'px'; nw.style.transformOrigin = '0 ' + Math.round(endY + window.innerHeight / 2) + 'px'
-      toEnd = true
-    }
-    void sheet.offsetWidth
-    document.body.classList.add('ix-book', 'ix-book-' + mode)
-    castStart(mode)
+
+  // each page becomes a card: clipped to the part of it on screen (rounded), shrinking about the screen's middle
+  function cardOf(p, top) {
+    var h = p.offsetHeight, bottom = Math.max(0, h - top - innerHeight)
+    p.style.setProperty('clip-path', 'inset(' + Math.round(top) + 'px 0 ' + Math.round(bottom) + 'px 0 round 32px)', 'important')
+    p.style.transformOrigin = '50% ' + Math.round(top + innerHeight / 2) + 'px'
   }
-  var toEnd = false, userMoved = false
+  var toEnd = false, userMoved = false, follow = null
+  function haulStart(mode) {
+    var old = document.querySelector('main .page.removing'), nw = document.querySelector('main .page.masked')
+    if (!old || !nw) return false
+    if (!stage.parentNode) document.body.appendChild(stage)
+    stageWord.textContent = NAMES[location.pathname.split('/')[1] || ''] || ''
+    cardOf(old, -old.getBoundingClientRect().top)
+    // going back, the previous page comes back open at its end (its footer), and stays there once it is in
+    // (it is still laying itself out and grows, so its end is followed every frame; its content shows at once)
+    var endY = -1
+    var atEnd = mode === 'back' && lastPath === '/about/' && location.pathname === '/'
+    document.body.classList.toggle('ix-haul-end', atEnd)
+    follow = atEnd ? function () {
+      var e = Math.max(0, nw.scrollHeight - innerHeight)
+      if (e !== endY) { endY = e; nw.style.top = -e + 'px'; cardOf(nw, e) }
+    } : null
+    if (follow) {
+      toEnd = true; follow()
+      Array.prototype.forEach.call(nw.querySelectorAll('[data-reveal]'), function (r) { r.classList.add('is-in') })
+    } else {
+      cardOf(nw, 0)
+      // its first screen shows as it comes in (off screen, it would otherwise wait to be scrolled to)
+      Array.prototype.forEach.call(nw.querySelectorAll('[data-reveal]'), function (r) {
+        var y = 0, e = r; while (e && e !== nw) { y += e.offsetTop || 0; e = e.offsetParent } // (its place on the page, untransformed)
+        if (y < innerHeight * 1.05) r.classList.add('is-in')
+      })
+    }
+    void stage.offsetWidth
+    document.body.classList.add('ix-haul', 'ix-haul-' + mode)
+    castStart(mode, old, nw)
+    return true
+  }
   ;['wheel', 'touchstart', 'keydown'].forEach(function (t) { window.addEventListener(t, function () { userMoved = true }, { passive: true }) })
   function scrollToEnd() {
     var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
     if (window._smoothScroller && window._smoothScroller.scrollTo) window._smoothScroller.scrollTo(max, true); else window.scrollTo(0, max)
   }
-  function bookEnd() {
-    castStop()
-    Array.prototype.forEach.call(document.querySelectorAll('main .page'), function (p) { p.style.top = '' })
+  function haulEnd() {
+    castStop(); follow = null
+    Array.prototype.forEach.call(document.querySelectorAll('main .page'), function (p) { p.style.top = ''; p.style.transformOrigin = ''; p.style.removeProperty('clip-path') })
+    document.body.classList.remove('ix-haul', 'ix-haul-fwd', 'ix-haul-back', 'ix-haul-end')
     if (toEnd) { // at once; and again while the page is still laying itself out (it grows), unless the visitor scrolls meanwhile
       toEnd = false; userMoved = false; scrollToEnd()
       ;[80, 250, 500, 800, 1200, 1600].forEach(function (t) { setTimeout(function () { if (!userMoved) scrollToEnd() }, t) })
     }
-    document.body.classList.remove('ix-book', 'ix-book-fwd', 'ix-book-back')
-    Array.prototype.forEach.call(document.querySelectorAll('main .page'), function (p) { p.style.transformOrigin = '' })
+    window._ixPageT = T
   }
 
   var on = false
@@ -236,15 +284,16 @@
       on = !on
       addFx()
       if (on) {
-        book = bookMode(lastPath, location.pathname)
-        if (book) { bookStart(book); document.body.classList.add('ix-transitioning'); return } // (no waves)
+        haul = haulMode(lastPath, location.pathname)
+        if (haul && haulStart(haul)) { document.body.classList.add('ix-transitioning'); return } // (no waves)
+        haul = ''
         var seg0 = location.pathname.split('/')[1] || ''
         word.textContent = NAMES[seg0] || seg0.replace(/-/g, ' ')
         void fx.offsetWidth // restart the label's animation from its first frame
         if (!reduced) { bulge = Math.min(1, window.innerWidth / window.innerHeight); t0 = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(draw) }
       } else {
         lastPath = location.pathname
-        if (book) { book = ''; bookEnd() }
+        if (haul) { haul = ''; haulEnd() }
         clearTimeout(pending); pending = 0
         cancelAnimationFrame(raf); raf = 0; pa.setAttribute('d', ''); pb.setAttribute('d', '')
       }

@@ -1,0 +1,96 @@
+/* About, "The team" as a gallery: a centred heading; the leadership as three tall portrait cards, the crew as five
+   smaller ones under a quiet group label. Each card is a photo or an initials card (purple, a fine grid, the
+   initials outlined), with the name and role on a frosted band; hover or focus lifts the card, zooms the picture a
+   touch and raises the band (Rezwin's greeting shows there). Phones and tablets: two to a row, the founder across.
+   Prefix: ixtg-. */
+.ixtg {
+  --ink: #170A28; --accent: #9700FF; --lav: #C9A2FF; --muted: rgba(23, 10, 40, .6); --line: rgba(23, 10, 40, .1);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+.ixtg *, .ixtg *::before, .ixtg *::after { box-sizing: border-box; }
+.m.ixb-team { overflow: clip; }
+
+/* the heading, centred */
+.ixtg-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: clamp(40px, 5vw, 72px); }
+body .m.ixb-team .ixtg-head .ixp-eyebrow { display: flex; width: fit-content; margin-left: auto; margin-right: auto; }
+.ixtg-title { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(3.8rem, 5vw, 7.6rem); line-height: .95; letter-spacing: -.04em; color: var(--ink); text-wrap: balance; }
+.ixtg-title em { display: block; font-style: italic; font-weight: 400; color: var(--accent); }
+.ixtg-lead { margin: 20px auto 0; max-width: 46ch; font-size: clamp(1.55rem, 1.15vw, 1.8rem); line-height: 1.55; color: var(--muted); }
+
+/* the group labels */
+.ixtg-group { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-size: 1.2rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ink); }
+.ixtg-group i { flex: 1; height: 1px; background: var(--line); }
+.ixtg-group b { font-weight: 700; color: var(--accent); }
+.ixtg-crew-grid + * { margin-top: 0; }
+
+/* the grids */
+.ixtg-grid { display: grid; gap: clamp(14px, 1.4vw, 22px); margin: 0; padding: 0; list-style: none; }
+.ixtg-lead-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: clamp(44px, 5vw, 72px); }
+.ixtg-crew-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+/* a card */
+.ixtg-card {
+  position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 3 / 4; border-radius: 24px; outline: none;
+  background: #F3EEFB; box-shadow: 0 1px 2px rgba(23, 10, 40, .05), 0 24px 50px -34px rgba(40, 20, 100, .55);
+  transition: transform .6s var(--ease), box-shadow .6s var(--ease);
+}
+.ixtg-crew-grid .ixtg-card { border-radius: 20px; }
+.ixtg-pic { position: absolute; inset: 0; display: block; overflow: hidden; }
+.ixtg-pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; transition: transform 1s var(--ease); }
+.ixtg-card.is-mono .ixtg-pic { display: grid; place-items: center; background: radial-gradient(110% 80% at 85% 8%, #A04BFF 0%, #6A22E0 45%, #21093F 100%); }
+.ixtg-card.is-mono .ixtg-pic::before { /* a fine grid */
+  content: ''; position: absolute; inset: 0; opacity: .55;
+  background: linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px) 0 0 / 32px 32px, linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px) 0 0 / 32px 32px;
+}
+.ixtg-card.is-mono .ixtg-pic::after { /* a soft shine */
+  content: ''; position: absolute; left: -30%; top: -40%; width: 90%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0));
+}
+.ixtg-ini { position: relative; margin-top: -18%; font-family: var(--font-display); font-weight: 700; font-size: clamp(6.4rem, 7.5vw, 12rem); line-height: 1; letter-spacing: -.05em; color: transparent; -webkit-text-stroke: 1.6px rgba(255, 255, 255, .85); transition: transform 1s var(--ease); }
+.ixtg-crew-grid .ixtg-ini { font-size: clamp(4.6rem, 4.6vw, 7.6rem); }
+/* the band */
+.ixtg-band {
+  position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 2; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 13px; border-radius: 16px;
+  background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--ink);
+  transition: transform .6s var(--ease), box-shadow .6s var(--ease);
+}
+.ixtg-name { font-size: clamp(1.7rem, 1.35vw, 2.1rem); font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
+.ixtg-crew-grid .ixtg-name { font-size: clamp(1.5rem, 1.1vw, 1.75rem); }
+.ixtg-role { font-size: 1.05rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.ixtg-say { display: grid; grid-template-rows: 0fr; overflow: hidden; font-size: 1.3rem; line-height: 1.45; color: var(--muted); transition: grid-template-rows .6s var(--ease), margin .6s var(--ease); }
+.ixtg-card:focus-visible { box-shadow: 0 0 0 3px #FFF, 0 0 0 6px var(--accent); }
+@media (hover: hover) {
+  .ixtg-card:hover { transform: translateY(-6px); box-shadow: 0 2px 4px rgba(23, 10, 40, .05), 0 34px 60px -30px rgba(40, 20, 100, .6); }
+  .ixtg-card:hover .ixtg-pic img { transform: scale(1.05); }
+  .ixtg-card:hover .ixtg-ini { transform: translateY(-6px) scale(1.04); }
+  .ixtg-card:hover .ixtg-band { transform: translateY(-4px); box-shadow: 0 14px 30px -18px rgba(23, 10, 40, .5); }
+}
+.ixtg-card:hover .ixtg-say, .ixtg-card:focus-visible .ixtg-say { grid-template-rows: 1fr; margin-top: 4px; }
+
+/* tablets and phones: two to a row, the founder across */
+@media all and (max-width: 1000.5px) {
+  .ixtg-lead-grid, .ixtg-crew-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ixtg-lead-grid .ixtg-card:first-child { grid-column: 1 / -1; aspect-ratio: 4 / 3.4; }
+  .ixtg-ini { font-size: clamp(5rem, 13vw, 8rem); }
+  .ixtg-crew-grid .ixtg-ini { font-size: clamp(4.4rem, 11vw, 6.4rem); }
+}
+/* tablets: the crew as three over two (the two wider, the same height) */
+@media all and (min-width: 600px) and (max-width: 1000.5px) {
+  .ixtg-crew-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .ixtg-crew-grid .ixtg-card { grid-column: span 2; }
+  .ixtg-crew-grid .ixtg-card:nth-child(n+4) { grid-column: span 3; aspect-ratio: 1.15 / 1; }
+}
+/* phones: the last of the crew across, like the founder */
+@media all and (max-width: 599.5px) {
+  .ixtg-crew-grid .ixtg-card:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3.4; }
+}
+@media all and (max-width: 520px) {
+  .ixtg-grid { gap: 12px; }
+  .ixtg-card { border-radius: 18px; }
+  .ixtg-band { left: 8px; right: 8px; bottom: 8px; padding: 10px 11px 9px; border-radius: 12px; }
+  .ixtg-name { font-size: 1.45rem; }
+  .ixtg-role { font-size: .95rem; letter-spacing: .1em; }
+  .ixtg-say { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ixtg-card, .ixtg-pic img, .ixtg-ini, .ixtg-band, .ixtg-say { transition: none !important; }
+}
