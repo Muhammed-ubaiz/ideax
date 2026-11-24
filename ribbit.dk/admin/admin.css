@@ -396,3 +396,24 @@ a.stat:hover { box-shadow: var(--sh2); border-color: #DADDE4; transform: transla
 .field .rte-bar select:focus { box-shadow: 0 0 0 2px var(--blue-ring); }
 @media (min-width: 701px) { .table td.t-col-post { width: 100%; max-width: 0; } .t-post a { max-width: 100%; } }
 .t-post > div { min-width: 0; }
+
+/* the blog list's actions: labelled buttons (icons only on narrower screens) */
+.act { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: var(--r1); background: none; color: var(--ink-2); font-size: 12.5px; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background .15s ease, color .15s ease; }
+.act svg { width: 15px; height: 15px; color: var(--muted); }
+.act:hover { background: var(--line-2); color: var(--ink); }
+.act:hover svg { color: var(--ink); }
+.act.danger:hover, .act.danger:hover svg { background: var(--red-soft); color: var(--red); }
+.t-col-act-h { text-align: right !important; padding-right: 22px !important; }
+.t-date small { display: block; color: var(--faint); font-size: 11.5px; margin-top: 2px; }
+/* pages */
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--line-2); }
+.pager:empty { display: none; }
+.pager-info { font-size: 12.5px; color: var(--muted); }
+.pager-btns { display: flex; gap: 4px; align-items: center; }
+.pager button { min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: var(--r1); background: var(--surface); color: var(--ink-2); font-weight: 600; font-size: 13px; cursor: pointer; }
+.pager button:hover:not(:disabled) { border-color: #CDD2DB; }
+.pager button[aria-current="page"] { background: var(--blue); border-color: var(--blue); color: #FFF; }
+.pager button:disabled { opacity: .4; cursor: not-allowed; }
+.pager-gap { padding: 0 4px; color: var(--faint); }
+@media (max-width: 1180px) { .act span { display: none; } .act { padding: 0 8px; } }
+@media (max-width: 700px) { .table td.t-col-post .t-post > div { padding-right: 112px; } .pager { justify-content: center; } }

@@ -68,7 +68,8 @@
   function day(d, long) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? +m[3] + ' ' + (long ? MONTHS_LONG : MONTHS)[+m[2] - 1] + ' ' + m[1] : '' }
   function words(html) { var t = String(html || '').replace(/<[^>]+>/g, ' ').trim(); return t ? t.split(/\s+/).length : 0 }
   function readTime(p) { return Math.max(1, Math.round(words(p.content) / 220)) + ' min read' }
-  function hrefOf(p) { return p.externalUrl ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug) }
+  // a post links out only while its full text lives elsewhere; once written here, it opens on this site
+  function hrefOf(p) { return p.externalUrl && !p.content ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug) }
   // the article's body, kept to plain text formatting (whatever was saved): headings, paragraphs, emphasis, lists,
   // quotes, code and links (http, https, mailto and site links only)
   var ALLOWED = { P: 1, H2: 1, H3: 1, H4: 1, STRONG: 1, B: 1, EM: 1, I: 1, U: 1, A: 1, UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1, CODE: 1, PRE: 1, BR: 1, HR: 1 }
@@ -100,7 +101,7 @@
   function card(p, i) {
     var cats = [p.category].concat(p.alsoIn || []).join(' '), name = CATS[p.category] || ''
     var media = p.imagePath ? '<img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" src="' + esc(p.imagePath) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">' : cover(p, i)
-    var ext = p.externalUrl ? ' target="_blank" rel="noopener"' : ''
+    var ext = p.externalUrl && !p.content ? ' target="_blank" rel="noopener"' : ''
     return '<li class="ixbl-item" data-cat="' + esc(cats) + '"' + (p.hasImage && !p.imagePath ? ' data-ixcms-img="' + esc(p.slug) + '"' : '') + '><article class="ixbl-art"><a class="ixbl-art-link" href="' + esc(hrefOf(p)) + '"' + ext + '>' +
       '<span class="ixbl-art-no" aria-hidden="true"></span><span class="ixbl-art-media" data-label="' + esc(name) + '"><span class="ixbl-art-img">' + media + '</span></span>' +
       '<span class="ixbl-art-body"><span class="ixbl-meta"><span class="ixbl-cat">' + esc(name) + '</span><span aria-hidden="true">·</span><time datetime="' + esc(p.publishedAt) + '">' + day(p.publishedAt) + '</time>' + (p.topic ? '<span class="ixbl-topic-tag">' + esc(p.topic) + '</span>' : '') + '</span>' +

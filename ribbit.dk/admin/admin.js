@@ -27,7 +27,7 @@ export const slugify = (s) => String(s || '').normalize('NFKD').replace(/[̀-ͯ]
 const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const textOf = (html) => { const d = document.createElement('div'); d.innerHTML = html || ''; return (d.textContent || '').replace(/\s+/g, ' ').trim() }
 const wordsOf = (html) => { const t = textOf(html); return t ? t.split(' ').length : 0 }
-const postUrl = (p) => p.externalUrl || '/blog/post/?s=' + encodeURIComponent(p.slug)
+const postUrl = (p) => (p.externalUrl && !p.content ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug))
 const I = {
   edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>',
   eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -189,6 +189,13 @@ async function enter(u) {
     $('#lg-err').textContent = e.code === 'denied' ? 'This account doesn’t have admin access.' : 'Couldn’t load the posts: ' + e.message
     return
   }
+  // the articles that were on the blog before the CMS: brought in automatically the first time the database is empty
+  // (once per browser, so deleting every post later doesn't bring them back)
+  const FLAG = 'ixblog-imported-' + store.mode
+  let imported = 0
+  if (!posts.length && !localStorage.getItem(FLAG)) {
+    try { await store.importMany(LEGACY); await refresh(); imported = LEGACY.length; localStorage.setItem(FLAG, '1') } catch (e) { /* the dashboard still offers the import */ }
+  } else if (posts.length) localStorage.setItem(FLAG, '1')
   user = u
   busy($('#lg-submit'), false); $('#lg-pass').value = ''
   $('#boot').hidden = true; $('#login').hidden = true; $('#app').hidden = false
@@ -197,6 +204,7 @@ async function enter(u) {
   $('#mock-bar').hidden = store.mode !== 'mock'
   if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/dashboard')
   route()
+  if (imported) toast('The ' + imported + ' existing blog articles were added to the CMS.')
 }
 
 // ---------- routing ----------
@@ -241,7 +249,7 @@ function viewDashboard() {
   $('#view').innerHTML =
     '<div class="hello"><div><h2>Good ' + (hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening') + ', ' + esc(user.name) + '.</h2><p>Here’s what’s on the Ideaxcorp blog.</p></div></div>' +
     '<div class="stats">' +
-      '<a class="card stat t" href="#/posts"><span class="stat-k"><span class="stat-ic">' + I.doc + '</span>Total posts</span><p class="stat-n">' + posts.length + '</p><p class="stat-s">All articles in the CMS</p></a>' +
+      '<a class="card stat t" href="#/posts"><span class="stat-k"><span class="stat-ic">' + I.doc + '</span>Total blogs</span><p class="stat-n">' + posts.length + '</p><p class="stat-s">All articles in the CMS</p></a>' +
       '<a class="card stat p" href="#/posts?status=published"><span class="stat-k"><span class="stat-ic">' + I.check + '</span>Published</span><p class="stat-n">' + pub + '</p><p class="stat-s">Live on the blog</p></a>' +
       '<a class="card stat d" href="#/posts?status=draft"><span class="stat-k"><span class="stat-ic">' + I.draft + '</span>Drafts</span><p class="stat-n">' + dr + '</p><p class="stat-s">Only visible here</p></a>' +
     '</div>' +
@@ -265,42 +273,57 @@ function viewDashboard() {
   })
 }
 
-// ---------- all posts ----------
+// ---------- manage blogs ----------
+const PER_PAGE = 10
 function viewPosts() {
   const q0 = new URLSearchParams(location.hash.split('?')[1] || '')
-  let filter = ['published', 'draft'].includes(q0.get('status')) ? q0.get('status') : 'all', query = ''
-  setTop({ crumb: '<a href="#/dashboard">Dashboard</a> / Posts', title: 'All posts', actions: '<a class="btn btn-primary" href="#/new">' + I.plus + '<span>New post</span></a>' })
+  let filter = ['published', 'draft'].includes(q0.get('status')) ? q0.get('status') : 'all', query = '', page = 1
+  setTop({ crumb: '<a href="#/dashboard">Dashboard</a> / Blogs', title: 'Manage blogs', actions: '<a class="btn btn-primary" href="#/new">' + I.plus + '<span>New post</span></a>' })
   $('#view').innerHTML =
     '<section class="card">' +
-      '<div class="toolbar"><label class="search"><span class="sr">Search posts</span>' + I.search + '<input class="input" type="search" id="q" placeholder="Search by title, slug, category or topic" autocomplete="off"></label>' +
+      '<div class="toolbar"><label class="search"><span class="sr">Search blogs by title</span>' + I.search + '<input class="input" type="search" id="q" placeholder="Search by title" autocomplete="off"></label>' +
       '<div class="seg" role="group" aria-label="Filter by status"><button type="button" data-f="all">All <b></b></button><button type="button" data-f="published">Published <b></b></button><button type="button" data-f="draft">Drafts <b></b></button></div></div>' +
-      '<div id="list"></div>' +
+      '<div id="list"></div><nav class="pager" id="pager" aria-label="Pages"></nav>' +
     '</section>'
   const counts = () => { const pub = posts.filter((p) => p.status === 'published').length; const b = $$('.seg b'); b[0].textContent = posts.length; b[1].textContent = pub; b[2].textContent = posts.length - pub }
   function draw() {
     for (const b of $$('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.f === filter))
     counts()
     const ql = query.toLowerCase()
-    const list = sorted(posts).filter((p) => (filter === 'all' || p.status === filter) && (!ql || [p.title, p.slug, CATS[p.category], p.topic, p.author].join(' ').toLowerCase().includes(ql)))
-    const box = $('#list')
-    if (!posts.length) { box.innerHTML = '<div class="empty"><div class="empty-ic">' + I.doc + '</div><h3>No posts yet</h3><p>Your articles will be listed here.</p><a class="btn btn-primary" href="#/new">' + I.plus + 'New post</a></div>'; return }
-    if (!list.length) { box.innerHTML = '<div class="empty"><div class="empty-ic">' + I.search + '</div><h3>No matching posts</h3><p>Try another search or filter.</p></div>'; return }
-    box.innerHTML = '<table class="table"><thead><tr><th>Post</th><th class="t-col-cat">Category</th><th>Status</th><th>Date</th><th class="t-col-upd">Updated</th><th><span class="sr">Actions</span></th></tr></thead><tbody>' +
+    const all = sorted(posts).filter((p) => (filter === 'all' || p.status === filter) && (!ql || (p.title || '').toLowerCase().includes(ql)))
+    const pages = Math.max(1, Math.ceil(all.length / PER_PAGE)); page = Math.min(Math.max(1, page), pages)
+    const list = all.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+    const box = $('#list'), pager = $('#pager')
+    pager.innerHTML = ''
+    if (!posts.length) { box.innerHTML = '<div class="empty"><div class="empty-ic">' + I.doc + '</div><h3>No blogs yet</h3><p>Your articles will be listed here.</p><a class="btn btn-primary" href="#/new">' + I.plus + 'New post</a></div>'; return }
+    if (!list.length) { box.innerHTML = '<div class="empty"><div class="empty-ic">' + I.search + '</div><h3>No matching blogs</h3><p>Try another title or status.</p></div>'; return }
+    box.innerHTML = '<table class="table"><thead><tr><th>Blog</th><th class="t-col-cat">Category</th><th>Status</th><th>Date</th><th class="t-col-act-h">Actions</th></tr></thead><tbody>' +
       list.map((p) => '<tr data-slug="' + esc(p.slug) + '">' +
         '<td class="t-col-post"><div class="t-post">' + thumbHtml(p) + '<div style="min-width:0"><a href="#/edit/' + encodeURIComponent(p.slug) + '">' + esc(p.title) + '</a><span class="t-slug">/' + esc(p.slug) + (p.externalUrl ? '<span class="ext">' + I.ext + 'ideaxcorp.com</span>' : '') + '</span></div></div></td>' +
         '<td class="t-col-cat"><span class="tag">' + esc(CATS[p.category] || p.category) + '</span></td>' +
         '<td class="t-col-status"><span class="pill ' + p.status + '">' + (p.status === 'published' ? 'Published' : 'Draft') + '</span></td>' +
-        '<td class="t-col-date"><span class="t-date">' + fmtDate(p.publishedAt) + '</span></td>' +
-        '<td class="t-col-upd"><span class="t-date"><small>' + esc(ago(p.updatedAt)) + '</small></span></td>' +
+        '<td class="t-col-date"><span class="t-date">' + fmtDate(p.publishedAt) + (p.updatedAt ? '<small>Updated ' + esc(ago(p.updatedAt)) + '</small>' : '') + '</span></td>' +
         '<td class="t-col-act"><div class="t-act">' +
-          '<a class="icon-btn" href="#/edit/' + encodeURIComponent(p.slug) + '" aria-label="Edit ' + esc(p.title) + '" title="Edit">' + I.edit + '</a>' +
-          '<button type="button" class="icon-btn" data-act="view" aria-label="' + (p.status === 'published' ? 'View' : 'Preview') + ' ' + esc(p.title) + '" title="' + (p.status === 'published' ? 'View on the blog' : 'Preview') + '">' + I.eye + '</button>' +
-          '<button type="button" class="icon-btn danger" data-act="del" aria-label="Delete ' + esc(p.title) + '" title="Delete">' + I.trash + '</button>' +
+          '<a class="act" href="#/edit/' + encodeURIComponent(p.slug) + '" aria-label="Edit ' + esc(p.title) + '">' + I.edit + '<span>Edit</span></a>' +
+          '<button type="button" class="act" data-act="view" aria-label="' + (p.status === 'published' ? 'View' : 'Preview') + ' ' + esc(p.title) + '" title="' + (p.status === 'published' ? 'Open on the public blog' : 'Preview (not public yet)') + '">' + I.eye + '<span>' + (p.status === 'published' ? 'View' : 'Preview') + '</span></button>' +
+          '<button type="button" class="act danger" data-act="del" aria-label="Delete ' + esc(p.title) + '">' + I.trash + '<span>Delete</span></button>' +
         '</div></td></tr>').join('') + '</tbody></table>'
     fillThumbs(box)
+    if (pages > 1) {
+      const from = (page - 1) * PER_PAGE + 1, to = Math.min(all.length, page * PER_PAGE)
+      let nums = ''
+      for (let i = 1; i <= pages; i++) {
+        if (pages > 7 && i > 1 && i < pages && Math.abs(i - page) > 1) { if (i === 2 || i === pages - 1) nums += '<span class="pager-gap">…</span>'; continue }
+        nums += '<button type="button" data-page="' + i + '"' + (i === page ? ' aria-current="page"' : '') + '>' + i + '</button>'
+      }
+      pager.innerHTML = '<span class="pager-info">Showing ' + from + '–' + to + ' of ' + all.length + '</span><div class="pager-btns">' +
+        '<button type="button" data-page="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + ' aria-label="Previous page">‹</button>' + nums +
+        '<button type="button" data-page="' + (page + 1) + '"' + (page === pages ? ' disabled' : '') + ' aria-label="Next page">›</button></div>'
+    }
   }
-  $('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { filter = b.dataset.f; draw() } })
-  $('#q').addEventListener('input', (e) => { query = e.target.value.trim(); draw() })
+  $('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { filter = b.dataset.f; page = 1; draw() } })
+  $('#q').addEventListener('input', (e) => { query = e.target.value.trim(); page = 1; draw() })
+  $('#pager').addEventListener('click', (e) => { const b = e.target.closest('[data-page]'); if (b && !b.disabled) { page = +b.dataset.page; draw(); $('#view').scrollIntoView({ block: 'start' }) } })
   $('#list').addEventListener('click', async (e) => {
     const b = e.target.closest('[data-act]'); if (!b) return
     const p = posts.find((x) => x.slug === b.closest('tr').dataset.slug); if (!p) return
@@ -309,7 +332,8 @@ function viewPosts() {
       else { const im = p.hasImage ? await store.getImage(p.slug).catch(() => null) : null; openPreview(p, im && im.data) }
     }
     if (b.dataset.act === 'del') {
-      await ask({ title: 'Delete “' + p.title + '”?', text: 'It will be removed from the blog and from the CMS. This can’t be undone.', action: async () => { await store.remove(p.slug); imgCache.delete(p.slug); await refresh() } }) && (toast('Post deleted.'), draw())
+      const ok = await ask({ title: 'Delete “' + p.title + '”?', text: 'It will be permanently removed from the database and from the public blog. This can’t be undone.', action: async () => { await store.remove(p.slug); imgCache.delete(p.slug); await refresh() } })
+      if (ok) { toast('Blog deleted.'); draw() }
     }
   })
   draw()
