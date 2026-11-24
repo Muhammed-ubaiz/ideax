@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Ideaxcorp CMS</title>
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="referrer" content="same-origin">
+	<meta name="theme-color" content="#FFFFFF">
+	<link rel="icon" href="/Assets/Grx/ideaxcorp_icon.webp" type="image/webp">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Space+Grotesk:wght@500..700&display=swap">
+	<link rel="stylesheet" href="admin.css?v=5">
+	<script type="module" src="admin.js?v=2"></script>
+</head>
+<body>
+	<!-- Blog CMS for the Ideaxcorp site: sign-in, a dashboard, and creating, editing, previewing and deleting blog posts.
+	     Posts live in Firestore and appear on /blog/ (published only) and /blog/post/?s=<slug>. admin.js draws the
+	     screens; store.js talks to Firebase; firestore.rules (deployed) decides who may read and write. -->
+	<div class="boot" id="boot" aria-live="polite"><span class="spin" aria-hidden="true"></span><span>Loading…</span></div>
+
+	<!-- sign in -->
+	<main class="login" id="login" hidden>
+		<div class="login-art" aria-hidden="true">
+			<div class="login-art-in">
+				<img src="/Assets/Grx/ideaxcorp_logo_light.webp" alt="" width="150" height="44" class="login-art-logo">
+				<p class="login-art-k">Content studio</p>
+				<p class="login-art-h">Write it once.<br><em>It’s live everywhere.</em></p>
+				<ul class="login-art-list"><li>Draft, preview and publish articles</li><li>Featured images, categories and SEO</li><li>Straight onto the Ideaxcorp blog</li></ul>
+			</div>
+		</div>
+		<div class="login-pane">
+			<form class="login-card" id="login-form" novalidate>
+				<img src="/Assets/Grx/ideaxcorp_logo_dark.webp" alt="Ideaxcorp" width="132" height="38" class="login-logo">
+				<h1 class="login-h">Sign in</h1>
+				<p class="login-sub">Admin access to the blog.</p>
+				<p class="login-mock" id="login-mock" hidden></p>
+				<div class="field">
+					<label for="lg-user">Username</label>
+					<input id="lg-user" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="120">
+					<p class="field-err" id="lg-user-err"></p>
+				</div>
+				<div class="field">
+					<label for="lg-pass">Password</label>
+					<div class="pass">
+						<input id="lg-pass" name="password" type="password" autocomplete="current-password" required maxlength="200">
+						<button type="button" class="pass-toggle" id="lg-toggle" aria-label="Show password" aria-pressed="false">
+							<svg class="i-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+							<svg class="i-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.8 0 3.4-.5 4.8-1.3M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+						</button>
+					</div>
+					<p class="field-err" id="lg-pass-err"></p>
+				</div>
+				<p class="form-err" id="lg-err" role="alert"></p>
+				<button class="btn btn-primary btn-block" type="submit" id="lg-submit"><span class="spin" aria-hidden="true"></span><span class="btn-t">Sign in</span></button>
+				<a class="login-back" href="/">← Back to the website</a>
+			</form>
+		</div>
+	</main>
+
+	<!-- the studio -->
+	<div class="app" id="app" hidden>
+		<aside class="side" id="side" aria-label="Main">
+			<a class="side-brand" href="#/dashboard"><img src="/Assets/Grx/ideaxcorp_logo_dark.webp" alt="Ideaxcorp" width="118" height="34"><span>CMS</span></a>
+			<nav class="side-nav">
+				<a href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>Dashboard</a>
+				<a href="#/posts" data-nav="posts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg>All posts<b class="side-count" id="side-count"></b></a>
+				<a href="#/new" data-nav="new"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New post</a>
+			</nav>
+			<div class="side-foot">
+				<a class="side-site" href="/blog/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>View blog</a>
+				<div class="side-user"><span class="avatar" id="me-av" aria-hidden="true"></span><span class="side-user-t"><b id="me-name"></b><span id="me-mode">Administrator</span></span>
+					<button type="button" class="icon-btn" id="logout" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg></button>
+				</div>
+			</div>
+		</aside>
+		<div class="scrim" id="scrim" hidden></div>
+		<div class="main">
+			<header class="top">
+				<button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+				<div class="top-t"><p class="crumb" id="crumb"></p><h1 class="top-h" id="top-h"></h1></div>
+				<div class="top-actions" id="top-actions"></div>
+			</header>
+			<div class="mock-bar" id="mock-bar" hidden>Test mode: posts are saved in this browser only, not on the live site.</div>
+			<section class="view" id="view" tabindex="-1" aria-live="polite"></section>
+		</div>
+	</div>
+
+	<!-- dialogs and notices -->
+	<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-h">
+		<div class="modal-card">
+			<span class="modal-ic" id="modal-ic" aria-hidden="true"></span>
+			<h2 class="modal-h" id="modal-h"></h2>
+			<p class="modal-p" id="modal-p"></p>
+			<div class="modal-btns"><button type="button" class="btn btn-ghost" id="modal-no">Cancel</button><button type="button" class="btn btn-danger" id="modal-yes"><span class="spin" aria-hidden="true"></span><span class="btn-t">Delete</span></button></div>
+		</div>
+	</div>
+	<div class="toasts" id="toasts" aria-live="polite"></div>
+</body>
+</html>

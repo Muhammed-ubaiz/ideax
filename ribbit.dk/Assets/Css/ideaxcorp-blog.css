@@ -317,3 +317,8 @@
   .ixp-js .ixbl-item, .ixp-js .ixbl-fcard, .ixp-js .ixbl-sec-label, .ixp-js .ixbl-list-head, .ixp-js .ixbl-filters-wrap { opacity: 1 !important; transform: none !important; transition: none; }
   .ixbl-fcard-link, .ixbl-cover, .ixbl-ind, .ixbl-read-i, .ixbl-filters .ixp-filter, .ixbl-filters .ixp-filter::before, .ixbl-fi svg, .ixbl-filters .ixp-filter sup.ixbl-n { transition: none; }
 }
+
+/* the list's heading, centred (the "View all articles" link is gone) */
+.ixbl-list-head { justify-content: center; text-align: center; }
+.ixbl-lh-left { display: flex; flex-direction: column; align-items: center; }
+.ixbl-list-sub { margin-left: auto; margin-right: auto; }

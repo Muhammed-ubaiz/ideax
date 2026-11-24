@@ -1,0 +1,61 @@
+rules_version = '2';
+// Blog CMS (admin/): the server-side guard for every read and write.
+// - Anyone may read a published post (and its image); drafts are readable only by an admin.
+// - Only an admin may create, edit or delete. An admin is a Firebase Authentication email/password account whose
+//   email is listed in isAdmin() below. The admin signs in on /admin/ with the part before the @ as the username.
+// - Every write is validated here too (types, sizes, allowed values), whatever the admin page sends.
+// Deploy: firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && request.auth.token.email in ['admin@admin.ideaxcorp.com'];
+    }
+
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    function validPost(id) {
+      let d = request.resource.data;
+      let cats = ['web-development', 'branding', 'digital-marketing', 'technology', 'design'];
+      return d.keys().hasOnly(['title', 'slug', 'excerpt', 'content', 'category', 'alsoIn', 'topic', 'author',
+          'publishedAt', 'seoTitle', 'seoDescription', 'status', 'hasImage', 'imageW', 'imageH', 'imagePath',
+          'externalUrl', 'cover', 'order', 'createdAt', 'updatedAt'])
+        && d.slug == id && id.matches('^[a-z0-9]+(-[a-z0-9]+)*$') && id.size() <= 120
+        && str(d.title, 1, 200)
+        && d.status in ['published', 'draft']
+        && d.category in cats
+        && d.alsoIn is list && d.alsoIn.size() <= 4 && d.alsoIn.hasOnly(cats)
+        && str(d.excerpt, 0, 400) && str(d.content, 0, 800000) && str(d.topic, 0, 40) && str(d.author, 0, 80)
+        && str(d.seoTitle, 0, 120) && str(d.seoDescription, 0, 320)
+        && d.publishedAt is string && d.publishedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && d.hasImage is bool
+        && d.updatedAt == request.time
+        // a published post is complete: an excerpt, and either its article or a link to it
+        && (d.status == 'draft' || (d.excerpt.size() > 0 && (d.content.size() > 0 || d.get('externalUrl', '') != '')));
+    }
+
+    match /posts/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create: if isAdmin() && validPost(id) && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && validPost(id) && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // a post's featured image (a compressed data URL, kept apart so lists stay light)
+    match /postImages/{id} {
+      allow read: if isAdmin() || get(/databases/$(database)/documents/posts/$(id)).data.status == 'published';
+      allow write: if isAdmin()
+        && request.resource.data.keys().hasOnly(['data', 'w', 'h'])
+        && request.resource.data.data is string && request.resource.data.data.size() < 1000000
+        && request.resource.data.data.matches('^data:image/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$')
+        && request.resource.data.w is int && request.resource.data.h is int;
+      allow delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
