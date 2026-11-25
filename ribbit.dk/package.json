@@ -1,0 +1,16 @@
+{
+  "name": "ideaxcorp-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Ideaxcorp website (static). `npm run build` writes a minified copy to dist/, which Firebase Hosting deploys.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "node build.mjs && npx --yes http-server@14.1.1 dist -p 8081 -c-1",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "html-minifier-terser": "7.2.0"
+  }
+}

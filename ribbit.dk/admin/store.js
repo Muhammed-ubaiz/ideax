@@ -102,7 +102,8 @@ async function firebaseStore() {
 function mockStore() {
   const KEY = 'ixblog-mock-db', USER = 'ixblog-mock-user'
   const TEST = { username: 'demo', password: 'demo-pass-123' } // (test login, local test mode only)
-  localStorage.setItem('ixblog-mock-on', '1') // the public blog pages on this machine read the test data too
+  sessionStorage.setItem('ixblog-mock-on', '1') // the public blog pages in this tab read the test data too
+  try { localStorage.removeItem('ixblog-mock-on') } catch (e) {} // (an older, browser-wide switch)
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)) || { posts: {}, images: {} } } catch (e) { return { posts: {}, images: {} } } }
   const write = (db) => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch (e) { throw new StoreError('quota', 'The test store is full (browser storage). Remove a few test posts.') } }
   const wait = (ms = 250) => new Promise((r) => setTimeout(r, ms))
@@ -139,6 +140,6 @@ function mockStore() {
 }
 
 export async function openStore() {
-  if (!MOCK) { try { localStorage.removeItem('ixblog-mock-on') } catch (e) {} }
+  if (!MOCK) { try { sessionStorage.removeItem('ixblog-mock-on'); localStorage.removeItem('ixblog-mock-on') } catch (e) {} }
   return MOCK ? mockStore() : firebaseStore()
 }

@@ -19,7 +19,8 @@
   var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)
   function mockDb() {
     if (!LOCAL) return null
-    try { if (localStorage.getItem('ixblog-mock-on') !== '1') return null; return JSON.parse(localStorage.getItem('ixblog-mock-db') || '{"posts":{},"images":{}}') } catch (e) { return null }
+    try { if (sessionStorage.getItem('ixblog-mock-on') !== '1') return null; // (this tab only, so a test never outlives the test)
+      return JSON.parse(localStorage.getItem('ixblog-mock-db') || '{"posts":{},"images":{}}') } catch (e) { return null }
   }
   function val(v) { // a Firestore REST value, as plain JSON
     if (!v) return null
@@ -35,10 +36,11 @@
   }
   function fields(f) { var o = {}; for (var k in f) o[k] = val(f[k]); return o }
   function published() {
+    imgCache = {}
     var m = mockDb()
     if (m) return Promise.resolve(Object.keys(m.posts).map(function (k) { return m.posts[k] }).filter(function (p) { return p.status === 'published' }))
     return fetch(BASE + ':runQuery?key=' + CFG.key, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'posts' }], where: { fieldFilter: { field: { fieldPath: 'status' }, op: 'EQUAL', value: { stringValue: 'published' } } } } })
     }).then(function (r) { if (!r.ok) throw new Error('posts ' + r.status); return r.json() })
       .then(function (rows) { return rows.filter(function (r) { return r.document }).map(function (r) { return fields(r.document.fields || {}) }) })
@@ -46,18 +48,18 @@
   function onePost(slug) {
     var m = mockDb()
     if (m) { var p = m.posts[slug]; return Promise.resolve(p && p.status === 'published' ? p : null) }
-    return fetch(BASE + '/posts/' + encodeURIComponent(slug) + '?key=' + CFG.key).then(function (r) {
+    return fetch(BASE + '/posts/' + encodeURIComponent(slug) + '?key=' + CFG.key, { cache: 'no-store' }).then(function (r) {
       if (r.status === 404 || r.status === 403) return null // (a draft reads as not found)
       if (!r.ok) throw new Error('post ' + r.status)
       return r.json().then(function (d) { return fields(d.fields || {}) })
     })
   }
-  var imgCache = {}
+  var imgCache = {} // (for this page view only: emptied whenever the list is read again)
   function image(slug) {
     if (imgCache[slug]) return imgCache[slug]
     var m = mockDb()
     if (m) return (imgCache[slug] = Promise.resolve(m.images[slug] || null))
-    return (imgCache[slug] = fetch(BASE + '/postImages/' + encodeURIComponent(slug) + '?key=' + CFG.key)
+    return (imgCache[slug] = fetch(BASE + '/postImages/' + encodeURIComponent(slug) + '?key=' + CFG.key, { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json().then(function (d) { return fields(d.fields || {}) }) : null })
       .catch(function () { delete imgCache[slug]; return null }))
   }
@@ -124,21 +126,59 @@
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); load(e.target) } }) }, { rootMargin: '600px 0px' })
     Array.prototype.forEach.call(lis, function (li) { io.observe(li) })
   }
+  // The list is only ever what the database holds now: the page carries no articles of its own, so a deleted or
+  // unpublished post can't linger (none written into the page, none cached).
   function blogPage(grid) {
+    var scope = grid.closest('[data-filter-scope]')
     grid.setAttribute('data-ixcms', 'loading')
     published().then(function (posts) {
       if (!document.contains(grid)) return
-      if (!posts.length) { grid.setAttribute('data-ixcms', 'empty'); return } // (the cards written into the page stay)
       posts.sort(newestFirst)
       // a fresh list in its place: the grid's script sees a new list and deals, counts and reveals it again
-      var ul = grid.cloneNode(false)
-      ul.setAttribute('data-ixcms', 'live'); ul.innerHTML = posts.map(card).join('')
+      var ul = grid.cloneNode(false); ul.removeAttribute('aria-busy')
+      ul.setAttribute('data-ixcms', posts.length ? 'live' : 'empty'); ul.innerHTML = posts.map(card).join('')
       // keep the chosen category, if one was picked while the posts were on their way
       var on = document.querySelector('.ixbl-filters .ixp-filter[aria-pressed="true"]'), v = on && on.getAttribute('data-value')
       grid.parentNode.replaceChild(ul, grid)
-      if (v && v !== 'all') setTimeout(function () { on.click() }, 0)
+      if (scope) scope.classList.toggle('is-empty', !posts.length)
+      if (posts.length && v && v !== 'all') setTimeout(function () { on.click() }, 0)
       lazyImages(ul)
-    }).catch(function (e) { grid.setAttribute('data-ixcms', 'error'); if (window.console) console.warn('Blog posts could not be loaded:', e.message) })
+    }).catch(function (e) {
+      if (!document.contains(grid)) return
+      grid.setAttribute('data-ixcms', 'error')
+      grid.innerHTML = '<li class="ixcms-error" role="status"><b>The articles couldn’t be loaded.</b><span>Please check your connection.</span><button type="button" class="ixp-btn ixp-btn--ghost">Try again</button></li>'
+      grid.querySelector('button').addEventListener('click', function () { grid.innerHTML = ''; blogPage(grid) })
+      if (window.console) console.warn('Blog posts could not be loaded:', e.message)
+    })
+  }
+
+  // ---------- the home page's latest articles ----------
+  // the three newest published posts, in the home page's own card markup
+  function homeCard(p) {
+    var ext = p.externalUrl && !p.content ? ' target="_blank" rel="noopener"' : ''
+    var src = p.imagePath ? esc(p.imagePath) : ''
+    var media = src ? '<img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" class="ix-blog-blur" src="' + src + '" alt="" aria-hidden="true" loading="lazy" decoding="async"><img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" src="' + src + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">'
+      : p.hasImage ? '' : cover(p, 0)
+    return '<li class="ix-blog-item ixcms-in"' + (p.hasImage && !p.imagePath ? ' data-ixcms-img="' + esc(p.slug) + '"' : '') + '><article class="ixp-card"><a class="ixp-card-link" href="' + esc(hrefOf(p)) + '"' + ext + '>' +
+      '<span class="ixp-card-media">' + media + '</span><span class="ixp-card-body"><span class="ixp-card-meta">' + (p.topic ? '<span class="ix-blog-tag">' + esc(p.topic) + '</span>' : '') + '<time datetime="' + esc(p.publishedAt) + '">' + day(p.publishedAt) + '</time></span>' +
+      '<span class="ixp-card-title">' + esc(p.title) + '</span><span class="ixp-card-text">' + esc(p.excerpt) + '</span><span class="ixp-card-more">Read more</span></span></a></article></li>'
+  }
+  function homePage(ul) {
+    ul.setAttribute('data-ixcms', 'loading')
+    published().then(function (posts) {
+      if (!document.contains(ul)) return
+      posts.sort(newestFirst)
+      ul.innerHTML = posts.slice(0, 3).map(homeCard).join('')
+      ul.setAttribute('data-ixcms', posts.length ? 'live' : 'empty')
+      Array.prototype.forEach.call(ul.querySelectorAll('[data-ixcms-img]'), function (li) {
+        var slug = li.getAttribute('data-ixcms-img'); li.removeAttribute('data-ixcms-img')
+        image(slug).then(function (im) {
+          if (!im || !im.data) return
+          li.querySelector('.ixp-card-media').innerHTML = '<img width="' + im.w + '" height="' + im.h + '" class="ix-blog-blur" src="' + im.data + '" alt="" aria-hidden="true"><img width="' + im.w + '" height="' + im.h + '" src="' + im.data + '" alt="' + esc((li.querySelector('.ixp-card-title') || {}).textContent) + '">'
+        })
+      })
+      requestAnimationFrame(function () { Array.prototype.forEach.call(ul.children, function (li, i) { li.style.transitionDelay = i * 0.08 + 's'; li.classList.add('is-on') }) })
+    }).catch(function (e) { if (document.contains(ul)) { ul.innerHTML = ''; ul.setAttribute('data-ixcms', 'error') } if (window.console) console.warn('Latest articles could not be loaded:', e.message) })
   }
 
   // ---------- the article page ----------
@@ -203,6 +243,8 @@
   function setup() {
     var grid = document.querySelector('[data-ixbl-grid]:not([data-ixcms])')
     if (grid) blogPage(grid)
+    var home = document.querySelector('[data-ixcms-home]:not([data-ixcms])')
+    if (home) homePage(home)
     var art = document.querySelector('[data-ixbp]:not([data-ixcms])')
     if (art) articlePage(art)
   }
