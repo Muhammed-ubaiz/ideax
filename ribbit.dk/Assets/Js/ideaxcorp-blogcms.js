@@ -70,8 +70,11 @@
   function day(d, long) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? +m[3] + ' ' + (long ? MONTHS_LONG : MONTHS)[+m[2] - 1] + ' ' + m[1] : '' }
   function words(html) { var t = String(html || '').replace(/<[^>]+>/g, ' ').trim(); return t ? t.split(/\s+/).length : 0 }
   function readTime(p) { return Math.max(1, Math.round(words(p.content) / 220)) + ' min read' }
-  // a post links out only while its full text lives elsewhere; once written here, it opens on this site
-  function hrefOf(p) { return p.externalUrl && !p.content ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug) }
+  // a post links out only while its full text lives on another site; once written here, it opens on this site.
+  // (The first articles pointed at ideaxcorp.com addresses from the old site, which no longer exist: those open here.)
+  var OWN = /^https?:\/\/(www\.)?ideaxcorp\.com\//i, SITE = 'https://ideaxcorp.com'
+  function outside(p) { return !!(p.externalUrl && !p.content && !OWN.test(p.externalUrl)) }
+  function hrefOf(p) { return outside(p) ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug) }
   // the article's body, kept to plain text formatting (whatever was saved): headings, paragraphs, emphasis, lists,
   // quotes, code and links (http, https, mailto and site links only)
   var ALLOWED = { P: 1, H2: 1, H3: 1, H4: 1, STRONG: 1, B: 1, EM: 1, I: 1, U: 1, A: 1, UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1, CODE: 1, PRE: 1, BR: 1, HR: 1 }
@@ -103,7 +106,7 @@
   function card(p, i) {
     var cats = [p.category].concat(p.alsoIn || []).join(' '), name = CATS[p.category] || ''
     var media = p.imagePath ? '<img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" src="' + esc(p.imagePath) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">' : cover(p, i)
-    var ext = p.externalUrl && !p.content ? ' target="_blank" rel="noopener"' : ''
+    var ext = outside(p) ? ' target="_blank" rel="noopener"' : ''
     return '<li class="ixbl-item" data-cat="' + esc(cats) + '"' + (p.hasImage && !p.imagePath ? ' data-ixcms-img="' + esc(p.slug) + '"' : '') + '><article class="ixbl-art"><a class="ixbl-art-link" href="' + esc(hrefOf(p)) + '"' + ext + '>' +
       '<span class="ixbl-art-no" aria-hidden="true"></span><span class="ixbl-art-media" data-label="' + esc(name) + '"><span class="ixbl-art-img">' + media + '</span></span>' +
       '<span class="ixbl-art-body"><span class="ixbl-meta"><span class="ixbl-cat">' + esc(name) + '</span><span aria-hidden="true">·</span><time datetime="' + esc(p.publishedAt) + '">' + day(p.publishedAt) + '</time>' + (p.topic ? '<span class="ixbl-topic-tag">' + esc(p.topic) + '</span>' : '') + '</span>' +
@@ -155,7 +158,7 @@
   // ---------- the home page's latest articles ----------
   // the three newest published posts, in the home page's own card markup
   function homeCard(p) {
-    var ext = p.externalUrl && !p.content ? ' target="_blank" rel="noopener"' : ''
+    var ext = outside(p) ? ' target="_blank" rel="noopener"' : ''
     var src = p.imagePath ? esc(p.imagePath) : ''
     var media = src ? '<img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" class="ix-blog-blur" src="' + src + '" alt="" aria-hidden="true" loading="lazy" decoding="async"><img width="' + (p.imageW || 1200) + '" height="' + (p.imageH || 800) + '" src="' + src + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">'
       : p.hasImage ? '' : cover(p, 0)
@@ -182,6 +185,11 @@
   }
 
   // ---------- the article page ----------
+  function setLink(rel, href) {
+    var l = document.head.querySelector('link[rel="' + rel + '"]')
+    if (!l) { l = document.createElement('link'); l.rel = rel; document.head.appendChild(l) }
+    l.href = href
+  }
   function setMeta(name, content, prop) {
     var sel = prop ? 'meta[property="' + name + '"]' : 'meta[name="' + name + '"]', m = document.head.querySelector(sel)
     if (!m) { m = document.createElement('meta'); m.setAttribute(prop ? 'property' : 'name', name); document.head.appendChild(m) }
@@ -192,7 +200,7 @@
     var hero = p.imageData ? '<figure class="ixbp-figure" data-reveal><img src="' + esc(p.imageData) + '" width="' + (p.imageW || 1600) + '" height="' + (p.imageH || 900) + '" alt="' + esc(p.title) + '" decoding="async"></figure>'
       : p.imagePath ? '<figure class="ixbp-figure" data-reveal><img src="' + esc(p.imagePath) + '" width="' + (p.imageW || 1600) + '" height="' + (p.imageH || 900) + '" alt="' + esc(p.title) + '" decoding="async"></figure>'
       : p.hasImage ? '<figure class="ixbp-figure is-loading" data-reveal data-ixbp-img="' + esc(p.slug) + '" style="aspect-ratio:' + (p.imageW || 16) + '/' + (p.imageH || 9) + '"></figure>' : ''
-    var body = p.content ? clean(p.content) : (p.externalUrl ? '<p>' + esc(p.excerpt) + '</p><p><a href="' + esc(p.externalUrl) + '">Read the full article on ideaxcorp.com</a></p>' : '')
+    var body = p.content ? clean(p.content) : outside(p) ? '<p><a href="' + esc(p.externalUrl) + '">Read the full article</a></p>' : ''
     return (preview ? '<p class="ixbp-preview" role="status"><b>Preview</b> This is how the article will look. It is not public until you publish it.</p>' : '') +
       '<div class="ixbp-head">' + // (not <header>/<footer>: the site styles those as its navbar and footer)
         '<a class="ixbp-back" href="/blog/"><svg viewBox="0 0 22 12" aria-hidden="true"><path d="M21 6H2M6.5 1.5 1.5 6l5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All articles</a>' +
@@ -214,16 +222,18 @@
       if (!document.contains(root)) return
       if (!p) {
         root.innerHTML = '<div class="ixbp-missing"><h1 class="ixbp-title">Article not found.</h1><p class="ixbp-lead">It may have been moved or unpublished.</p><a class="ixp-btn" href="/blog/">Back to the blog</a></div>'
-        root.setAttribute('data-ixcms', 'missing'); return
+        root.setAttribute('data-ixcms', 'missing'); setMeta('robots', 'noindex, follow'); document.title = 'Article not found | Ideaxcorp'; return
       }
       root.innerHTML = articleHtml(p, preview)
       root.setAttribute('data-ixcms', 'live')
       document.title = (p.seoTitle || p.title) + (preview ? ' (preview)' : ' | Ideaxcorp')
       var desc = p.seoDescription || p.excerpt || ''
       setMeta('description', desc); setMeta('og:title', p.seoTitle || p.title, true); setMeta('og:description', desc, true); setMeta('og:type', 'article', true)
-      if (preview) setMeta('robots', 'noindex')
+      var url = SITE + '/blog/post/?s=' + encodeURIComponent(p.slug)
+      setLink('canonical', url); setMeta('og:url', url, true)
+      setMeta('robots', preview || !p.content ? 'noindex, follow' : 'index, follow, max-image-preview:large')
       var ld = document.getElementById('ixbp-ld'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ixbp-ld'; document.head.appendChild(ld) }
-      ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.seoTitle || p.title, description: desc, datePublished: p.publishedAt, author: { '@type': 'Organization', name: p.author || 'Ideaxcorp' }, publisher: { '@type': 'Organization', name: 'Ideaxcorp' } })
+      ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.seoTitle || p.title, description: desc, datePublished: p.publishedAt, mainEntityOfPage: SITE + '/blog/post/?s=' + encodeURIComponent(p.slug), url: SITE + '/blog/post/?s=' + encodeURIComponent(p.slug), author: { '@type': 'Organization', name: p.author || 'Ideaxcorp' }, publisher: { '@type': 'Organization', name: 'Ideaxcorp' } })
       var fig = root.querySelector('[data-ixbp-img]')
       if (fig) image(fig.getAttribute('data-ixbp-img')).then(function (im) {
         if (!im || !im.data) { fig.remove(); return }

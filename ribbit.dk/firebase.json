@@ -13,7 +13,91 @@
     ],
     "cleanUrls": false,
     "trailingSlash": true,
+    "redirects": [
+      {
+        "source": "/index.html",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/privacy-policy/index.html",
+        "destination": "/privacy-policy/",
+        "type": 301
+      },
+      {
+        "source": "/ranking-without-strategy-is-pointless{,/}",
+        "destination": "/blog/post/?s=ranking-without-strategy-is-pointless",
+        "type": 301
+      },
+      {
+        "source": "/chatgpt-astra-what-is-gpt-6-astra{,/}",
+        "destination": "/blog/post/?s=chatgpt-astra-what-is-gpt-6-astra",
+        "type": 301
+      },
+      {
+        "source": "/microsoft-clarity-ai-citations-branded-nonbranded{,/}",
+        "destination": "/blog/post/?s=microsoft-clarity-ai-citations-branded-nonbranded",
+        "type": 301
+      },
+      {
+        "source": "/aeo-geo-seo-for-businesses{,/}",
+        "destination": "/blog/post/?s=aeo-geo-seo-for-businesses",
+        "type": 301
+      },
+      {
+        "source": "/google-business-profile-local-customers{,/}",
+        "destination": "/blog/post/?s=google-business-profile-local-customers",
+        "type": 301
+      },
+      {
+        "source": "/generative-engine-optimization-guide{,/}",
+        "destination": "/blog/post/?s=generative-engine-optimization-guide",
+        "type": 301
+      },
+      {
+        "source": "/ai-search-optimization-how-to-rank-in-chatgpt{,/}",
+        "destination": "/blog/post/?s=ai-search-optimization-how-to-rank-in-chatgpt",
+        "type": 301
+      },
+      {
+        "source": "/marketing-trends-2026the-future-is-already-here{,/}",
+        "destination": "/blog/post/?s=marketing-trends-2026the-future-is-already-here",
+        "type": 301
+      },
+      {
+        "source": "/why-customers-dont-trust-your-business{,/}",
+        "destination": "/blog/post/?s=why-customers-dont-trust-your-business",
+        "type": 301
+      },
+      {
+        "source": "/seo-alogitham-update-2026{,/}",
+        "destination": "/blog/post/?s=seo-alogitham-update-2026",
+        "type": 301
+      },
+      {
+        "source": "/blog-grid{,/}",
+        "destination": "/blog/",
+        "type": 301
+      }
+    ],
     "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          }
+        ]
+      },
       {
         "source": "**/*.html",
         "headers": [

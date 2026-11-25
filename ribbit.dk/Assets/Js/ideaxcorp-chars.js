@@ -40,7 +40,7 @@
     el.setAttribute('aria-hidden', 'true')
     el.style.cssText = '--w:' + spot.w + 'px;--ar:' + (c.h / c.w).toFixed(4) + ';--peek:' + c.peek + (spot.wm ? ';--wm:' + spot.wm + 'px' : '') + (spot.x ? ';--x:' + spot.x : '')
     el.innerHTML = '<span class="ixch-say">' + spot.say + '</span><span class="ixch-ledge"><span class="ixch-body"><span class="ixch-tilt">' +
-      '<img src="' + IMG + spot.c + '.png" width="' + c.w + '" height="' + c.h + '" alt="" loading="lazy" decoding="async" draggable="false"></span></span></span>'
+      '<img src="' + IMG + spot.c + '.webp" width="' + c.w + '" height="' + c.h + '" alt="" loading="lazy" decoding="async" draggable="false"></span></span></span>'
     host.classList.add('ixch-host')
     if (spot.side !== 'c') { // on stacked layouts the space above a form or list is tight: make room for the head and its bubble
       var wm = spot.wm || spot.w

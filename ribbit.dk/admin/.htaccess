@@ -1,0 +1,6 @@
+# The blog admin: never in search results, never cached, never framed
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+  Header set Cache-Control "no-cache"
+  Header always set X-Frame-Options "DENY"
+</IfModule>

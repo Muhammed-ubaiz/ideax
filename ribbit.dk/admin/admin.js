@@ -27,7 +27,8 @@ export const slugify = (s) => String(s || '').normalize('NFKD').replace(/[̀-ͯ]
 const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const textOf = (html) => { const d = document.createElement('div'); d.innerHTML = html || ''; return (d.textContent || '').replace(/\s+/g, ' ').trim() }
 const wordsOf = (html) => { const t = textOf(html); return t ? t.split(' ').length : 0 }
-const postUrl = (p) => (p.externalUrl && !p.content ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug))
+// (old ideaxcorp.com article addresses no longer exist: those posts open on this site)
+const postUrl = (p) => (p.externalUrl && !p.content && !/^https?:\/\/(www\.)?ideaxcorp\.com\//i.test(p.externalUrl) ? p.externalUrl : '/blog/post/?s=' + encodeURIComponent(p.slug))
 const I = {
   edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>',
   eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -370,7 +371,7 @@ async function viewEditor(slug) {
   $('#view').innerHTML =
     '<form class="ed" id="ed" novalidate>' +
       '<div class="card ed-main">' +
-        (post.externalUrl ? '<p class="ed-note">This article’s full text is on ideaxcorp.com: <a href="' + esc(post.externalUrl) + '" target="_blank" rel="noopener">' + esc(post.externalUrl) + '</a>. Its card on the blog links there. Write the article below to publish it on this site instead.</p>' : '') +
+        (post.externalUrl && !post.content ? '<p class="ed-note">This article’s full text was at <a href="' + esc(post.externalUrl) + '" target="_blank" rel="noopener">' + esc(post.externalUrl) + '</a>, which no longer exists. Until its text is written below, its page on this site shows only the summary and is kept out of search results.</p>' : '') +
         '<div class="field" data-f="title"><label class="sr" for="f-title">Title</label><textarea id="f-title" class="ed-title" rows="1" maxlength="' + LIMITS.title + '" placeholder="Post title">' + esc(post.title) + '</textarea><p class="field-err"></p></div>' +
         '<div class="field" data-f="slug" style="margin-bottom:0"><div class="slug"><span>/blog/post/?s=</span><input id="f-slug" value="' + esc(post.slug) + '" maxlength="' + LIMITS.slug + '" spellcheck="false" aria-label="Slug"><button type="button" id="slug-gen" title="Make the slug from the title">Regenerate</button></div><p class="field-err" style="margin:-14px 0 16px"></p></div>' +
         '<div class="field" data-f="excerpt"><label for="f-excerpt">Excerpt <small><span class="count" id="c-excerpt"></span></small></label><textarea id="f-excerpt" rows="3" maxlength="' + LIMITS.excerpt + '" placeholder="One or two sentences for the blog card and the top of the article.">' + esc(post.excerpt) + '</textarea><p class="field-err"></p></div>' +

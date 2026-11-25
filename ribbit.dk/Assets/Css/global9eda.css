@@ -76,13 +76,13 @@ body:not(.animates) *{transition:none!important;}
 
 /* Font settings - medium/500, semibold/600 and bold/700 */
 h1,h2,h3,h4,h5,h6,p,q{position:relative;margin:0;padding:0;font-weight:normal;font-style:normal;line-height:1;box-sizing:border-box;}
-h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:600;}
+h1,h2,h3,h4,h5,h6,.intro-hi{font-family:var(--font-display);font-weight:600;}
 .type-accent{font-family:var(--font-accent);font-style:italic;font-weight:400;letter-spacing:-.03em;}
 h1,h2.large{font-size:var(--type-hero);line-height:.94;letter-spacing:-.035em;}
 h1.small,h2{font-size:var(--type-section);line-height:.98;letter-spacing:-.03em;}
 h3{font-size:var(--type-card);line-height:1;letter-spacing:-.02em;}
 h4{font-size:var(--type-subsection);line-height:1.05;letter-spacing:-.02em;}
-h5{font-size:2.4rem;line-height:1.08;letter-spacing:-.015em;}
+h5,.intro-hi{font-size:2.4rem;line-height:1.08;letter-spacing:-.015em;}
 p,ol,ul,.custom-form label{font-size:var(--type-body);line-height:1.5;min-height:calc(var(--type-body) * 1.5);letter-spacing:0;}
 p.c1{font-size:1.6rem;line-height:1.35;letter-spacing:.01em;}
 p.c5,header .primary{font-size:var(--type-nav);min-height:1.6rem;letter-spacing:.04em;font-weight:500;}
@@ -97,7 +97,7 @@ p + h3{padding-top:6px;}/*project stats*/
 .m p a:not(.simple-icon-btn):hover{opacity:.75;}
 
 @media all and (max-width:1000.5px){
-    h5{font-size:2.2rem;}
+    h5,.intro-hi{font-size:2.2rem;}
 }
 @media all and (max-width:767.5px){
     :root{
@@ -109,7 +109,7 @@ p + h3{padding-top:6px;}/*project stats*/
         --type-nav:1.2rem;
         --type-button:1.2rem;
     }
-    h5{font-size:1.9rem;}
+    h5,.intro-hi{font-size:1.9rem;}
     p.c1{font-size:1.4rem;line-height:1.4;letter-spacing:0;}
     p.c5,header .primary{font-size:var(--type-nav);letter-spacing:.025em;}
     p.c6{font-size:1.05rem;letter-spacing:.01em;}

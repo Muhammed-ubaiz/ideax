@@ -29,7 +29,37 @@
     px = e.clientX; py = e.clientY; tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1
   }, { passive: true })
   function urls(seq) { var a = []; for (var i = 0; i < seq[1]; i++) a.push(G + seq[0] + '/' + ('00' + i).slice(-3) + '.webp?v=3'); return a }
-  function preload(list) { list.forEach(function (u) { var im = new Image(); im.src = u }) }
+  function preload(list) { list.forEach(function (u) { var im = new Image(); im.decoding = 'async'; im.src = u }) }
+
+  // The characters are drawn on a canvas, frame by frame, rather than by swapping an <img>'s address: they look the
+  // same, but a canvas isn't counted as the page's "largest content" (each new frame of an <img> was, which held
+  // the phone speed score back by many seconds). Frames are fetched once and kept.
+  function frameCanvas(img) {
+    var cv = document.createElement('canvas'), ctx = cv.getContext('2d'), cache = {}, want = ''
+    cv.className = img.className; cv.setAttribute('aria-hidden', 'true')
+    cv.width = +img.getAttribute('width') || 1; cv.height = +img.getAttribute('height') || 1
+    var first = img.getAttribute('src')
+    img.parentNode.replaceChild(cv, img)
+    function paint(im) {
+      if (cv.width !== im.naturalWidth || cv.height !== im.naturalHeight) { cv.width = im.naturalWidth; cv.height = im.naturalHeight } else ctx.clearRect(0, 0, cv.width, cv.height)
+      ctx.drawImage(im, 0, 0)
+    }
+    cv.setFrame = function (u) {
+      if (u === want) return
+      want = u
+      var im = cache[u]
+      if (!im) { im = cache[u] = new Image(); im.decoding = 'async'; im.src = u }
+      if (im.complete && im.naturalWidth) paint(im)
+      else im.onload = function () { if (want === u) paint(im) } // (until then the last frame stays)
+    }
+    if (first) cv.setFrame(first)
+    return cv
+  }
+  // after the page has loaded (and a moment more), so the frames never compete with what's on screen first
+  function afterLoad(fn, ms) {
+    var go = function () { setTimeout(fn, ms || 0) }
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true })
+  }
 
   function build(sec) {
     sec.dataset.ready = '1'
@@ -50,7 +80,7 @@
     })
     var cast = Array.prototype.map.call(sec.querySelectorAll('.ixhx-char'), function (el) {
       var name = el.dataset.char, s = SEQ[name]
-      return { el: el, img: el.querySelector('img'), name: name, s: s, line: +el.dataset.line, depth: parseFloat(el.dataset.d || '.5'),
+      return { el: el, img: frameCanvas(el.querySelector('img')), name: name, s: s, line: +el.dataset.line, depth: parseFloat(el.dataset.d || '.5'),
         x: 0, y: 0, home: 0, lo: 0, hi: 0, dir: -1, mode: 'idle', until: 0, fi: 0, ft: 0, hop: null, frames: s ? { idle: urls(s.idle), walk: urls(s.walk), pull: s.pull ? urls(s.pull) : null } : null, w: 0, h: 0 }
     })
     var mx = 0, my = 0, p = 0, on = false, raf = 0, last = 0, fs = 100, slid = [0, 0, 0, 0], live = false
@@ -152,7 +182,7 @@
       if (c.hop) { var u = c.hop.u; y -= Math.sin(Math.PI * u) * c.hop.h }
       c.el.style.transform = 'translate3d(' + (x - c.w / 2).toFixed(1) + 'px,' + (y - c.h).toFixed(1) + 'px,0)'
     }
-    function setFrame(c, list, i) { var u = list[i % list.length]; if (c.cur !== u) { c.cur = u; c.img.src = u } }
+    function setFrame(c, list, i) { var u = list[i % list.length]; if (c.cur !== u) { c.cur = u; c.img.setFrame(u) } }
 
     // one character's life, a step at a time
     // a pusher's round, as in the original hero: it pushes its word away from its side, rests, brings it back (the
@@ -229,10 +259,10 @@
     }
 
     // the letters: lift a little under the pointer, dip under the feet of a character on them
-    function lettersFrame(S) {
+    function lettersFrame(S, rows) {
       letters.forEach(function (row, li) {
         var feet = cast.filter(function (c) { return c.line === li && c.name === 'outlaw' && !c.hop })
-        var rowY = lines[li].getBoundingClientRect(), near = fine && py > rowY.top - 20 && py < rowY.bottom + 20
+        var rowY = rows[li], near = fine && py > rowY.top - 20 && py < rowY.bottom + 20
         row.forEach(function (L) {
           var x = L.cx + slid[li], d = 0
           feet.forEach(function (c) { if (Math.abs(x - (c.x + slid[li])) < c.w * .22) d = fs * .045 })
@@ -243,8 +273,8 @@
       })
     }
 
-    function target() {
-      var r = sec.getBoundingClientRect(), span = Math.max(sec.offsetHeight - innerHeight, innerHeight * .8)
+    function target(r) {
+      r = r || sec.getBoundingClientRect(); var span = Math.max(sec.offsetHeight - innerHeight, innerHeight * .8)
       return Math.max(0, Math.min(1, -r.top / span))
     }
     // as in the original hero: once the scroll is well into the hero, the Explorer jumps down off "Marketing Agency"
@@ -252,11 +282,10 @@
     // stage until then; scrolling back up, it jumps back up onto its word
     var ex = cast.filter(function (c) { return c.name === 'explorer' })[0]
     function guide() { document.documentElement.classList.toggle('ixhx-on', on && !(ex && ex.gone)) }
-    function handoff(e, dt) {
+    function handoff(e, dt, S, gr) {
       if (!ex || ex.el.classList.contains('ixhx-away')) return
-      var S = stage.getBoundingClientRect(), floor = S.height - 6, at = ex.x + slid[ex.line]
-      var g = document.querySelector('.ixj-guide'), gx = Math.max(ex.w / 2 + 8, S.width * .04 + ex.w / 2), gs = 1
-      var gi = g && g.querySelector('img'), gr = gi && gi.getBoundingClientRect()
+      var floor = S.height - 6, at = ex.x + slid[ex.line]
+      var gx = Math.max(ex.w / 2 + 8, S.width * .04 + ex.w / 2), gs = 1
       if (gr && gr.height) { gx = gr.left + gr.width / 2 - S.left; floor = gr.bottom - S.top; gs = gr.height / ex.h } // land right where the guide stands, at its size
       if (!ex.gone && !ex.drop && e > .55) { // down
         ex.drop = { u: 0, dir: 1, x0: at, y0: ex.y, x1: gx, y1: floor, s0: 1, s1: gs }
@@ -282,8 +311,11 @@
       raf = 0
       if (!on) return
       var dt = Math.min(.05, (now - (last || now)) / 1000); last = now
+      // this frame's measurements, all read before anything is moved
+      var S = stage.getBoundingClientRect(), secR = sec.getBoundingClientRect(), rows = live ? lines.map(function (l) { return l.getBoundingClientRect() }) : null
+      var gEl = ex && !ex.el.classList.contains('ixhx-away') && document.querySelector('.ixj-guide :is(img, canvas)'), gr = gEl && gEl.getBoundingClientRect()
       mx += ((fine ? tx : 0) - mx) * .08; my += ((fine ? ty : 0) - my) * .08
-      p += (target() - p) * .1
+      p += (target(secR) - p) * .1
       var e = p * p * (3 - 2 * p), vw = innerWidth / 100
       lines.forEach(function (l, i) {
         slid[i] = SLIDE[i] * e * vw * (innerWidth < 641 ? .3 : 1) + mx * (i % 2 ? 6 : -6) + push[i] // (gentler on phones: no word slides off)
@@ -291,9 +323,9 @@
       })
       if (card) card.style.transform = live ? 'translate3d(' + (mx * -10 - e * 4 * vw).toFixed(1) + 'px,' + (my * -8 + e * 8 * vw / 2).toFixed(1) + 'px,0) scale(' + (1 + e * .08).toFixed(3) + ')' : ''
       if (foot && live) foot.style.opacity = Math.max(0, 1 - (e - .25) / .2).toFixed(3) // the floor clears before the Explorer lands
-      handoff(e, dt)
+      handoff(e, dt, S, gr)
       cast.forEach(function (c) { if (!c.drop && !c.gone) step(c, dt, now); draw(c, now) })
-      if (live) lettersFrame(stage.getBoundingClientRect())
+      if (live) lettersFrame(S, rows)
       raf = requestAnimationFrame(frame)
     }
 
@@ -319,11 +351,11 @@
     // arrive
     var go = function () {
       place()
-      cast.forEach(function (c) { if (c.frames) c.img.src = c.cur = c.frames.idle[0]; draw(c, 0) })
+      cast.forEach(function (c) { if (c.frames) c.img.setFrame(c.cur = c.frames.idle[0]); draw(c, 0) })
       requestAnimationFrame(function () { sec.classList.add('is-in') })
       setTimeout(function () { sec.classList.add('is-cast') }, reduce ? 0 : 900)
       setTimeout(function () { live = true; sec.classList.add('is-live'); place() }, reduce ? 0 : 2600)
-      if (!reduce) { cast.forEach(function (c) { if (c.frames) { preload(c.frames.idle); setTimeout(function () { preload(c.frames.walk); if (c.frames.pull) preload(c.frames.pull) }, 1500) } c.until = performance.now() + 2600 + Math.random() * 2500 }) }
+      if (!reduce) { cast.forEach(function (c) { if (c.frames) { afterLoad(function () { preload(c.frames.idle) }, 200); afterLoad(function () { preload(c.frames.walk); if (c.frames.pull) preload(c.frames.pull) }, 1800) } c.until = performance.now() + 2600 + Math.random() * 2500 }) }
     }
     if (document.fonts && document.fonts.ready) Promise.race([document.fonts.ready, new Promise(function (r) { setTimeout(r, 1200) })]).then(go)
     else setTimeout(go, 300)

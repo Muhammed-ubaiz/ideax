@@ -177,7 +177,15 @@
     preloaded = true
     ;[CAST.creator.seq, CAST.jester.seq].forEach(function (s) { seq(s).forEach(function (u) { var im = new Image(); im.src = u }) })
   }
-  setTimeout(preloadCast, 4000)
+  // their frames are only needed when the visitor changes page: fetched at their first touch, scroll or key, or
+  // once the page has loaded and gone quiet, whichever comes first (never in the way of the first screen)
+  ;(function () {
+    var done = false, go = function () { if (done) return; done = true; preloadCast() }
+    ;['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (e) { window.addEventListener(e, go, { once: true, passive: true }) })
+    var idle = window.requestIdleCallback || function (f) { setTimeout(f, 1) }
+    var later = function () { setTimeout(function () { idle(go) }, 8000) }
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true })
+  })()
   function castStart(mode, oldP, newP) {
     preloadCast()
     if (!castEl) {

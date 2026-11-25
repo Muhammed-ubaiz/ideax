@@ -25,6 +25,37 @@
   var running = false, lastT = 0
   document.documentElement.classList.add('ix-journey') // (the About page's own guide stands down: this one walks every page)
 
+
+  // The characters are drawn on a canvas, frame by frame, rather than by swapping an <img>'s address: they look the
+  // same, but a canvas isn't counted as the page's "largest content" (each new frame of an <img> was, which held
+  // the phone speed score back by many seconds). Frames are fetched once and kept.
+  function frameCanvas(img) {
+    var cv = document.createElement('canvas'), ctx = cv.getContext('2d'), cache = {}, want = ''
+    cv.className = img.className; cv.setAttribute('aria-hidden', 'true')
+    cv.width = +img.getAttribute('width') || 1; cv.height = +img.getAttribute('height') || 1
+    var first = img.getAttribute('src')
+    img.parentNode.replaceChild(cv, img)
+    function paint(im) {
+      if (cv.width !== im.naturalWidth || cv.height !== im.naturalHeight) { cv.width = im.naturalWidth; cv.height = im.naturalHeight } else ctx.clearRect(0, 0, cv.width, cv.height)
+      ctx.drawImage(im, 0, 0)
+    }
+    cv.setFrame = function (u) {
+      if (u === want) return
+      want = u
+      var im = cache[u]
+      if (!im) { im = cache[u] = new Image(); im.decoding = 'async'; im.src = u }
+      if (im.complete && im.naturalWidth) paint(im)
+      else im.onload = function () { if (want === u) paint(im) } // (until then the last frame stays)
+    }
+    if (first) cv.setFrame(first)
+    return cv
+  }
+  // after the page has loaded (and a moment more), so the frames never compete with what's on screen first
+  function afterLoad(fn, ms) {
+    var go = function () { setTimeout(fn, ms || 0) }
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true })
+  }
+
   function src(i, set) { return '/Assets/Grx/explorer_' + (set || 'idle') + '/' + String(i).padStart(3, '0') + '.webp?v=3' } // lossless WebP copies of the frames
 
   function build() {
@@ -32,7 +63,7 @@
     guide = document.createElement('div'); guide.className = 'ixj-guide'; guide.setAttribute('aria-hidden', 'true')
     guide.innerHTML = '<span class="ixj-say"></span><img src="' + src(0) + '" alt="" width="345" height="390">'
     document.body.appendChild(guide)
-    img = guide.querySelector('img'); img.decoding = 'async'; say = guide.querySelector('.ixj-say')
+    img = frameCanvas(guide.querySelector('img')); say = guide.querySelector('.ixj-say')
     say.addEventListener('click', function () { if (guide.classList.contains('next')) leave(guide.classList.contains('back') ? -1 : 1) }) // the bubble takes you on (or back)
     // fetched once the page has loaded, so they don't hold up the load event (and the site's intro with it)
     var fetchAll = function () {
@@ -238,7 +269,7 @@
     var walking = !reduced && t >= 1 && now - movedAt < 180
     var set = walking ? steps : frames, fi = walking ? Math.floor(walk / 2.6) % FRAMES : reduced ? 0 : Math.floor(now / 50) % FRAMES
     var key = (walking ? 'w' : 'i') + fi
-    if (key !== lastFrame && set[fi] && set[fi].complete) { img.src = set[fi].src; lastFrame = key }
+    if (key !== lastFrame && set[fi] && set[fi].complete) { img.setFrame(set[fi].src); lastFrame = key }
 
     // the bubble
     if (speech && speech !== label) { label = speech; say.textContent = speech; say.classList.remove('pop'); void say.offsetWidth; say.classList.add('pop') }

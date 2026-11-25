@@ -42,8 +42,8 @@
 .ixhx.is-cast .ixhx-char { opacity: 1; }
 .ixhx .ixhx-char.is-gone { opacity: 0; transition: none; } /* handed over to the walking guide, at once */
 .ixhx-char .ixhx-body { position: absolute; inset: 0; display: block; transform-origin: 50% 100%; }
-.ixhx-char img { position: absolute; left: 50%; bottom: 0; display: block; width: auto; height: 100%; max-width: none; translate: -50% 0; transform-origin: 50% 100%; pointer-events: none; filter: drop-shadow(0 14px 16px rgba(23, 10, 40, .16)); }
-.ixhx-char.is-left img { scale: -1 1; }
+.ixhx-char :is(img, canvas) { position: absolute; left: 50%; bottom: 0; display: block; width: auto; height: 100%; max-width: none; translate: -50% 0; transform-origin: 50% 100%; pointer-events: none; filter: drop-shadow(0 14px 16px rgba(23, 10, 40, .16)); }
+.ixhx-char.is-left :is(img, canvas) { scale: -1 1; }
 .ixhx-char::after { /* contact shadow */
   content: ''; position: absolute; left: 18%; right: 18%; bottom: -4px; height: 10px; border-radius: 50%; z-index: -1;
   background: radial-gradient(closest-side, rgba(23, 10, 40, .22), rgba(23, 10, 40, 0)); transition: opacity .3s ease, transform .3s ease;

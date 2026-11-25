@@ -1,0 +1,71 @@
+# Ideaxcorp website: server rules for the Hostinger (LiteSpeed) host serving https://ideaxcorp.com
+# Upload with the site (it is copied into dist/ by `npm run build`). Replaces Hostinger's default .htaccess,
+# so it includes the HTTPS redirect that one provided.
+
+Options -Indexes
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+
+# ---------- correct content types (needed before "nosniff": scripts were sent as application/x-javascript) ----------
+<IfModule mod_mime.c>
+  AddType text/javascript .js .mjs
+  AddType text/css .css
+  AddType application/json .json
+  AddType application/xml .xml
+  AddType image/webp .webp
+  AddType image/avif .avif
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+  AddType video/mp4 .mp4
+  AddCharset UTF-8 .html .css .js .mjs .json .xml .txt .svg
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS, and one host: www.ideaxcorp.com -> ideaxcorp.com (the canonical host)
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://ideaxcorp.com%{REQUEST_URI} [R=301,L,NE]
+  RewriteCond %{HTTP_HOST} ^www\.ideaxcorp\.com$ [NC]
+  RewriteRule ^ https://ideaxcorp.com%{REQUEST_URI} [R=301,L,NE]
+
+  # /index.html addresses -> their canonical folder URLs (only when asked for by name, never the folder's own index)
+  RewriteCond %{THE_REQUEST} \s/index\.html[\s?]
+  RewriteRule ^index\.html$ / [R=301,L]
+  RewriteCond %{THE_REQUEST} \s/privacy-policy/index\.html[\s?]
+  RewriteRule ^privacy-policy/index\.html$ /privacy-policy/ [R=301,L]
+
+  # the old site's blog addresses -> the same articles on the new blog (permanent)
+  RewriteRule ^ranking-without-strategy-is-pointless/?$ /blog/post/?s=ranking-without-strategy-is-pointless [R=301,L]
+  RewriteRule ^chatgpt-astra-what-is-gpt-6-astra/?$ /blog/post/?s=chatgpt-astra-what-is-gpt-6-astra [R=301,L]
+  RewriteRule ^microsoft-clarity-ai-citations-branded-nonbranded/?$ /blog/post/?s=microsoft-clarity-ai-citations-branded-nonbranded [R=301,L]
+  RewriteRule ^aeo-geo-seo-for-businesses/?$ /blog/post/?s=aeo-geo-seo-for-businesses [R=301,L]
+  RewriteRule ^google-business-profile-local-customers/?$ /blog/post/?s=google-business-profile-local-customers [R=301,L]
+  RewriteRule ^generative-engine-optimization-guide/?$ /blog/post/?s=generative-engine-optimization-guide [R=301,L]
+  RewriteRule ^ai-search-optimization-how-to-rank-in-chatgpt/?$ /blog/post/?s=ai-search-optimization-how-to-rank-in-chatgpt [R=301,L]
+  RewriteRule ^marketing-trends-2026the-future-is-already-here/?$ /blog/post/?s=marketing-trends-2026the-future-is-already-here [R=301,L]
+  RewriteRule ^why-customers-dont-trust-your-business/?$ /blog/post/?s=why-customers-dont-trust-your-business [R=301,L]
+  RewriteRule ^seo-alogitham-update-2026/?$ /blog/post/?s=seo-alogitham-update-2026 [R=301,L]
+  RewriteRule ^blog-grid/?$ /blog/ [R=301,L]
+</IfModule>
+
+# ---------- not found ----------
+ErrorDocument 404 /404.html
+
+# ---------- security headers ----------
+<IfModule mod_headers.c>
+  # HTTPS only, for a year (the site and www both serve valid HTTPS; subdomains are not included)
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # the site may frame itself, nobody else may frame it (it embeds Google Maps; that is unaffected)
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # caching: pages are always checked again; versioned assets (?v=) and images for 30 days
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(css|js|mjs|webp|avif|png|jpe?g|gif|svg|woff2?|mp4)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>

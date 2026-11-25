@@ -2,6 +2,27 @@
 // ideaxcorp.com). The dashboard offers to import them once, so every article is managed in one place.
 export default [
  {
+  "slug": "ranking-without-strategy-is-pointless",
+  "title": "Ranking Without Strategy Is Pointless",
+  "excerpt": "Why visibility alone isn’t enough, and how to turn search visibility into qualified traffic, leads and business growth.",
+  "category": "digital-marketing",
+  "alsoIn": [],
+  "publishedAt": "2026-09-14",
+  "topic": "SEO",
+  "externalUrl": "https://ideaxcorp.com/ranking-without-strategy-is-pointless/",
+  "author": "Ideaxcorp Team",
+  "status": "published",
+  "content": "",
+  "seoTitle": "",
+  "seoDescription": "",
+  "order": -1,
+  "cover": {
+   "style": "c0",
+   "kicker": "SEO · 9 min read",
+   "text": "Ranking without strategy is pointless."
+  }
+ },
+ {
   "slug": "chatgpt-astra-what-is-gpt-6-astra",
   "title": "ChatGPT Astra: What Is GPT-6 Astra?",
   "excerpt": "A detailed guide to OpenAI’s latest model for reasoning, coding, computer use, research and professional work.",
